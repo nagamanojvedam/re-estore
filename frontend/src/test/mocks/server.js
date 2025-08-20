@@ -1,13 +1,13 @@
-import { setupServer } from 'msw/node'
-import { rest } from 'msw'
+import { setupServer } from 'msw/node';
+import { rest } from 'msw';
 
-const API_BASE_URL = 'http://localhost:4000/api'
+const API_BASE_URL = 'http://localhost:3000/api';
 
 export const handlers = [
   // Auth endpoints
   rest.post(`${API_BASE_URL}/auth/login`, (req, res, ctx) => {
-    const { email, password } = req.body
-    
+    const { email, password } = req.body;
+
     if (email === 'test@example.com' && password === 'password123') {
       return res(
         ctx.status(200),
@@ -25,17 +25,17 @@ export const handlers = [
               refresh: { token: 'mock-refresh-token' },
             },
           },
-        })
-      )
+        }),
+      );
     }
-    
+
     return res(
       ctx.status(401),
       ctx.json({
         status: 'error',
         message: 'Invalid credentials',
-      })
-    )
+      }),
+    );
   }),
 
   rest.post(`${API_BASE_URL}/auth/register`, (req, res, ctx) => {
@@ -55,15 +55,15 @@ export const handlers = [
             refresh: { token: 'mock-refresh-token' },
           },
         },
-      })
-    )
+      }),
+    );
   }),
 
   // Products endpoints
   rest.get(`${API_BASE_URL}/products`, (req, res, ctx) => {
-    const page = req.url.searchParams.get('page') || '1'
-    const limit = req.url.searchParams.get('limit') || '10'
-    
+    const page = req.url.searchParams.get('page') || '1';
+    const limit = req.url.searchParams.get('limit') || '10';
+
     return res(
       ctx.status(200),
       ctx.json({
@@ -98,13 +98,13 @@ export const handlers = [
             pages: 1,
           },
         },
-      })
-    )
+      }),
+    );
   }),
 
   rest.get(`${API_BASE_URL}/products/:id`, (req, res, ctx) => {
-    const { id } = req.params
-    
+    const { id } = req.params;
+
     return res(
       ctx.status(200),
       ctx.json({
@@ -121,9 +121,9 @@ export const handlers = [
             ratings: { average: 4.5, count: 10 },
           },
         },
-      })
-    )
+      }),
+    );
   }),
-]
+];
 
-export const server = setupServer(...handlers)
+export const server = setupServer(...handlers);
