@@ -4,11 +4,13 @@ import { HeartIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useWishlist } from '@hooks/useWishlist';
 import WishlistItem from '@components/wishlist/WishlistItem';
 
+const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
 function WishlistPage() {
-  const { wishlist: items, clearWishlist } = useWishlist();
+  const { wishlist, clearWishlist } = useWishlist();
   const navigate = useNavigate();
 
-  if (items.length === 0) {
+  if (wishlist.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <motion.div
@@ -54,23 +56,23 @@ function WishlistPage() {
               Wishlist
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              {items.length} {items.length === 1 ? 'item' : 'items'} saved
+              {wishlist.length} {wishlist.length === 1 ? 'item' : 'items'} saved
             </p>
           </div>
         </motion.div>
 
         {/* Wishlist Items */}
         <div className="space-y-4">
-          {items.map(({ productId: item }, index) => {
-            console.log('item', item);
+          {wishlist.map((item, index) => {
+            const { productId: product } = item;
             return (
               <motion.div
-                key={item._id}
+                key={index + 1}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <WishlistItem item={item} />
+                <WishlistItem item={product} />
               </motion.div>
             );
           })}
@@ -80,7 +82,7 @@ function WishlistPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: items.length * 0.1 + 0.2 }}
+          transition={{ delay: wishlist.length * 0.1 + 0.2 }}
           className="mt-8 flex items-center justify-between"
         >
           <Link
@@ -91,8 +93,14 @@ function WishlistPage() {
             <span>Continue Shopping</span>
           </Link>
 
-          {items.length > 1 && (
-            <button onClick={clearWishlist} className="btn-secondary">
+          {wishlist.length > 1 && (
+            <button
+              onClick={() => {
+                clearWishlist();
+                scrollToTop();
+              }}
+              className="btn-secondary"
+            >
               Clear Wishlist
             </button>
           )}
