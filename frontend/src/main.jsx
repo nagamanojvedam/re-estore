@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
-import { BrowserRouter } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
-import App from './App.jsx'
-import './styles/globals.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { BrowserRouter } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import App from './App.jsx';
+import './styles/globals.css';
 
 // Create a client with optimized defaults for Vite
 const queryClient = new QueryClient({
@@ -14,9 +14,9 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       retry: (failureCount, error) => {
         if (error?.status === 404 || error?.status === 403) {
-          return false
+          return false;
         }
-        return failureCount < 2
+        return failureCount < 2;
       },
       staleTime: 5 * 60 * 1000, // 5 minutes
       cacheTime: 10 * 60 * 1000, // 10 minutes
@@ -25,17 +25,27 @@ const queryClient = new QueryClient({
       retry: false,
     },
   },
-})
+});
 
 // Error boundary for development
 if (import.meta.env.DEV) {
   // Only in development
-  console.log('🚀 Development mode enabled')
+  console.log('🚀 Development mode enabled');
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root'))
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  import.meta.env.DEV ? (
+    <React.StrictMode>
+      <Main />
+    </React.StrictMode>
+  ) : (
+    <Main />
+  ),
+); // Use React.StrictMode only in development for better debugging
+
+function Main() {
+  return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <App />
@@ -88,5 +98,5 @@ root.render(
       </BrowserRouter>
       {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
-  </React.StrictMode>
-)
+  );
+}

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeftIcon,
   HeartIcon,
@@ -15,31 +15,33 @@ import {
   XCircleIcon,
   PlusIcon,
   MinusIcon,
-} from '@heroicons/react/24/outline'
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
-import { productService } from '@services/productService'
-import { useCart } from '@hooks/useCart'
-import { useAuth } from '@hooks/useAuth'
-import { useWishlist } from '@hooks/useWishlist'
-import ProductCard from '@components/products/ProductCard'
-import { LoadingScreen } from '@components/common/Spinner'
-import toast from 'react-hot-toast'
+} from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { productService } from '@services/productService';
+import { useCart } from '@hooks/useCart';
+import { useAuth } from '@hooks/useAuth';
+import { useWishlist } from '@hooks/useWishlist';
+import ProductCard from '@components/products/ProductCard';
+import { LoadingScreen } from '@components/common/Spinner';
+import toast from 'react-hot-toast';
 
-const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
 function ProductDetailsPage() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { addItem } = useCart()
-  const { isAuthenticated } = useAuth()
-  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist()
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [quantity, setQuantity] = useState(1)
-  const [isWishlisted, setIsWishlisted] = useState(false)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [isWishlisted, setIsWishlisted] = useState(() =>
+    wishlist.some(item => item.productId._id === id),
+  );
 
-  const [selectedVariant, setSelectedVariant] = useState(null)
-  const [activeTab, setActiveTab] = useState('description')
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [activeTab, setActiveTab] = useState('description');
 
   // Fetch product details
   const {
@@ -49,7 +51,7 @@ function ProductDetailsPage() {
   } = useQuery(['product', id], () => productService.getProduct(id), {
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
-  })
+  });
 
   // Fetch related products
   const { data: relatedProducts } = useQuery({
@@ -62,31 +64,25 @@ function ProductDetailsPage() {
       }),
     enabled: !!product?.category,
     staleTime: 10 * 60 * 1000, // 10 minutes
-  })
+  });
 
-  useEffect(scrollToTop, [])
+  useEffect(scrollToTop, []);
 
   useEffect(() => {
     if (product && product.variants?.length > 0) {
-      setSelectedVariant(product.variants[0])
+      setSelectedVariant(product.variants[0]);
     }
-  }, [product])
-
-  useEffect(() => {
-    setIsWishlisted(
-      wishlist.some(item => item.productId.toString() === product?._id)
-    )
-  }, [wishlist, product])
+  }, [product]);
 
   const handleAddToCart = () => {
     if (product.stock <= 0) {
-      toast.error('Product is out of stock')
-      return
+      toast.error('Product is out of stock');
+      return;
     }
 
     if (quantity > product.stock) {
-      toast.error(`Only ${product.stock} items available`)
-      return
+      toast.error(`Only ${product.stock} items available`);
+      return;
     }
 
     addItem({
@@ -97,26 +93,26 @@ function ProductDetailsPage() {
       stock: product.stock,
       quantity,
       variant: selectedVariant?.name,
-    })
+    });
 
-    setQuantity(1)
-  }
+    setQuantity(1);
+  };
 
   const handleWishlistToggle = async () => {
     if (!isAuthenticated) {
-      toast.error('Please login to add items to wishlist')
-      return
+      toast.error('Please login to add items to wishlist');
+      return;
     }
 
     if (!isWishlisted) {
-      await addToWishlist(product._id)
-      setIsWishlisted(true)
+      await addToWishlist(product._id);
+      setIsWishlisted(true);
     } else {
-      await removeFromWishlist(product._id)
-      setIsWishlisted(false)
+      await removeFromWishlist(product._id);
+      setIsWishlisted(false);
     }
-    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist')
-  }
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -125,20 +121,20 @@ function ProductDetailsPage() {
           title: product.name,
           text: product.description,
           url: window.location.href,
-        })
+        });
       } catch (error) {
         // User cancelled sharing
       }
     } else {
       // Fallback - copy to clipboard
       try {
-        await navigator.clipboard.writeText(window.location.href)
-        toast.success('Product link copied to clipboard!')
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success('Product link copied to clipboard!');
       } catch (error) {
-        toast.error('Failed to copy link')
+        toast.error('Failed to copy link');
       }
     }
-  }
+  };
 
   const renderStars = rating => {
     return [...Array(5)].map((_, i) => (
@@ -150,11 +146,11 @@ function ProductDetailsPage() {
             : 'text-gray-300 dark:text-gray-600'
         }`}
       />
-    ))
-  }
+    ));
+  };
 
   if (isLoading) {
-    return <LoadingScreen message="Loading product details..." />
+    return <LoadingScreen message="Loading product details..." />;
   }
 
   if (error || !product) {
@@ -187,7 +183,7 @@ function ProductDetailsPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -313,7 +309,7 @@ function ProductDetailsPage() {
                       {Math.round(
                         ((product.originalPrice - product.price) /
                           product.originalPrice) *
-                          100
+                          100,
                       )}
                       % OFF
                     </span>
@@ -534,7 +530,7 @@ function ProductDetailsPage() {
                               {value}
                             </span>
                           </div>
-                        )
+                        ),
                       )
                     ) : (
                       <div className="col-span-2 text-center py-8 text-gray-500 dark:text-gray-400">
@@ -638,7 +634,7 @@ function ProductDetailsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default ProductDetailsPage
+export default ProductDetailsPage;

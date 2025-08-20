@@ -54,6 +54,7 @@ const addToWishlist = catchAsync(async (req, res) => {
     user.wishlist.push({ productId });
 
   await user.save();
+  await user.populate("wishlist.productId");
 
   res.json({
     status: "success",
@@ -70,10 +71,11 @@ const removeFromWishlist = catchAsync(async (req, res) => {
   const user = await User.findById(id);
 
   user.wishlist = user.wishlist.filter(
-    (item) => item.productId.toString() === productId
+    (item) => item.productId.toString() !== productId
   );
 
   await user.save();
+  await user.populate("wishlist.productId");
 
   res.json({
     status: "success",

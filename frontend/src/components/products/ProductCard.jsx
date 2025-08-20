@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   HeartIcon,
   ShoppingCartIcon,
   EyeIcon,
   StarIcon,
-} from '@heroicons/react/24/outline'
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
-import { useCart } from '@hooks/useCart'
-import { useAuth } from '@hooks/useAuth'
-import { useWishlist } from '@hooks/useWishlist'
-import toast from 'react-hot-toast'
+} from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { useCart } from '@hooks/useCart';
+import { useAuth } from '@hooks/useAuth';
+import { useWishlist } from '@hooks/useWishlist';
+import toast from 'react-hot-toast';
 
 function ProductCard({ product, index = 0 }) {
   // const [imageLoaded, setImageLoaded] = useState(false)
-  const { addItem } = useCart()
-  const { isAuthenticated } = useAuth()
-  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist()
+  const { addItem } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
   const [isWishlisted, setIsWishlisted] = useState(() =>
-    wishlist.some(item => item.productId.toString() === product._id)
-  )
+    wishlist.some(item => item.productId._id === product._id),
+  );
 
   const handleAddToCart = e => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
     if (product.stock <= 0) {
-      toast.error('Product is out of stock')
-      return
+      toast.error('Product is out of stock');
+      return;
     }
 
     addItem({
@@ -38,28 +38,28 @@ function ProductCard({ product, index = 0 }) {
       price: product.price,
       image: product.images?.[0],
       stock: product.stock,
-    })
-  }
+    });
+  };
 
   const handleWishlistToggle = async e => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
     if (!isAuthenticated) {
-      toast.error('Please login to add items to wishlist')
-      return
+      toast.error('Please login to add items to wishlist');
+      return;
     }
 
     if (isWishlisted) {
-      await removeFromWishlist(product._id)
-      setIsWishlisted(false)
+      await removeFromWishlist(product._id);
+      setIsWishlisted(false);
     } else {
-      await addToWishlist(product._id)
-      setIsWishlisted(true)
+      await addToWishlist(product._id);
+      setIsWishlisted(true);
     }
 
-    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist')
-  }
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+  };
 
   const renderStars = rating => {
     return [...Array(5)].map((_, i) => (
@@ -71,8 +71,8 @@ function ProductCard({ product, index = 0 }) {
             : 'text-gray-300 dark:text-gray-600'
         }`}
       />
-    ))
-  }
+    ));
+  };
 
   return (
     <motion.div
@@ -124,7 +124,7 @@ function ProductCard({ product, index = 0 }) {
                   {Math.round(
                     ((product.originalPrice - product.price) /
                       product.originalPrice) *
-                      100
+                      100,
                   )}
                   % OFF
                 </span>
@@ -229,7 +229,7 @@ function ProductCard({ product, index = 0 }) {
         </div>
       </Link>
     </motion.div>
-  )
+  );
 }
 
-export default ProductCard
+export default ProductCard;
