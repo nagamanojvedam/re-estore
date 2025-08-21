@@ -1,21 +1,19 @@
-import React, { useState } from 'react'
-import { useQuery } from 'react-query'
-import { motion } from 'framer-motion'
-import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline'
-import { orderService } from '@services/orderService'
-import { useAuth } from '@hooks/useAuth'
-import OrderList from '@components/orders/OrderList'
-import Pagination from '@components/common/Pagination'
-import { ORDER_STATUSES } from '@utils/constants'
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { motion } from 'framer-motion';
+import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { orderService } from '@services/orderService';
+import OrderList from '@components/orders/OrderList';
+import Pagination from '@components/common/Pagination';
+import { ORDER_STATUSES } from '@utils/constants';
 
 function OrdersPage() {
-  const { user } = useAuth()
   const [filters, setFilters] = useState({
     status: '',
     page: 1,
     limit: 10,
-  })
-  const [searchTerm, setSearchTerm] = useState('')
+  });
+  const [searchTerm, setSearchTerm] = useState('');
 
   const {
     data: ordersData,
@@ -24,23 +22,23 @@ function OrdersPage() {
   } = useQuery(['orders', filters], () => orderService.getMyOrders(filters), {
     keepPreviousData: true,
     staleTime: 2 * 60 * 1000,
-  })
+  });
 
   const handleStatusFilter = status => {
     setFilters(prev => ({
       ...prev,
       status: status === prev.status ? '' : status,
       page: 1,
-    }))
-  }
+    }));
+  };
 
   const handlePageChange = page => {
-    setFilters(prev => ({ ...prev, page }))
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+    setFilters(prev => ({ ...prev, page }));
+    // window.scrollTo({ top: 0, behavior: 'smooth' })
+  };
 
-  const orders = ordersData?.orders || []
-  const pagination = ordersData?.pagination || {}
+  const orders = ordersData?.orders || [];
+  const pagination = ordersData?.pagination || {};
 
   const statusCounts = {
     all: pagination.total || 0,
@@ -49,7 +47,7 @@ function OrdersPage() {
     shipped: 0,
     delivered: 0,
     cancelled: 0,
-  }
+  };
 
   const statusTabs = [
     { key: '', label: 'All Orders', count: statusCounts.all },
@@ -78,7 +76,7 @@ function OrdersPage() {
       label: 'Cancelled',
       count: statusCounts.cancelled,
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -178,7 +176,7 @@ function OrdersPage() {
               Need Help?
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Have questions about your orders? We're here to help.
+              Have questions about your orders? We&apos;re here to help.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <button className="btn-outline">Contact Support</button>
@@ -189,7 +187,7 @@ function OrdersPage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
 
-export default OrdersPage
+export default OrdersPage;

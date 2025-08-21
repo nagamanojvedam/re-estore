@@ -1,19 +1,19 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { useQuery } from 'react-query'
-import { motion } from 'framer-motion'
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
-import ProductList from '@components/products/ProductList'
-import ProductFilter from '@components/products/ProductFilter'
-import Pagination from '@components/common/Pagination'
-import { productService } from '@services/productService'
-import { useDebounce } from '@hooks/useDebounce'
-import { ENV } from '@utils/constants'
+import { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { motion } from 'framer-motion';
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import ProductList from '@components/products/ProductList';
+import ProductFilter from '@components/products/ProductFilter';
+import Pagination from '@components/common/Pagination';
+import { productService } from '@services/productService';
+import { useDebounce } from '@hooks/useDebounce';
+import { ENV } from '@utils/constants';
 
-const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+// const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
 function Shop() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
   const filters = useMemo(() => {
     return {
       search: searchParams.get('search') || '',
@@ -25,12 +25,12 @@ function Shop() {
       sortOrder: searchParams.get('sortOrder') || 'desc',
       page: searchParams.get('page') ? Number(searchParams.get('page')) : 1,
       limit: ENV.ITEMS_PER_PAGE,
-    }
-  }, [searchParams])
+    };
+  }, [searchParams]);
 
-  const debouncedFilters = useDebounce(filters, 600)
+  const debouncedFilters = useDebounce(filters, 600);
 
-  useEffect(scrollToTop, [])
+  // useEffect(scrollToTop, []);
 
   // Fetch products with filters
   const {
@@ -42,49 +42,49 @@ function Shop() {
     queryFn: () => {
       const cleanFilters = Object.fromEntries(
         Object.entries(debouncedFilters).filter(
-          ([_, value]) => value !== undefined && value !== '' && value !== null
-        )
-      )
-      return productService.getProducts(cleanFilters)
+          ([_, value]) => value !== undefined && value !== '' && value !== null,
+        ),
+      );
+      return productService.getProducts(cleanFilters);
     },
     keepPreviousData: true,
     staleTime: 2 * 60 * 1000, // 2 minutes
-  })
+  });
 
   const handleFilterChange = newFilters => {
-    const newParams = new URLSearchParams(searchParams)
+    const newParams = new URLSearchParams(searchParams);
 
     Object.entries(newFilters).forEach(([key, value]) => {
       if (value !== undefined && value !== '' && value !== null) {
-        newParams.set(key, value.toString())
+        newParams.set(key, value.toString());
       } else {
-        newParams.delete(key)
+        newParams.delete(key);
       }
-    })
-    newParams.set('page', 1) // reset page
-    setSearchParams(newParams)
-    scrollToTop()
-  }
+    });
+    newParams.set('page', 1); // reset page
+    setSearchParams(newParams);
+    // scrollToTop();
+  };
 
   const handlePageChange = newPage => {
-    const newParams = new URLSearchParams(searchParams)
-    newParams.set('page', newPage)
-    setSearchParams(newParams)
-    scrollToTop()
-  }
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', newPage);
+    setSearchParams(newParams);
+    // scrollToTop();
+  };
 
   const clearFilters = () => {
-    const params = new URLSearchParams()
-    params.set('sortBy', 'createdAt')
-    params.set('sortOrder', 'desc')
-    params.set('page', 1)
-    params.set('limit', ENV.ITEMS_PER_PAGE)
-    setSearchParams(params)
-    scrollToTop()
-  }
+    const params = new URLSearchParams();
+    params.set('sortBy', 'createdAt');
+    params.set('sortOrder', 'desc');
+    params.set('page', 1);
+    params.set('limit', ENV.ITEMS_PER_PAGE);
+    setSearchParams(params);
+    // scrollToTop();
+  };
 
-  const products = productsData?.products || []
-  const pagination = productsData?.pagination || {}
+  const products = productsData?.products || [];
+  const pagination = productsData?.pagination || {};
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -129,7 +129,7 @@ function Shop() {
 
                 {filters.search && (
                   <span className="text-gray-500 dark:text-gray-400">
-                    for "{filters.search}"
+                    {`for "${filters.search}"`}
                   </span>
                 )}
               </div>
@@ -139,12 +139,12 @@ function Shop() {
                 <select
                   value={`${filters.sortBy}-${filters.sortOrder}`}
                   onChange={e => {
-                    const [sortBy, sortOrder] = e.target.value.split('-')
+                    const [sortBy, sortOrder] = e.target.value.split('-');
                     handleFilterChange({
                       ...filters,
                       sortBy,
                       sortOrder,
-                    })
+                    });
                   }}
                   className="input text-sm w-40"
                 >
@@ -284,7 +284,7 @@ function Shop() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Shop
+export default Shop;

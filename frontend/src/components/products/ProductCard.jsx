@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -32,13 +32,16 @@ function ProductCard({ product, index = 0 }) {
       return;
     }
 
-    addItem({
+    const itemToAdd = {
       id: product._id,
       name: product.name,
       price: product.price,
       image: product.images?.[0],
       stock: product.stock,
-    });
+      quantity: 1,
+    };
+
+    addItem(itemToAdd);
   };
 
   const handleWishlistToggle = async e => {
@@ -73,6 +76,10 @@ function ProductCard({ product, index = 0 }) {
       />
     ));
   };
+
+  useEffect(() => {
+    setIsWishlisted(wishlist.some(item => item.productId._id === product._id));
+  }, [wishlist, product._id]);
 
   return (
     <motion.div

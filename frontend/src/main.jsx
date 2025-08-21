@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import App from './App.jsx';
+import ScrollToTop from '@components/common/ScrollToTop';
 import './styles/globals.css';
 
 // Create a client with optimized defaults for Vite
@@ -48,6 +49,7 @@ function Main() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <ScrollToTop />
         <App />
         <Toaster
           position="bottom-right"
