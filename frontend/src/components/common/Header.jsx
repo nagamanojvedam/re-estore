@@ -37,6 +37,7 @@ function Header() {
     { name: 'Shop', path: '/shop' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
+    { name: 'Dashboard', path: '/dashboard' },
   ];
 
   const handleAuthSuccess = () => {
@@ -66,19 +67,26 @@ function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigation.map(item => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`font-medium transition-colors duration-200 ${
-                  location.pathname === item.path
-                    ? 'text-primary-600 dark:text-primary-400'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navigation.map(item => {
+              if (item.name === 'Dashboard') {
+                if (!isAuthenticated || user?.role !== 'admin') {
+                  return null;
+                }
+              }
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`font-medium transition-colors duration-200 ${
+                    location.pathname === item.path
+                      ? 'text-primary-600 dark:text-primary-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
+                  } ${user?.role === 'admin' && item.name === 'Dashboard' ? 'bg-red-700 text-white px-4 py-1 rounded-xl hover:bg-white hover:text-red-700' : ''}`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Actions */}

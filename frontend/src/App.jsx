@@ -23,6 +23,7 @@ const OrdersPage = lazy(() => import('@pages/OrdersPage'));
 const OrderDetailsPage = lazy(() => import('@pages/OrderDetailsPage'));
 const WishlistPage = lazy(() => import('@pages/WishlistPage'));
 const NotFound = lazy(() => import('@pages/NotFound'));
+const AdminDashboard = lazy(() => import('@pages/Dashboard'));
 
 function App() {
   return (
@@ -92,6 +93,8 @@ function App() {
                           </ProtectedRoute>
                         }
                       />
+
+                      <Route path="/dashboard" element={<AdminDashboard />} />
 
                       <Route path="*" element={<NotFound />} />
                     </Routes>

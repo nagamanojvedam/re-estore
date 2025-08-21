@@ -148,7 +148,7 @@ const deleteProduct = catchAsync(async (req, res) => {
   }
 
   // Soft delete
-  product.isActive = false;
+  product.isActive = !product.isActive;
   await product.save();
 
   res.json({
