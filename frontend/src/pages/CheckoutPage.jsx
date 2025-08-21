@@ -1,26 +1,26 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { motion } from 'framer-motion';
 import {
   CreditCardIcon,
   LockClosedIcon,
   CheckCircleIcon,
   TruckIcon,
   MapPinIcon,
-} from '@heroicons/react/24/outline'
-import { useCart } from '@hooks/useCart'
-import { useAuth } from '@hooks/useAuth'
-import { orderService } from '@services/orderService'
-import { LoadingButton } from '@components/common/Spinner'
-import toast from 'react-hot-toast'
+} from '@heroicons/react/24/outline';
+import { useCart } from '@hooks/useCart';
+import { useAuth } from '@hooks/useAuth';
+import { orderService } from '@services/orderService';
+import { LoadingButton } from '@components/common/Spinner';
+import toast from 'react-hot-toast';
 
 function CheckoutPage() {
-  const { items, total, clearCart } = useCart()
-  const { user } = useAuth()
-  const navigate = useNavigate()
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [currentStep, setCurrentStep] = useState(1)
+  const { items, total, clearCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const {
     register,
@@ -46,27 +46,27 @@ function CheckoutPage() {
       cardName: '',
       sameAsBilling: true,
     },
-  })
+  });
 
-  const watchSameAsBilling = watch('sameAsBilling')
+  const watchSameAsBilling = watch('sameAsBilling');
 
   useEffect(() => {
     if (items.length === 0) {
-      navigate('/cart')
+      navigate('/cart');
     }
-  }, [items, navigate])
+  }, [items, navigate]);
 
-  const subtotal = total
-  const shipping = total >= 50 ? 0 : 10
-  const tax = subtotal * 0.08
-  const totalAmount = subtotal + shipping + tax
+  const subtotal = total;
+  const shipping = total >= 50 ? 0 : 10;
+  const tax = subtotal * 0.08;
+  const totalAmount = subtotal + shipping + tax;
 
   const onSubmit = async data => {
-    setIsProcessing(true)
+    setIsProcessing(true);
 
     try {
       // Process payment (integrate with Stripe/PayPal here)
-      await simulatePayment()
+      await simulatePayment();
 
       // Create order
       const orderData = {
@@ -82,55 +82,55 @@ function CheckoutPage() {
           country: data.country,
         },
         // totalAmount, not neccessarty as backend will automatically calculated
-      }
+      };
 
-      const order = await orderService.createOrder(orderData)
+      const { order } = await orderService.createOrder(orderData);
 
       // Clear cart
-      clearCart()
+      clearCart();
 
       // Show success and redirect
-      toast.success('Order placed successfully!')
-      navigate(`/orders/${order._id}`)
+      toast.success('Order placed successfully!');
+      navigate(`/orders/${order._id}`);
     } catch (error) {
-      toast.error(error.message || 'Failed to process order')
+      toast.error(error.message || 'Failed to process order');
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+  };
 
   const simulatePayment = async () => {
     // Simulate payment processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     // Simulate occasional payment failures
     if (Math.random() < 0.1) {
-      throw new Error('Payment failed. Please try again.')
+      throw new Error('Payment failed. Please try again.');
     }
-  }
+  };
 
   const formatCardNumber = value => {
     return value
       .replace(/\s/g, '')
       .replace(/(.{4})/g, '$1 ')
-      .trim()
-  }
+      .trim();
+  };
 
   const formatExpiryDate = value => {
     return value
       .replace(/\D/g, '')
       .replace(/(.{2})(.{2})/, '$1/$2')
-      .substring(0, 5)
-  }
+      .substring(0, 5);
+  };
 
   const steps = [
     { id: 1, name: 'Shipping', completed: currentStep > 1 },
     { id: 2, name: 'Payment', completed: currentStep > 2 },
     { id: 3, name: 'Review', completed: false },
-  ]
+  ];
 
   if (items.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -415,7 +415,7 @@ function CheckoutPage() {
                         {...register('cardNumber', {
                           required: 'Card number is required',
                           onChange: e => {
-                            e.target.value = formatCardNumber(e.target.value)
+                            e.target.value = formatCardNumber(e.target.value);
                           },
                         })}
                         className={`input ${errors.cardNumber ? 'input-error' : ''}`}
@@ -439,7 +439,7 @@ function CheckoutPage() {
                           {...register('expiryDate', {
                             required: 'Expiry date is required',
                             onChange: e => {
-                              e.target.value = formatExpiryDate(e.target.value)
+                              e.target.value = formatExpiryDate(e.target.value);
                             },
                           })}
                           className={`input ${errors.expiryDate ? 'input-error' : ''}`}
@@ -592,7 +592,7 @@ function CheckoutPage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CheckoutPage
+export default CheckoutPage;
