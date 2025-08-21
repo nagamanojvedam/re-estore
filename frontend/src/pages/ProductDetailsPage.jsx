@@ -25,7 +25,7 @@ import ProductCard from '@components/products/ProductCard';
 import { LoadingScreen } from '@components/common/Spinner';
 import toast from 'react-hot-toast';
 
-const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+// const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
 function ProductDetailsPage() {
   const { id } = useParams();
@@ -66,7 +66,7 @@ function ProductDetailsPage() {
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  useEffect(scrollToTop, []);
+  // useEffect(scrollToTop, []);
 
   useEffect(() => {
     if (product && product.variants?.length > 0) {
@@ -85,7 +85,7 @@ function ProductDetailsPage() {
       return;
     }
 
-    addItem({
+    const itemToAdd = {
       id: product._id,
       name: product.name,
       price: selectedVariant?.price || product.price,
@@ -93,7 +93,9 @@ function ProductDetailsPage() {
       stock: product.stock,
       quantity,
       variant: selectedVariant?.name,
-    });
+    };
+
+    addItem(itemToAdd);
 
     setQuantity(1);
   };
@@ -353,9 +355,9 @@ function ProductDetailsPage() {
             )}
 
             {/* Quantity Selector */}
-            <div className="flex items-center space-x-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="flex items-center  space-x-4">
+              <div className="flex items-center space-x-4">
+                <label className="block text-md font-medium text-gray-500 dark:text-gray-300 mb-2">
                   Quantity
                 </label>
                 <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">

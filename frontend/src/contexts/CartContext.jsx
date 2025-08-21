@@ -1,4 +1,4 @@
-import React, { createContext,  useReducer, useEffect } from 'react';
+import React, { createContext, useReducer, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 const CartContext = createContext();
@@ -13,78 +13,88 @@ const initialState = {
 function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD_ITEM': {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      
+      const existingItem = state.items.find(
+        item => item.id === action.payload.id,
+      );
+
       if (existingItem) {
         const updatedItems = state.items.map(item =>
           item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+            ? { ...item, quantity: item.quantity + action.payload.quantity }
+            : item,
         );
         return {
           ...state,
           items: updatedItems,
         };
       }
-      
+
       return {
         ...state,
-        items: [...state.items, { ...action.payload, quantity: 1 }],
+        items: [...state.items, action.payload],
       };
     }
-    
+
     case 'REMOVE_ITEM': {
       return {
         ...state,
         items: state.items.filter(item => item.id !== action.payload),
       };
     }
-    
+
     case 'UPDATE_QUANTITY': {
-      const updatedItems = state.items.map(item =>
-        item.id === action.payload.id
-          ? { ...item, quantity: Math.max(0, action.payload.quantity) }
-          : item
-      ).filter(item => item.quantity > 0);
-      
+      const updatedItems = state.items
+        .map(item =>
+          item.id === action.payload.id
+            ? { ...item, quantity: Math.max(0, action.payload.quantity) }
+            : item,
+        )
+        .filter(item => item.quantity > 0);
+
       return {
         ...state,
         items: updatedItems,
       };
     }
-    
+
     case 'CLEAR_CART': {
       return {
         ...state,
         items: [],
       };
     }
-    
+
     case 'TOGGLE_CART': {
       return {
         ...state,
         isOpen: !state.isOpen,
       };
     }
-    
+
     case 'SET_CART_OPEN': {
       return {
         ...state,
         isOpen: action.payload,
       };
     }
-    
+
     case 'CALCULATE_TOTALS': {
-      const itemCount = state.items.reduce((total, item) => total + item.quantity, 0);
-      const total = state.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-      
+      const itemCount = state.items.reduce(
+        (total, item) => total + item.quantity,
+        0,
+      );
+      const total = state.items.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0,
+      );
+
       return {
         ...state,
         itemCount,
         total: Math.round(total * 100) / 100,
       };
     }
-    
+
     default:
       return state;
   }
@@ -103,12 +113,13 @@ export function CartProvider({ children }) {
     localStorage.setItem('cartItems', JSON.stringify(state.items));
   }, [state.items]);
 
-  const addItem = (product) => {
+  const addItem = product => {
+    console.log(product);
     dispatch({ type: 'ADD_ITEM', payload: product });
     toast.success(`${product.name} added to cart`);
   };
 
-  const removeItem = (id) => {
+  const removeItem = id => {
     const item = state.items.find(item => item.id === id);
     dispatch({ type: 'REMOVE_ITEM', payload: id });
     if (item) {
@@ -129,11 +140,11 @@ export function CartProvider({ children }) {
     dispatch({ type: 'TOGGLE_CART' });
   };
 
-  const setCartOpen = (isOpen) => {
+  const setCartOpen = isOpen => {
     dispatch({ type: 'SET_CART_OPEN', payload: isOpen });
   };
 
-  const getItemQuantity = (id) => {
+  const getItemQuantity = id => {
     const item = state.items.find(item => item.id === id);
     return item ? item.quantity : 0;
   };
@@ -149,12 +160,7 @@ export function CartProvider({ children }) {
     getItemQuantity,
   };
 
-  return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-export {CartContext};
-
+export { CartContext };

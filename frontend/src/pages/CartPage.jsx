@@ -1,24 +1,24 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ShoppingBagIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
-import { useCart } from '@hooks/useCart'
-import { useAuth } from '@hooks/useAuth'
-import CartItem from '@components/cart/CartItem'
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ShoppingBagIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useCart } from '@hooks/useCart';
+import { useAuth } from '@hooks/useAuth';
+import CartItem from '@components/cart/CartItem';
+import toast from 'react-hot-toast';
 
 function CartPage() {
-  const { items, total, itemCount, clearCart } = useCart()
-  const { isAuthenticated } = useAuth()
-  const navigate = useNavigate()
+  const { items, total, itemCount, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
       // Handle authentication required
-
-      return
+      toast.error('Please login to proceed to checkout');
+      return;
     }
-    navigate('/checkout')
-  }
+    navigate('/checkout');
+  };
 
   if (items.length === 0) {
     return (
@@ -43,7 +43,7 @@ function CartPage() {
           </Link>
         </motion.div>
       </div>
-    )
+    );
   }
 
   return (
@@ -169,7 +169,7 @@ function CartPage() {
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
                       $
                       {(total + (total >= 50 ? 0 : 10) + total * 0.08).toFixed(
-                        2
+                        2,
                       )}
                     </span>
                   </div>
@@ -234,7 +234,7 @@ function CartPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CartPage
+export default CartPage;

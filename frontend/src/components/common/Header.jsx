@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ShoppingCartIcon,
   UserIcon,
@@ -9,46 +9,46 @@ import {
   Bars3Icon,
   XMarkIcon,
   HeartIcon,
-} from '@heroicons/react/24/outline'
-import { useAuth } from '../../hooks/useAuth'
-import { useCart } from '../../hooks/useCart'
-import { useTheme } from '../../contexts/ThemeContext'
-import SearchBar from './SearchBar'
-import CartSidebar from '../cart/CartSidebar'
-import LoginForm from '../auth/LoginForm'
-import RegisterForm from '../auth/RegisterForm'
-import Modal from './Modal'
+} from '@heroicons/react/24/outline';
+import { useAuth } from '../../hooks/useAuth';
+import { useCart } from '../../hooks/useCart';
+import { useTheme } from '../../contexts/ThemeContext';
+import SearchBar from './SearchBar';
+import CartSidebar from '../cart/CartSidebar';
+import LoginForm from '../auth/LoginForm';
+import RegisterForm from '../auth/RegisterForm';
+import Modal from './Modal';
 
 function Header() {
-  const { user, isAuthenticated, logout } = useAuth()
-  const { itemCount, toggleCart } = useCart()
-  const { isDark, toggleTheme } = useTheme()
-  const location = useLocation()
-  const navigate = useNavigate()
+  const { user, isAuthenticated, logout } = useAuth();
+  const { itemCount, toggleCart } = useCart();
+  const { isDark, toggleTheme } = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isProfileOpen, setIsProfileOpen] = useState(false)
-  const [showLogin, setShowLogin] = useState(false)
-  const [showRegister, setShowRegister] = useState(false)
-  const [showSearch, setShowSearch] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
   const navigation = [
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
-  ]
+  ];
 
   const handleAuthSuccess = () => {
-    setShowLogin(false)
-    setShowRegister(false)
-  }
+    setShowLogin(false);
+    setShowRegister(false);
+  };
 
   const handleLogout = async () => {
-    await logout()
-    setIsProfileOpen(false)
-    navigate('/')
-  }
+    await logout();
+    setIsProfileOpen(false);
+    navigate('/');
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700">
@@ -257,8 +257,8 @@ function Header() {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => {
-                        setShowLogin(true)
-                        setIsMenuOpen(false)
+                        setShowLogin(true);
+                        setIsMenuOpen(false);
                       }}
                       className="btn btn-secondary"
                     >
@@ -266,8 +266,8 @@ function Header() {
                     </button>
                     <button
                       onClick={() => {
-                        setShowRegister(true)
-                        setIsMenuOpen(false)
+                        setShowRegister(true);
+                        setIsMenuOpen(false);
                       }}
                       className="btn btn-primary"
                     >
@@ -290,8 +290,8 @@ function Header() {
         <LoginForm
           onSuccess={handleAuthSuccess}
           onSwitchToRegister={() => {
-            setShowLogin(false)
-            setShowRegister(true)
+            setShowLogin(false);
+            setShowRegister(true);
           }}
         />
       </Modal>
@@ -304,8 +304,8 @@ function Header() {
         <RegisterForm
           onSuccess={handleAuthSuccess}
           onSwitchToLogin={() => {
-            setShowRegister(false)
-            setShowLogin(true)
+            setShowRegister(false);
+            setShowLogin(true);
           }}
         />
       </Modal>
@@ -321,7 +321,7 @@ function Header() {
       {/* Cart Sidebar */}
       <CartSidebar />
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
