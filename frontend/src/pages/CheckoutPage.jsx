@@ -84,7 +84,9 @@ function CheckoutPage() {
         // totalAmount, not neccessarty as backend will automatically calculated
       };
 
-      const order = await orderService.createOrder(orderData);
+
+      const { order } = await orderService.createOrder(orderData);
+
 
       // Clear cart
       clearCart();
