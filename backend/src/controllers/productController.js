@@ -31,10 +31,11 @@ const getProducts = catchAsync(async (req, res) => {
     limit = 10,
     sortBy = "createdAt",
     sortOrder = "desc",
+    isActive,
   } = req.query;
 
   // Build filter object
-  const filter = { isActive: true };
+  const filter = isActive ? { isActive } : {};
 
   if (req.query.exclude) {
     filter._id = { $ne: req.query.exclude };
@@ -148,7 +149,7 @@ const deleteProduct = catchAsync(async (req, res) => {
   }
 
   // Soft delete
-  product.isActive = false;
+  product.isActive = !product.isActive;
   await product.save();
 
   res.json({

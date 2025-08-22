@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   ArrowRightIcon,
   ShoppingBagIcon,
   TruckIcon,
   ShieldCheckIcon,
   StarIcon,
-} from '@heroicons/react/24/outline'
-import { useQuery } from 'react-query'
-import ProductCard from '@components/products/ProductCard'
-import { productService } from '@services/productService'
+} from '@heroicons/react/24/outline';
+import { useQuery } from 'react-query';
+import ProductCard from '@components/products/ProductCard';
+import { productService } from '@services/productService';
 
 function Home() {
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false)
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
   // Fetch featured products
   const { data: featuredProducts, isLoading: productsLoading } = useQuery(
@@ -22,8 +22,8 @@ function Home() {
     () => productService.getProducts({ limit: 8 }),
     {
       staleTime: 5 * 60 * 1000, // 5 minutes
-    }
-  )
+    },
+  );
 
   const features = [
     {
@@ -41,7 +41,7 @@ function Home() {
       title: 'Fast Delivery',
       description: '2-day delivery on most items',
     },
-  ]
+  ];
 
   const categories = [
     {
@@ -52,7 +52,7 @@ function Home() {
     { name: 'Clothing', image: '/categories/clothing.jpg', count: '856' },
     { name: 'Books', image: '/categories/books.jpg', count: '2,341' },
     { name: 'Home & Garden', image: '/categories/home.jpg', count: '567' },
-  ]
+  ];
 
   const testimonials = [
     {
@@ -73,7 +73,7 @@ function Home() {
       rating: 5,
       comment: 'Love the variety and competitive prices.',
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen">
@@ -369,7 +369,7 @@ function Home() {
         </div>
       </section>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
