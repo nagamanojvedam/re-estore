@@ -45,7 +45,7 @@ function Shop() {
           ([_, value]) => value !== undefined && value !== '' && value !== null,
         ),
       );
-      return productService.getProducts(cleanFilters);
+      return productService.getProducts({ ...cleanFilters, isActive: true });
     },
     keepPreviousData: true,
     staleTime: 2 * 60 * 1000, // 2 minutes

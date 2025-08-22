@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 function Pagination({
@@ -43,7 +42,9 @@ function Pagination({
   const visiblePages = getVisiblePages();
 
   return (
-    <div className={`flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 ${className}`}>
+    <div
+      className={`flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 ${className}`}
+    >
       {showInfo && (
         <div className="text-sm text-gray-700 dark:text-gray-300">
           Page {currentPage} of {totalPages}
