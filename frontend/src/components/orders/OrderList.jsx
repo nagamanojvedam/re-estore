@@ -1,6 +1,6 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import OrderItem from './OrderItem'
+import { motion } from 'framer-motion';
+import OrderItem from './OrderItem';
+import { Link } from 'react-router-dom';
 
 function OrderList({ orders, loading, error }) {
   if (loading) {
@@ -31,15 +31,25 @@ function OrderList({ orders, loading, error }) {
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="text-center py-12">
         <div className="mx-auto w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
-          <svg className="w-12 h-12 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
+          <svg
+            className="w-12 h-12 text-red-600 dark:text-red-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01"
+            />
           </svg>
         </div>
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -49,7 +59,7 @@ function OrderList({ orders, loading, error }) {
           {error.message || 'Something went wrong while loading your orders.'}
         </p>
       </div>
-    )
+    );
   }
 
   if (!orders || orders.length === 0) {
@@ -60,21 +70,32 @@ function OrderList({ orders, loading, error }) {
         className="text-center py-12"
       >
         <div className="mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
-          <svg className="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 12H6L5 9z" />
+          <svg
+            className="w-12 h-12 text-gray-400 dark:text-gray-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 12H6L5 9z"
+            />
           </svg>
         </div>
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
           No Orders Yet
         </h3>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          You haven't placed any orders yet. Start shopping to see your orders here.
+          You haven't placed any orders yet. Start shopping to see your orders
+          here.
         </p>
         <Link to="/shop" className="btn-primary">
           Start Shopping
         </Link>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -90,7 +111,7 @@ function OrderList({ orders, loading, error }) {
         </motion.div>
       ))}
     </div>
-  )
+  );
 }
 
-export default OrderList
+export default OrderList;
