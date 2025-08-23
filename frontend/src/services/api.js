@@ -45,12 +45,12 @@ if (import.meta.env.DEV) {
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
-  config => {
+  req => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      req.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
+    return req;
   },
   error => {
     return Promise.reject(error);

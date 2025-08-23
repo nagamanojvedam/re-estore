@@ -12,9 +12,10 @@ import { useCart } from '@hooks/useCart';
 import { useAuth } from '@hooks/useAuth';
 import { useWishlist } from '@hooks/useWishlist';
 import toast from 'react-hot-toast';
+import clsx from 'clsx';
 
 function ProductCard({ product, index = 0 }) {
-  // const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false);
   const { addItem } = useCart();
   const { isAuthenticated } = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
@@ -22,6 +23,8 @@ function ProductCard({ product, index = 0 }) {
   const [isWishlisted, setIsWishlisted] = useState(() =>
     wishlist.some(item => item.productId._id === product._id),
   );
+
+  const randomImageIndex = Math.floor(Math.random() * product.images.length);
 
   const handleAddToCart = e => {
     e.preventDefault();
@@ -36,7 +39,7 @@ function ProductCard({ product, index = 0 }) {
       id: product._id,
       name: product.name,
       price: product.price,
-      image: product.images?.[0],
+      image: product.images?.[randomImageIndex],
       stock: product.stock,
       quantity: 1,
     };
@@ -93,29 +96,33 @@ function ProductCard({ product, index = 0 }) {
           {/* Image Container */}
           <div className="relative aspect-square overflow-hidden">
             {/* Skeleton Loader */}
-            {/* {!imageLoaded && (
+            {!imageLoaded && (
               <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse" />
-            )} */}
+            )}
 
             {/* Product Image */}
-            {/* <img
-              src={product.images?.[0] || '/placeholder-product.jpg'}
+            <img
+              src={
+                product.images?.[randomImageIndex] || '/placeholder-product.jpg'
+              }
               alt={product.name}
               className={clsx(
-                'w-full h-full object-cover transition-opacity duration-500 group-hover:scale-105',
-                imageLoaded ? 'opacity-100' : 'opacity-0'
+                'lazy-image w-full h-full object-cover transition-opacity duration-500 group-hover:scale-105',
+                imageLoaded ? 'loaded' : 'loading',
               )}
               onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(true)} // ensures skeleton hides on error too
+              onError={() => setImageLoaded(true)}
               loading="lazy"
-            /> */}
+            />
 
             {/* Just Image */}
-            <img
-              src={product.images?.[0] || '/placeholder-product.jpg'}
+            {/* <img
+              src={
+                product.images?.[randomImageIndex] || '/placeholder-product.jpg'
+              }
               alt={product.name}
               className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-105`}
-            />
+            /> */}
 
             {/* Stock Badge */}
             {product.stock <= 0 && (
