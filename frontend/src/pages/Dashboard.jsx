@@ -18,6 +18,7 @@ import { useAuth } from '@/hooks/useAuth';
 import Pagination from '../components/common/Pagination';
 
 import { motion } from 'framer-motion';
+import { LoadingScreen } from '../components/common/Spinner';
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState('orders');
@@ -157,7 +158,7 @@ function OrdersTab() {
 
   const updateStatusMutation = useMutation(orderService.updateOrderStatus);
 
-  if (isLoading) return <p>Loading orders...</p>;
+  if (isLoading) return <LoadingScreen message="Loading orders..." />;
 
   const { orders, pagination } = data;
   console.log('Pagination:', pagination);
@@ -198,7 +199,7 @@ function ProductsTab() {
   );
   const toggleMutation = useMutation(productService.deleteProduct);
 
-  if (isLoading) return <p>Loading products...</p>;
+  if (isLoading) return <LoadingScreen message="Loading products..." />;
 
   const { products, pagination } = data;
 
@@ -244,7 +245,7 @@ function UsersTab() {
   );
   const toggleUserMutation = useMutation(authService.toggleUserActive);
 
-  if (isLoading) return <p>Loading users...</p>;
+  if (isLoading) return <LoadingScreen message="Loading users..." />;
 
   const { users, pagination } = data;
 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useForm } from 'react-hook-form'
-import { 
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import {
   UserIcon,
   EnvelopeIcon,
   PhoneIcon,
@@ -9,18 +9,18 @@ import {
   CameraIcon,
   EyeIcon,
   EyeSlashIcon,
-  CheckCircleIcon
-} from '@heroicons/react/24/outline'
-import { useAuth } from '@hooks/useAuth'
-import { LoadingButton } from '@components/common/Spinner'
-import toast from 'react-hot-toast'
+  CheckCircleIcon,
+} from '@heroicons/react/24/outline';
+import { useAuth } from '@hooks/useAuth';
+import { LoadingButton } from '@components/common/Spinner';
+import toast from 'react-hot-toast';
 
 function ProfilePage() {
-  const { user, updateProfile, loading } = useAuth()
-  const [activeTab, setActiveTab] = useState('profile')
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [avatarPreview, setAvatarPreview] = useState(null)
+  const { user, updateProfile, loading } = useAuth();
+  const [activeTab, setActiveTab] = useState('profile');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   const {
     register: registerProfile,
@@ -34,57 +34,58 @@ function ProfilePage() {
       bio: user?.bio || '',
       location: user?.location || '',
       website: user?.website || '',
-    }
-  })
+    },
+  });
 
   const {
     register: registerPassword,
     handleSubmit: handlePasswordSubmit,
     formState: { errors: passwordErrors },
     reset: resetPasswordForm,
-  } = useForm()
+  } = useForm();
 
-  const onProfileSubmit = async (data) => {
+  const onProfileSubmit = async data => {
     try {
-      await updateProfile(data)
-      toast.success('Profile updated successfully!')
+      await updateProfile(data);
+      toast.success('Profile updated successfully!');
     } catch (error) {
-      toast.error(error.message || 'Failed to update profile')
+      toast.error(error.message || 'Failed to update profile');
     }
-  }
+  };
 
-  const onPasswordSubmit = async (data) => {
+  const onPasswordSubmit = async data => {
     try {
       // Password change logic would go here
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      toast.success('Password changed successfully!')
-      resetPasswordForm()
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      toast.success('Password changed successfully!');
+      resetPasswordForm();
     } catch (error) {
-      toast.error(error.message || 'Failed to change password')
+      toast.error(error.message || 'Failed to change password');
     }
-  }
+  };
 
-  const handleAvatarChange = (event) => {
-    const file = event.target.files[0]
+  const handleAvatarChange = event => {
+    const file = event.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        toast.error('File size must be less than 5MB')
-        return
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
+        toast.error('File size must be less than 5MB');
+        return;
       }
-      
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setAvatarPreview(e.target.result)
-      }
-      reader.readAsDataURL(file)
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        setAvatarPreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const tabs = [
     { id: 'profile', name: 'Profile Information', icon: UserIcon },
     { id: 'security', name: 'Security', icon: CheckCircleIcon },
     { id: 'preferences', name: 'Preferences', icon: CheckCircleIcon },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -112,9 +113,13 @@ function ProfilePage() {
                 <div className="text-center mb-6">
                   <div className="relative inline-block">
                     <img
-                      src={avatarPreview || user?.avatar || '/placeholder-avatar.jpg'}
+                      src={
+                        avatarPreview ||
+                        user?.avatar ||
+                        '/placeholder-avatar.svg'
+                      }
                       alt={user?.name}
-                      className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg"
+                      className="w-24 h-24 rounded-full object-cover border-4 border-primary-600  shadow-lg dark:bg-white"
                     />
                     <label className="absolute bottom-0 right-0 bg-primary-600 text-white p-2 rounded-full cursor-pointer hover:bg-primary-700 transition-colors">
                       <CameraIcon className="w-4 h-4" />
@@ -129,12 +134,14 @@ function ProfilePage() {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mt-4">
                     {user?.name}
                   </h3>
-                  <p className="text-gray-500 dark:text-gray-400">{user?.email}</p>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    {user?.email}
+                  </p>
                 </div>
 
                 {/* Navigation */}
                 <nav className="space-y-2">
-                  {tabs.map((tab) => (
+                  {tabs.map(tab => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
@@ -165,7 +172,10 @@ function ProfilePage() {
                     Profile Information
                   </h2>
 
-                  <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-6">
+                  <form
+                    onSubmit={handleProfileSubmit(onProfileSubmit)}
+                    className="space-y-6"
+                  >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -173,12 +183,16 @@ function ProfilePage() {
                         </label>
                         <input
                           type="text"
-                          {...registerProfile('name', { required: 'Name is required' })}
+                          {...registerProfile('name', {
+                            required: 'Name is required',
+                          })}
                           className={`input ${profileErrors.name ? 'input-error' : ''}`}
                           placeholder="Enter your full name"
                         />
                         {profileErrors.name && (
-                          <p className="mt-1 text-sm text-red-600">{profileErrors.name.message}</p>
+                          <p className="mt-1 text-sm text-red-600">
+                            {profileErrors.name.message}
+                          </p>
                         )}
                       </div>
 
@@ -188,18 +202,20 @@ function ProfilePage() {
                         </label>
                         <input
                           type="email"
-                          {...registerProfile('email', { 
+                          {...registerProfile('email', {
                             required: 'Email is required',
                             pattern: {
                               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                              message: 'Invalid email address'
-                            }
+                              message: 'Invalid email address',
+                            },
                           })}
                           className={`input ${profileErrors.email ? 'input-error' : ''}`}
                           placeholder="Enter your email"
                         />
                         {profileErrors.email && (
-                          <p className="mt-1 text-sm text-red-600">{profileErrors.email.message}</p>
+                          <p className="mt-1 text-sm text-red-600">
+                            {profileErrors.email.message}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -278,7 +294,10 @@ function ProfilePage() {
                       Change Password
                     </h2>
 
-                    <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="space-y-6">
+                    <form
+                      onSubmit={handlePasswordSubmit(onPasswordSubmit)}
+                      className="space-y-6"
+                    >
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Current Password *
@@ -286,20 +305,30 @@ function ProfilePage() {
                         <div className="relative">
                           <input
                             type={showCurrentPassword ? 'text' : 'password'}
-                            {...registerPassword('currentPassword', { required: 'Current password is required' })}
+                            {...registerPassword('currentPassword', {
+                              required: 'Current password is required',
+                            })}
                             className={`input pr-12 ${passwordErrors.currentPassword ? 'input-error' : ''}`}
                             placeholder="Enter current password"
                           />
                           <button
                             type="button"
-                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                            onClick={() =>
+                              setShowCurrentPassword(!showCurrentPassword)
+                            }
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                           >
-                            {showCurrentPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                            {showCurrentPassword ? (
+                              <EyeSlashIcon className="w-5 h-5" />
+                            ) : (
+                              <EyeIcon className="w-5 h-5" />
+                            )}
                           </button>
                         </div>
                         {passwordErrors.currentPassword && (
-                          <p className="mt-1 text-sm text-red-600">{passwordErrors.currentPassword.message}</p>
+                          <p className="mt-1 text-sm text-red-600">
+                            {passwordErrors.currentPassword.message}
+                          </p>
                         )}
                       </div>
 
@@ -310,12 +339,13 @@ function ProfilePage() {
                         <div className="relative">
                           <input
                             type={showNewPassword ? 'text' : 'password'}
-                            {...registerPassword('newPassword', { 
+                            {...registerPassword('newPassword', {
                               required: 'New password is required',
                               minLength: {
                                 value: 6,
-                                message: 'Password must be at least 6 characters'
-                              }
+                                message:
+                                  'Password must be at least 6 characters',
+                              },
                             })}
                             className={`input pr-12 ${passwordErrors.newPassword ? 'input-error' : ''}`}
                             placeholder="Enter new password"
@@ -325,11 +355,17 @@ function ProfilePage() {
                             onClick={() => setShowNewPassword(!showNewPassword)}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                           >
-                            {showNewPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                            {showNewPassword ? (
+                              <EyeSlashIcon className="w-5 h-5" />
+                            ) : (
+                              <EyeIcon className="w-5 h-5" />
+                            )}
                           </button>
                         </div>
                         {passwordErrors.newPassword && (
-                          <p className="mt-1 text-sm text-red-600">{passwordErrors.newPassword.message}</p>
+                          <p className="mt-1 text-sm text-red-600">
+                            {passwordErrors.newPassword.message}
+                          </p>
                         )}
                       </div>
 
@@ -339,15 +375,18 @@ function ProfilePage() {
                         </label>
                         <input
                           type="password"
-                          {...registerPassword('confirmPassword', { 
+                          {...registerPassword('confirmPassword', {
                             required: 'Please confirm your password',
-                            validate: (value, { newPassword }) => value === newPassword || 'Passwords do not match'
+                            validate: (value, { newPassword }) =>
+                              value === newPassword || 'Passwords do not match',
                           })}
                           className={`input ${passwordErrors.confirmPassword ? 'input-error' : ''}`}
                           placeholder="Confirm new password"
                         />
                         {passwordErrors.confirmPassword && (
-                          <p className="mt-1 text-sm text-red-600">{passwordErrors.confirmPassword.message}</p>
+                          <p className="mt-1 text-sm text-red-600">
+                            {passwordErrors.confirmPassword.message}
+                          </p>
                         )}
                       </div>
 
@@ -375,9 +414,7 @@ function ProfilePage() {
                           Add an extra layer of security to your account
                         </p>
                       </div>
-                      <button className="btn-outline">
-                        Enable
-                      </button>
+                      <button className="btn-outline">Enable</button>
                     </div>
                   </div>
                 </motion.div>
@@ -402,12 +439,34 @@ function ProfilePage() {
                       </h3>
                       <div className="space-y-4">
                         {[
-                          { id: 'order-updates', label: 'Order updates', description: 'Get notified about order status changes' },
-                          { id: 'promotions', label: 'Promotions & offers', description: 'Receive promotional emails and special offers' },
-                          { id: 'newsletter', label: 'Newsletter', description: 'Weekly newsletter with new products and tips' },
-                          { id: 'security', label: 'Security alerts', description: 'Important security notifications' },
-                        ].map((item) => (
-                          <div key={item.id} className="flex items-center justify-between">
+                          {
+                            id: 'order-updates',
+                            label: 'Order updates',
+                            description:
+                              'Get notified about order status changes',
+                          },
+                          {
+                            id: 'promotions',
+                            label: 'Promotions & offers',
+                            description:
+                              'Receive promotional emails and special offers',
+                          },
+                          {
+                            id: 'newsletter',
+                            label: 'Newsletter',
+                            description:
+                              'Weekly newsletter with new products and tips',
+                          },
+                          {
+                            id: 'security',
+                            label: 'Security alerts',
+                            description: 'Important security notifications',
+                          },
+                        ].map(item => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between"
+                          >
                             <div>
                               <h4 className="font-medium text-gray-900 dark:text-white">
                                 {item.label}
@@ -417,7 +476,11 @@ function ProfilePage() {
                               </p>
                             </div>
                             <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" className="sr-only peer" defaultChecked />
+                              <input
+                                type="checkbox"
+                                className="sr-only peer"
+                                defaultChecked
+                              />
                               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                             </label>
                           </div>
@@ -448,9 +511,7 @@ function ProfilePage() {
                       </div>
                     </div>
 
-                    <button className="btn-primary">
-                      Save Preferences
-                    </button>
+                    <button className="btn-primary">Save Preferences</button>
                   </div>
                 </motion.div>
               )}
@@ -459,7 +520,7 @@ function ProfilePage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ProfilePage
+export default ProfilePage;
