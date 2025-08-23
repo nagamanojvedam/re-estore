@@ -362,10 +362,10 @@ img {
   @apply transition-opacity duration-200;
 }
 
-img[loading='lazy'] {
-  @apply opacity-0;
+.lazy-image.loading {
+  opacity: 0;
 }
 
-img[loading='lazy'].loaded {
-  @apply opacity-100;
+.lazy-image.loaded {
+  opacity: 1;
 }

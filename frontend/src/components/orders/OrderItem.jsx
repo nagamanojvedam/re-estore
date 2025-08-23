@@ -1,40 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   TruckIcon,
-} from '@heroicons/react/24/outline'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ORDER_STATUSES } from '@utils/constants'
-import { Link } from 'react-router-dom'
+} from '@heroicons/react/24/outline';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ORDER_STATUSES } from '@utils/constants';
+import { Link } from 'react-router-dom';
 
 function OrderItem({ order }) {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const getStatusColor = status => {
     switch (status) {
       case ORDER_STATUSES.PENDING:
-        return 'badge bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
+        return 'badge bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
       case ORDER_STATUSES.CONFIRMED:
-        return 'badge bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
+        return 'badge bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
       case ORDER_STATUSES.SHIPPED:
-        return 'badge bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400'
+        return 'badge bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400';
       case ORDER_STATUSES.DELIVERED:
-        return 'badge bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+        return 'badge bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
       case ORDER_STATUSES.CANCELLED:
-        return 'badge bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+        return 'badge bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
       default:
-        return 'badge bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
+        return 'badge bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
     }
-  }
+  };
 
   const formatDate = date => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-    })
-  }
+    });
+  };
 
   return (
     <div className="card">
@@ -64,26 +64,35 @@ function OrderItem({ order }) {
 
         {/* Order Items Preview */}
         <div className="space-y-3">
-          {order.items.slice(0, 2).map(item => (
-            <div key={item._id} className="flex items-center space-x-4">
-              <img
-                src={item.product.images?.[0] || '/placeholder-product.jpg'}
-                alt={item.product.name}
-                className="w-12 h-12 object-cover rounded"
-              />
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                  {item.product.name}
-                </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Qty: {item.quantity} × ${item.price.toFixed(2)}
-                </p>
+          {order.items.slice(0, 2).map(item => {
+            const randomImageIndex = Math.floor(
+              Math.random() * item.product.images.length,
+            );
+
+            return (
+              <div key={item._id} className="flex items-center space-x-4">
+                <img
+                  src={
+                    item.product.images?.[randomImageIndex] ||
+                    '/placeholder-product.jpg'
+                  }
+                  alt={item.product.name}
+                  className="w-12 h-12 object-cover rounded"
+                />
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                    {item.product.name}
+                  </h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Qty: {item.quantity} × ${item.price.toFixed(2)}
+                  </p>
+                </div>
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  ${(item.quantity * item.price).toFixed(2)}
+                </span>
               </div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                ${(item.quantity * item.price).toFixed(2)}
-              </span>
-            </div>
-          ))}
+            );
+          })}
 
           {order.items.length > 2 && (
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -107,7 +116,7 @@ function OrderItem({ order }) {
             )}
 
             {[ORDER_STATUSES.PENDING, ORDER_STATUSES.CONFIRMED].includes(
-              order.status
+              order.status,
             ) && (
               <button className="btn btn-danger btn-sm">Cancel Order</button>
             )}
@@ -142,40 +151,45 @@ function OrderItem({ order }) {
                     Items ({order.items.length})
                   </h4>
                   <div className="space-y-3">
-                    {order.items.map(item => (
-                      <div
-                        key={item._id}
-                        className="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
-                      >
-                        <img
-                          src={
-                            item.product.images?.[0] ||
-                            '/placeholder-product.jpg'
-                          }
-                          alt={item.product.name}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                        <div className="flex-1">
-                          <h5 className="font-medium text-gray-900 dark:text-white">
-                            {item.product.name}
-                          </h5>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {item.product.category}
-                          </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            Quantity: {item.quantity}
-                          </p>
+                    {order.items.map(item => {
+                      const randomImageIndex = Math.floor(
+                        Math.random() * item.product.images.length,
+                      );
+                      return (
+                        <div
+                          key={item._id}
+                          className="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                        >
+                          <img
+                            src={
+                              item.product.images?.[randomImageIndex] ||
+                              '/placeholder-product.jpg'
+                            }
+                            alt={item.product.name}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                          <div className="flex-1">
+                            <h5 className="font-medium text-gray-900 dark:text-white">
+                              {item.product.name}
+                            </h5>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              {item.product.category}
+                            </p>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                              Quantity: {item.quantity}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-medium text-gray-900 dark:text-white">
+                              ${item.price.toFixed(2)}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              each
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            ${item.price.toFixed(2)}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            each
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -245,7 +259,7 @@ function OrderItem({ order }) {
         </AnimatePresence>
       </div>
     </div>
-  )
+  );
 }
 
-export default OrderItem
+export default OrderItem;

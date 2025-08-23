@@ -100,7 +100,7 @@ function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/shop"
-                  className="btn btn-secondary btn-lg flex items-center justify-center space-x-2"
+                  className="btn btn-secondary  btn-lg flex items-center justify-center space-x-2"
                 >
                   <ShoppingBagIcon className="w-6 h-6" />
                   <span>Shop Now</span>
@@ -136,7 +136,7 @@ function Home() {
               <motion.div
                 animate={{ y: [-10, 10, -10] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-4 -right-4 bg-white text-primary-600 p-4 rounded-2xl shadow-lg"
+                className="absolute -top-4 -right-4 bg-white text-primary-600 p-4 rounded-2xl shadow-lg z-10"
               >
                 <div className="text-2xl font-bold">50%</div>
                 <div className="text-sm">OFF</div>
@@ -145,9 +145,9 @@ function Home() {
               <motion.div
                 animate={{ y: [10, -10, 10] }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 bg-yellow-400 text-primary-900 p-4 rounded-2xl shadow-lg"
+                className="absolute -bottom-4 -left-4 bg-yellow-400 text-primary-900 p-4 rounded-2xl shadow-lg z-10"
               >
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center  space-x-1">
                   <StarIcon className="w-5 h-5 fill-current" />
                   <span className="font-bold">4.9</span>
                 </div>
@@ -359,7 +359,7 @@ function Home() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600"
+                className="flex-1 px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 text-primary-900"
               />
               <button className="btn bg-white text-primary-600 hover:bg-gray-100 px-8">
                 Subscribe

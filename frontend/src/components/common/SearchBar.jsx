@@ -1,71 +1,71 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useDebounce } from '../../hooks/useDebounce'
-import { productService } from '../../services/productService'
-import Spinner from './Spinner'
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useDebounce } from '../../hooks/useDebounce';
+import { productService } from '../../services/productService';
+import Spinner from './Spinner';
 
 function SearchBar({ onClose }) {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [showResults, setShowResults] = useState(false)
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const debouncedQuery = useDebounce(query, 300)
+  const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
     const searchProducts = async () => {
       if (debouncedQuery.trim().length < 3) {
-        setResults([])
-        setShowResults(false)
-        return
+        setResults([]);
+        setShowResults(false);
+        return;
       }
 
-      setLoading(true)
+      setLoading(true);
       try {
         const { products } = await productService.searchProducts(
           debouncedQuery,
           {
             limit: 8,
-          }
-        )
-        setResults(products)
-        setShowResults(true)
+          },
+        );
+        setResults(products);
+        setShowResults(true);
       } catch (error) {
-        console.error('Search error:', error)
-        setResults([])
+        console.error('Search error:', error);
+        setResults([]);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    searchProducts()
-  }, [debouncedQuery])
+    searchProducts();
+  }, [debouncedQuery]);
 
   const handleProductClick = productId => {
-    navigate(`/product/${productId}`)
-    onClose()
-  }
+    navigate(`/product/${productId}`);
+    onClose();
+  };
 
   const handleSearch = e => {
-    e.preventDefault()
+    e.preventDefault();
     if (query.trim()) {
-      const params = new URLSearchParams(searchParams)
-      params.set('search', query.trim())
-      params.set('page', 1)
-      navigate(`/shop?${params.toString()}`)
-      onClose()
+      const params = new URLSearchParams(searchParams);
+      params.set('search', query.trim());
+      params.set('page', 1);
+      navigate(`/shop?${params.toString()}`);
+      onClose();
     }
-  }
+  };
 
   const clearSearch = () => {
-    setQuery('')
-    setResults([])
-    setShowResults(false)
-  }
+    setQuery('');
+    setResults([]);
+    setShowResults(false);
+  };
 
   return (
     <div className="relative">
@@ -107,30 +107,39 @@ function SearchBar({ onClose }) {
         <div className="mt-4 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
           {results.length > 0 ? (
             <div className="py-2">
-              {results.map(product => (
-                <button
-                  key={product._id}
-                  onClick={() => handleProductClick(product._id)}
-                  className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
-                >
-                  <img
-                    src={product.images?.[0] || '/placeholder-image.jpg'}
-                    alt={product.name}
-                    className="w-12 h-12 rounded-lg object-cover"
-                  />
-                  <div className="flex-grow min-w-0">
-                    <h4 className="font-medium text-gray-900 dark:text-white truncate">
-                      {product.name}
-                    </h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                      {product.category}
-                    </p>
-                    <p className="text-primary-600 dark:text-primary-400 font-medium">
-                      ${product.price.toFixed(2)}
-                    </p>
-                  </div>
-                </button>
-              ))}
+              {results.map(product => {
+                const randomImageIndex = Math.floor(
+                  Math.random() * product.images.length,
+                );
+
+                return (
+                  <button
+                    key={product._id}
+                    onClick={() => handleProductClick(product._id)}
+                    className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                  >
+                    <img
+                      src={
+                        product.images?.[randomImageIndex] ||
+                        '/placeholder-image.jpg'
+                      }
+                      alt={product.name}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                    <div className="flex-grow min-w-0">
+                      <h4 className="font-medium text-gray-900 dark:text-white truncate">
+                        {product.name}
+                      </h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                        {product.category}
+                      </p>
+                      <p className="text-primary-600 dark:text-primary-400 font-medium">
+                        ${product.price.toFixed(2)}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
 
               {query && (
                 <div className="border-t border-gray-200 dark:border-gray-700 p-3">
@@ -151,7 +160,7 @@ function SearchBar({ onClose }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default SearchBar
+export default SearchBar;

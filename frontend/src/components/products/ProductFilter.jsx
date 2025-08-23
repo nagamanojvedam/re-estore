@@ -1,47 +1,49 @@
-import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  FunnelIcon, 
-  XMarkIcon, 
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  FunnelIcon,
+  XMarkIcon,
   ChevronDownIcon,
-  AdjustmentsHorizontalIcon
-} from '@heroicons/react/24/outline'
-import { PRODUCT_CATEGORIES } from '@utils/constants'
+} from '@heroicons/react/24/outline';
+import { PRODUCT_CATEGORIES } from '@utils/constants';
 
-function ProductFilter({ 
-  filters, 
-  onFilterChange, 
-  onClearFilters, 
-  productCount = 0 
+function ProductFilter({
+  filters,
+  onFilterChange,
+  onClearFilters,
+  productCount = 0,
 }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
-    category: true,
-    price: true,
-    rating: true,
-  })
+    category: false,
+    price: false,
+    rating: false,
+  });
 
-  const toggleSection = (section) => {
+  const toggleSection = section => {
     setExpandedSections(prev => ({
       ...prev,
-      [section]: !prev[section]
-    }))
-  }
+      [section]: !prev[section],
+    }));
+  };
 
   const handleFilterChange = (filterType, value) => {
-    onFilterChange({ ...filters, [filterType]: value })
-  }
+    onFilterChange({ ...filters, [filterType]: value });
+  };
 
   const handlePriceChange = (type, value) => {
     onFilterChange({
       ...filters,
-      [type]: value ? Number(value) : undefined
-    })
-  }
+      [type]: value ? Number(value) : undefined,
+    });
+  };
 
-  const hasActiveFilters = Object.keys(filters).some(key => 
-    filters[key] !== undefined && filters[key] !== '' && filters[key] !== null
-  )
+  const hasActiveFilters = Object.keys(filters).some(
+    key =>
+      filters[key] !== undefined &&
+      filters[key] !== '' &&
+      filters[key] !== null,
+  );
 
   return (
     <>
@@ -85,11 +87,11 @@ function ProductFilter({
             className="fixed inset-0 z-50 lg:hidden"
           >
             {/* Backdrop */}
-            <div 
+            <div
               className="absolute inset-0 bg-black bg-opacity-50"
               onClick={() => setIsOpen(false)}
             />
-            
+
             {/* Modal Content */}
             <motion.div
               initial={{ x: '-100%' }}
@@ -111,7 +113,7 @@ function ProductFilter({
                   </button>
                 </div>
               </div>
-              
+
               <div className="p-4">
                 <FilterContent
                   filters={filters}
@@ -119,8 +121,8 @@ function ProductFilter({
                   onFilterChange={handleFilterChange}
                   onPriceChange={handlePriceChange}
                   onClearFilters={() => {
-                    onClearFilters()
-                    setIsOpen(false)
+                    onClearFilters();
+                    setIsOpen(false);
                   }}
                   toggleSection={toggleSection}
                   hasActiveFilters={hasActiveFilters}
@@ -132,7 +134,7 @@ function ProductFilter({
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }
 
 function FilterContent({
@@ -143,7 +145,7 @@ function FilterContent({
   onClearFilters,
   toggleSection,
   hasActiveFilters,
-  productCount
+  productCount,
 }) {
   return (
     <div className="space-y-6">
@@ -156,7 +158,7 @@ function FilterContent({
       {hasActiveFilters && (
         <button
           onClick={onClearFilters}
-          className="w-full btn btn-ghost text-left flex items-center space-x-2"
+          className="w-full btn btn-ghost text-left flex items-center space-x-2 bg-gray-800"
         >
           <XMarkIcon className="w-4 h-4" />
           <span>Clear all filters</span>
@@ -169,14 +171,16 @@ function FilterContent({
           onClick={() => toggleSection('category')}
           className="w-full flex items-center justify-between py-2 text-left"
         >
-          <span className="font-medium text-gray-900 dark:text-white">Category</span>
-          <ChevronDownIcon 
+          <span className="font-medium text-gray-900 dark:text-white">
+            Category
+          </span>
+          <ChevronDownIcon
             className={`w-4 h-4 transition-transform ${
               expandedSections.category ? 'rotate-180' : ''
-            }`} 
+            }`}
           />
         </button>
-        
+
         <AnimatePresence>
           {expandedSections.category && (
             <motion.div
@@ -198,8 +202,8 @@ function FilterContent({
                   All Categories
                 </span>
               </label>
-              
-              {PRODUCT_CATEGORIES.map((category) => (
+
+              {PRODUCT_CATEGORIES.map(category => (
                 <label key={category} className="flex items-center">
                   <input
                     type="radio"
@@ -225,14 +229,16 @@ function FilterContent({
           onClick={() => toggleSection('price')}
           className="w-full flex items-center justify-between py-2 text-left"
         >
-          <span className="font-medium text-gray-900 dark:text-white">Price Range</span>
-          <ChevronDownIcon 
+          <span className="font-medium text-gray-900 dark:text-white">
+            Price Range
+          </span>
+          <ChevronDownIcon
             className={`w-4 h-4 transition-transform ${
               expandedSections.price ? 'rotate-180' : ''
-            }`} 
+            }`}
           />
         </button>
-        
+
         <AnimatePresence>
           {expandedSections.price && (
             <motion.div
@@ -250,7 +256,7 @@ function FilterContent({
                     type="number"
                     placeholder="$0"
                     value={filters.minPrice || ''}
-                    onChange={(e) => onPriceChange('minPrice', e.target.value)}
+                    onChange={e => onPriceChange('minPrice', e.target.value)}
                     className="input text-sm"
                     min="0"
                   />
@@ -263,13 +269,13 @@ function FilterContent({
                     type="number"
                     placeholder="$1000"
                     value={filters.maxPrice || ''}
-                    onChange={(e) => onPriceChange('maxPrice', e.target.value)}
+                    onChange={e => onPriceChange('maxPrice', e.target.value)}
                     className="input text-sm"
                     min="0"
                   />
                 </div>
               </div>
-              
+
               {/* Preset Price Ranges */}
               <div className="space-y-2">
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -285,8 +291,8 @@ function FilterContent({
                   <button
                     key={label}
                     onClick={() => {
-                      onPriceChange('minPrice', min)
-                      onPriceChange('maxPrice', max)
+                      onPriceChange('minPrice', min);
+                      onPriceChange('maxPrice', max);
                     }}
                     className={`block w-full text-left text-xs py-1 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
                       filters.minPrice === min && filters.maxPrice === max
@@ -309,14 +315,16 @@ function FilterContent({
           onClick={() => toggleSection('rating')}
           className="w-full flex items-center justify-between py-2 text-left"
         >
-          <span className="font-medium text-gray-900 dark:text-white">Customer Rating</span>
-          <ChevronDownIcon 
+          <span className="font-medium text-gray-900 dark:text-white">
+            Customer Rating
+          </span>
+          <ChevronDownIcon
             className={`w-4 h-4 transition-transform ${
               expandedSections.rating ? 'rotate-180' : ''
-            }`} 
+            }`}
           />
         </button>
-        
+
         <AnimatePresence>
           {expandedSections.rating && (
             <motion.div
@@ -325,7 +333,7 @@ function FilterContent({
               exit={{ height: 0, opacity: 0 }}
               className="mt-3 space-y-2 overflow-hidden"
             >
-              {[4, 3, 2, 1].map((rating) => (
+              {[4, 3, 2, 1].map(rating => (
                 <label key={rating} className="flex items-center">
                   <input
                     type="radio"
@@ -341,8 +349,8 @@ function FilterContent({
                         <svg
                           key={i}
                           className={`w-4 h-4 ${
-                            i < rating 
-                              ? 'text-yellow-400 fill-current' 
+                            i < rating
+                              ? 'text-yellow-400 fill-current'
                               : 'text-gray-300 dark:text-gray-600'
                           }`}
                           fill="currentColor"
@@ -365,13 +373,15 @@ function FilterContent({
 
       {/* Sort Options */}
       <div>
-        <h3 className="font-medium text-gray-900 dark:text-white mb-3">Sort By</h3>
+        <h3 className="font-medium text-gray-900 dark:text-white mb-3">
+          Sort By
+        </h3>
         <select
           value={`${filters.sortBy || 'createdAt'}-${filters.sortOrder || 'desc'}`}
-          onChange={(e) => {
-            const [sortBy, sortOrder] = e.target.value.split('-')
-            onFilterChange('sortBy', sortBy)
-            onFilterChange('sortOrder', sortOrder)
+          onChange={e => {
+            const [sortBy, sortOrder] = e.target.value.split('-');
+            onFilterChange('sortBy', sortBy);
+            onFilterChange('sortOrder', sortOrder);
           }}
           className="input text-sm"
         >
@@ -385,7 +395,7 @@ function FilterContent({
         </select>
       </div>
     </div>
-  )
+  );
 }
 
-export default ProductFilter
+export default ProductFilter;
