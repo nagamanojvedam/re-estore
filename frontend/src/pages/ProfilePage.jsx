@@ -3,9 +3,6 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import {
   UserIcon,
-  EnvelopeIcon,
-  PhoneIcon,
-  MapPinIcon,
   CameraIcon,
   EyeIcon,
   EyeSlashIcon,
@@ -15,9 +12,10 @@ import { useAuth } from '@hooks/useAuth';
 import { LoadingButton } from '@components/common/Spinner';
 import toast from 'react-hot-toast';
 import { authService } from '../services/authService';
+import { userService } from '../services/userService';
 
 function ProfilePage() {
-  const { user, updateProfile, loading } = useAuth();
+  const { user, updateUser, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -38,6 +36,15 @@ function ProfilePage() {
     },
   });
 
+  const [preferences, setPreferences] = useState({
+    orderupdates: true,
+    promotions: true,
+    newsletter: true,
+    security: true,
+  });
+
+  const [isSMSActive, setIsSMSActive] = useState(false);
+
   const {
     register: registerPassword,
     handleSubmit: handlePasswordSubmit,
@@ -47,7 +54,10 @@ function ProfilePage() {
 
   const onProfileSubmit = async data => {
     try {
-      await updateProfile(data);
+      console.log('formdata: ', data);
+      const updatedUser = await userService.updateMe(data);
+      // Update user in AuthContext
+      updateUser(updatedUser);
       toast.success('Profile updated successfully!');
     } catch (error) {
       toast.error(error.message || 'Failed to update profile');
@@ -81,6 +91,22 @@ function ProfilePage() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleSMSActivation = () => {
+    setIsSMSActive(prev => !prev);
+
+    isSMSActive
+      ? toast.success(
+          'SMS Authentication disabled, you will no longer receive messages...😑',
+        )
+      : toast.success(
+          `SMS Authentication enabled, you still not receive any messages...😜`,
+        );
+  };
+
+  const handleSavePreferences = () => {
+    toast.success('Preferences saved, but not really...😜');
   };
 
   const tabs = [
@@ -416,7 +442,12 @@ function ProfilePage() {
                           Add an extra layer of security to your account
                         </p>
                       </div>
-                      <button className="btn-outline">Enable</button>
+                      <button
+                        className={isSMSActive ? `btn-danger` : `btn-outline`}
+                        onClick={handleSMSActivation}
+                      >
+                        {isSMSActive ? 'Disable' : 'Enable'}
+                      </button>
                     </div>
                   </div>
                 </motion.div>
@@ -481,7 +512,16 @@ function ProfilePage() {
                               <input
                                 type="checkbox"
                                 className="sr-only peer"
-                                defaultChecked
+                                checked={preferences[item.id.replace('-', '')]}
+                                onChange={() =>
+                                  setPreferences(prev => {
+                                    const key = item.id.replace('-', '');
+                                    return {
+                                      ...prev,
+                                      [key]: !prev[key],
+                                    };
+                                  })
+                                }
                               />
                               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                             </label>
@@ -513,7 +553,12 @@ function ProfilePage() {
                       </div>
                     </div>
 
-                    <button className="btn-primary">Save Preferences</button>
+                    <button
+                      className="btn-primary"
+                      onClick={handleSavePreferences}
+                    >
+                      Save Preferences
+                    </button>
                   </div>
                 </motion.div>
               )}

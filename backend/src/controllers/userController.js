@@ -36,6 +36,21 @@ const getUsers = catchAsync(async (req, res) => {
   });
 });
 
+const updateMe = catchAsync(async (req, res) => {
+  const { id } = req.user;
+  const updates = req.body;
+
+  const user = await User.findByIdAndUpdate(id, updates, {
+    new: true,
+    runValidators: true,
+  }).select("-password");
+
+  res.json({
+    status: "success",
+    data: { user },
+  });
+});
+
 const getWishlist = catchAsync(async (req, res) => {
   const { id } = req.user;
 
@@ -103,6 +118,7 @@ const clearWishlist = catchAsync(async (req, res) => {
 
 module.exports = {
   getMe,
+  updateMe,
   getUsers,
   getWishlist,
   addToWishlist,

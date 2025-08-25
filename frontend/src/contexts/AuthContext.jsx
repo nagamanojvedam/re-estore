@@ -61,6 +61,11 @@ function authReducer(state, action) {
         ...state,
         error: null,
       };
+    case 'UPDATE_USER':
+      return {
+        ...state,
+        user: action.payload,
+      };
     default:
       return state;
   }
@@ -100,19 +105,19 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Login function
-  const login = async (credentials) => {
+  const login = async credentials => {
     try {
       dispatch({ type: 'AUTH_START' });
       const response = await authService.login(credentials);
-      
+
       localStorage.setItem('token', response.tokens.access.token);
       localStorage.setItem('refreshToken', response.tokens.refresh.token);
-      
+
       dispatch({
         type: 'AUTH_SUCCESS',
         payload: response,
       });
-      
+
       toast.success(`Welcome back, ${response.user.name}!`);
       return response;
     } catch (error) {
@@ -123,19 +128,19 @@ export function AuthProvider({ children }) {
   };
 
   // Register function
-  const register = async (userData) => {
+  const register = async userData => {
     try {
       dispatch({ type: 'AUTH_START' });
       const response = await authService.register(userData);
-      
+
       localStorage.setItem('token', response.tokens.access.token);
       localStorage.setItem('refreshToken', response.tokens.refresh.token);
-      
+
       dispatch({
         type: 'AUTH_SUCCESS',
         payload: response,
       });
-      
+
       toast.success(`Welcome, ${response.user.name}!`);
       return response;
     } catch (error) {
@@ -173,7 +178,7 @@ export function AuthProvider({ children }) {
       const response = await authService.refreshToken({ refreshToken });
       localStorage.setItem('token', response.tokens.access.token);
       localStorage.setItem('refreshToken', response.tokens.refresh.token);
-      
+
       return response.tokens.access.token;
     } catch (error) {
       logout();
@@ -185,20 +190,21 @@ export function AuthProvider({ children }) {
     dispatch({ type: 'CLEAR_ERROR' });
   };
 
+  const updateUser = user => {
+    dispatch({ type: 'UPDATE_USER', payload: user });
+  };
+
   const value = {
     ...state,
     login,
     register,
     logout,
+    updateUser,
     refreshAccessToken,
     clearError,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
