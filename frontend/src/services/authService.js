@@ -42,4 +42,9 @@ export const authService = {
     const response = await api.get('/users', { params });
     return response.data.data;
   },
+
+  updatePassword: async data => {
+    const response = await api.post('/auth/update-password', data);
+    return response.data.data;
+  },
 };

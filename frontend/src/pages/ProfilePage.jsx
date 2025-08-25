@@ -14,6 +14,7 @@ import {
 import { useAuth } from '@hooks/useAuth';
 import { LoadingButton } from '@components/common/Spinner';
 import toast from 'react-hot-toast';
+import { authService } from '../services/authService';
 
 function ProfilePage() {
   const { user, updateProfile, loading } = useAuth();
@@ -55,8 +56,9 @@ function ProfilePage() {
 
   const onPasswordSubmit = async data => {
     try {
+      console.log(data);
       // Password change logic would go here
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      await authService.updatePassword(data);
       toast.success('Password changed successfully!');
       resetPasswordForm();
     } catch (error) {

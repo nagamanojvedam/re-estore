@@ -18,11 +18,17 @@ const auth = catchAsync(async (req, res, next) => {
       throw new ApiError(401, "Invalid token type");
     }
 
-    const user = await User.findById(decoded.sub);
+    const user = await User.findById(decoded.sub).select("+passwordChangedAt");
     if (!user || !user.isActive) {
       throw new ApiError(401, "User not found or inactive");
     }
 
+    if (user.passwordChangedAt) {
+      const timestamp = parseInt(user.passwordChangedAt.getTime() / 1000, 10);
+      if (decoded.iat < timestamp) {
+        throw new ApiError(401, "Password changed. Please log in again.");
+      }
+    }
     req.user = user;
     next();
   } catch (error) {

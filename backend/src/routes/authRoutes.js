@@ -4,6 +4,7 @@ const {
   login,
   refresh,
   logout,
+  updatePassword,
 } = require("../controllers/authController");
 const validate = require("../middleware/validate");
 const {
@@ -11,7 +12,9 @@ const {
   login: loginValidation,
   refresh: refreshValidation,
   logout: logoutValidation,
+  updatePassword: updatePasswordValidation,
 } = require("../validations/authValidation");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -124,5 +127,11 @@ router.post("/refresh", validate(refreshValidation), refresh);
  *         description: Logout successful
  */
 router.post("/logout", validate(logoutValidation), logout);
+router.post(
+  "/update-password",
+  validate(updatePasswordValidation),
+  auth,
+  updatePassword
+);
 
 module.exports = router;

@@ -141,9 +141,44 @@ const logout = catchAsync(async (req, res) => {
   });
 });
 
+const updatePassword = catchAsync(async (req, res) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  const { id } = req.user;
+
+  if (newPassword !== confirmPassword) {
+    throw new ApiError(400, "New password and confirm password do not match");
+  }
+
+  const user = await User.findById(id).select("+password");
+
+  if (!user || !(await user.isPasswordMatch(currentPassword))) {
+    throw new ApiError(401, "Invalid current password");
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  // Generate tokens
+  const tokens = await generateAuthTokens(user);
+
+  // Save refresh token
+  await RefreshToken.create({
+    token: tokens.refresh.token,
+    user: user._id,
+    expires: tokens.refresh.expires,
+  });
+
+  res.json({
+    status: "success",
+    message: "password updated successfully",
+    data: { tokens },
+  });
+});
+
 module.exports = {
   register,
   login,
   refresh,
   logout,
+  updatePassword,
 };
