@@ -15,7 +15,7 @@ function ProductFilter({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
-    category: false,
+    category: true,
     price: false,
     rating: false,
   });

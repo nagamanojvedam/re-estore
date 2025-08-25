@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -9,11 +9,15 @@ import {
   StarIcon,
 } from '@heroicons/react/24/outline';
 import { useQuery } from 'react-query';
+import { toast } from 'react-hot-toast';
 import ProductCard from '@components/products/ProductCard';
 import { productService } from '@services/productService';
 
+const isValidEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
 function Home() {
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const [email, setEmail] = useState('');
 
   // Fetch featured products
   const { data: featuredProducts, isLoading: productsLoading } = useQuery(
@@ -360,8 +364,19 @@ function Home() {
                 type="email"
                 placeholder="Enter your email"
                 className="flex-1 px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 text-primary-900"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
               />
-              <button className="btn bg-white text-primary-600 hover:bg-gray-100 px-8">
+              <button
+                className="btn bg-white text-primary-600 hover:bg-gray-100 px-8"
+                onClick={() => {
+                  if (!email || !isValidEmail(email)) {
+                    toast.error('Please enter a valid email.');
+                    return;
+                  }
+                  toast.success('Subscribed!');
+                }}
+              >
                 Subscribe
               </button>
             </div>

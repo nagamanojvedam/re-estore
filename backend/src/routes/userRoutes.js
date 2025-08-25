@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   getMe,
+  updateMe,
   getUsers,
   getWishlist,
   addToWishlist,
@@ -9,6 +10,8 @@ const {
 } = require("../controllers/userController");
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
+const validate = require("../middleware/validate");
+const { updateMeValidation } = require("../validations/userValidation");
 
 const router = express.Router();
 
@@ -27,6 +30,7 @@ const router = express.Router();
  *         description: Unauthorized
  */
 router.get("/me", auth, getMe);
+router.patch("/me", validate(updateMeValidation), auth, updateMe);
 
 router.get("/wishlist", auth, getWishlist);
 router.delete("/wishlist", auth, clearWishlist);

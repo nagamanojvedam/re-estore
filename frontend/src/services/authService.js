@@ -31,12 +31,6 @@ export const authService = {
     return response.data.data.user;
   },
 
-  // Update profile
-  updateProfile: async userData => {
-    const response = await api.patch('/users/me', userData);
-    return response.data.data;
-  },
-
   // Get all users (admin only)
   getAllUsers: async (params = {}) => {
     const response = await api.get('/users', { params });
