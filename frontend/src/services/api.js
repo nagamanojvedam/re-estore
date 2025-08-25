@@ -43,6 +43,23 @@ if (import.meta.env.DEV) {
   );
 }
 
+api.interceptors.response.use(
+  response => {
+    // If backend returns tokens in response
+    if (response.data?.tokens) {
+      const { access, refresh } = response.data.tokens;
+
+      localStorage.setItem('accessToken', access.token);
+      localStorage.setItem('refreshToken', refresh.token);
+    }
+
+    return response;
+  },
+  error => {
+    return Promise.reject(error);
+  },
+);
+
 // Request interceptor to add auth token
 api.interceptors.request.use(
   req => {

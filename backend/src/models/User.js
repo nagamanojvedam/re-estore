@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema(
         addedAt: { type: Date, default: Date.now() },
       },
     ],
+    passwordChangedAt: Date,
   },
   {
     timestamps: true,
@@ -58,12 +59,28 @@ userSchema.pre("save", async function (next) {
 
   this.password = await bcrypt.hash(this.password, 12);
 
+  if (!this.isNew) this.passwordChangedAt = Date.now() - 1000;
+
   next();
 });
 
 // Compare password method
 userSchema.methods.isPasswordMatch = async function (password) {
+  if (!password) return false;
+
   return bcrypt.compare(password, this.password);
+};
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestamp < changedTimestamp;
+  }
+  // False means NOT changed
+  return false;
 };
 
 // Transform toJSON

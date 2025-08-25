@@ -27,9 +27,18 @@ const logout = {
   }),
 };
 
+const updatePassword = {
+  body: Joi.object({
+    currentPassword: Joi.string().required(),
+    newPassword: Joi.string().required(),
+    confirmPassword: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   register,
   login,
   refresh,
   logout,
+  updatePassword,
 };
