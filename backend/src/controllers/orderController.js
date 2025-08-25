@@ -48,7 +48,7 @@ const createOrder = catchAsync(async (req, res) => {
 
   await order.populate([
     { path: "user", select: "name email" },
-    { path: "items.product", select: "name price category" },
+    { path: "items.product", select: "name price category images" },
   ]);
 
   res.status(201).json({
@@ -71,7 +71,7 @@ const getMyOrders = catchAsync(async (req, res) => {
   const skip = (page - 1) * limit;
 
   const orders = await Order.find(filter)
-    .populate("items.product", "name price category")
+    .populate("items.product", "name price category images")
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(Number(limit));
@@ -153,7 +153,7 @@ const updateOrderStatus = catchAsync(async (req, res) => {
 const getOrder = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  const order = await Order.findById(id);
+  const order = await Order.findById(id).populate("items.product");
 
   if (!order) {
     throw new ApiError(404, "Order not found");
