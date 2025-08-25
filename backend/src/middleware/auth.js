@@ -25,6 +25,7 @@ const auth = catchAsync(async (req, res, next) => {
 
     if (user.passwordChangedAt) {
       const timestamp = parseInt(user.passwordChangedAt.getTime() / 1000, 10);
+
       if (decoded.iat < timestamp) {
         throw new ApiError(401, "Password changed. Please log in again.");
       }

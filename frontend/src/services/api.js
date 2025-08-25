@@ -51,6 +51,8 @@ api.interceptors.response.use(
 
       localStorage.setItem('accessToken', access.token);
       localStorage.setItem('refreshToken', refresh.token);
+
+      api.defaults.headers.common['Authorization'] = `Bearer ${access.token}`;
     }
 
     return response;

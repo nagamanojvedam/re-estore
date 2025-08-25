@@ -1,37 +1,38 @@
-import React from 'react'
-import { useQuery } from 'react-query'
-import { useParams, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { orderService } from '@services/orderService'
-import { LoadingScreen } from '@components/common/Spinner'
-import { ORDER_STATUSES } from '@utils/constants'
+import React from 'react';
+import { useQuery } from 'react-query';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { orderService } from '@services/orderService';
+import { LoadingScreen } from '@components/common/Spinner';
+import { ORDER_STATUSES } from '@utils/constants';
 
 const STATUS_ORDER = [
   ORDER_STATUSES.PENDING,
   ORDER_STATUSES.CONFIRMED,
   ORDER_STATUSES.SHIPPED,
   ORDER_STATUSES.DELIVERED,
-]
+];
 
 function OrderDetailPage() {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data, isLoading, error } = useQuery(
     ['order', id],
     () => orderService.getOrder(id),
     {
       staleTime: 5 * 60 * 1000,
-    }
-  )
+    },
+  );
 
-  if (isLoading) return <LoadingScreen message="Loading order details..." />
-  if (error) return <div className="text-red-500">Error loading order.</div>
-  if (!data?.order) return <div className="text-gray-700">Order not found.</div>
+  if (isLoading) return <LoadingScreen message="Loading order details..." />;
+  if (error) return <div className="text-red-500">Error loading order.</div>;
+  if (!data?.order)
+    return <div className="text-gray-700">Order not found.</div>;
 
-  const { order } = data
+  const { order } = data;
 
-  const currentStatusIndex = STATUS_ORDER.indexOf(order.status)
+  const currentStatusIndex = STATUS_ORDER.indexOf(order.status);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -95,24 +96,33 @@ function OrderDetailPage() {
               Products
             </h2>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {order.items.map(item => (
-                <div
-                  key={item._id}
-                  className="flex items-center justify-between py-4"
-                >
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      Product ID: {item.product}
-                    </span>
-                    <span className="text-gray-500 dark:text-gray-400">
-                      Quantity: {item.quantity}
-                    </span>
+              {order.items.map(item => {
+                return (
+                  <div
+                    key={item._id}
+                    className="flex items-center justify-between py-4"
+                  >
+                    <div className="flex items-center">
+                      <img
+                        src={item.product.images[0]}
+                        alt={`${item.product.name} image`}
+                        className="w-16 h-16 object-cover rounded-lg mr-4"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          Product ID: {item.product._id}
+                        </span>
+                        <span className="text-gray-500 dark:text-gray-400">
+                          Quantity: {item.quantity}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="font-semibold text-gray-900 dark:text-white">
+                      ${item.price.toFixed(2)}
+                    </div>
                   </div>
-                  <div className="font-semibold text-gray-900 dark:text-white">
-                    ${item.price.toFixed(2)}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="flex justify-end mt-4 text-lg font-semibold">
               Total: ${order.totalAmount.toFixed(2)}
@@ -145,7 +155,7 @@ function OrderDetailPage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
 
-export default OrderDetailPage
+export default OrderDetailPage;
