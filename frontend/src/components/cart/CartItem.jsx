@@ -34,7 +34,7 @@ function CartItem({ item, showFullDetails = false }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className={`flex items-start space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg ${
+      className={`flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg ${
         showFullDetails ? 'border border-gray-200 dark:border-gray-700' : ''
       } ${isUpdating ? 'opacity-50' : ''}`}
     >
@@ -64,21 +64,16 @@ function CartItem({ item, showFullDetails = false }) {
           </p>
         )}
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center gap-2 mt-2">
           <div className="flex items-center space-x-1">
             <span className="text-lg font-semibold text-gray-900 dark:text-white">
-              {formatPrice(item.price)}
+              {formatPrice(item.price * item.quantity)}
             </span>
-            {item.originalPrice && item.originalPrice > item.price && (
-              <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                {formatPrice(item.originalPrice)}
-              </span>
-            )}
           </div>
 
           {showFullDetails && (
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {formatPrice(item.price * item.quantity)}
+              {`( ${item.quantity} x ${formatPrice(item.price)} )`}
             </p>
           )}
         </div>
@@ -94,38 +89,40 @@ function CartItem({ item, showFullDetails = false }) {
       {/* Quantity Controls & Remove */}
       <div className="flex flex-col items-end space-y-2">
         {/* Quantity Controls */}
-        <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-          <button
-            onClick={() => handleQuantityChange(item.quantity - 1)}
-            disabled={isUpdating}
-            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
-            aria-label="Decrease quantity"
-          >
-            <MinusIcon className="w-4 h-4" />
-          </button>
+        <div className="flex gap-2">
+          <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            <button
+              onClick={() => handleQuantityChange(item.quantity - 1)}
+              disabled={isUpdating}
+              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+              aria-label="Decrease quantity"
+            >
+              <MinusIcon className="w-4 h-4" />
+            </button>
 
-          <span className="px-3 py-1 text-sm font-medium text-gray-900 dark:text-white min-w-[2rem] text-center">
-            {item.quantity}
-          </span>
+            <span className="px-3 py-1 text-sm font-medium text-gray-900 dark:text-white min-w-[2rem] text-center">
+              {item.quantity}
+            </span>
 
+            <button
+              onClick={() => handleQuantityChange(item.quantity + 1)}
+              disabled={isUpdating || item.quantity >= item.stock}
+              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+              aria-label="Increase quantity"
+            >
+              <PlusIcon className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Remove Button */}
           <button
-            onClick={() => handleQuantityChange(item.quantity + 1)}
-            disabled={isUpdating || item.quantity >= item.stock}
-            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
-            aria-label="Increase quantity"
+            onClick={handleRemove}
+            className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+            aria-label="Remove item"
           >
-            <PlusIcon className="w-4 h-4" />
+            <TrashIcon className="w-4 h-4" />
           </button>
         </div>
-
-        {/* Remove Button */}
-        <button
-          onClick={handleRemove}
-          className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-          aria-label="Remove item"
-        >
-          <TrashIcon className="w-4 h-4" />
-        </button>
       </div>
     </motion.div>
   );

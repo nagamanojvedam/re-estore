@@ -133,7 +133,7 @@ function CartPage() {
                       Shipping
                     </span>
                     <span className="text-gray-900 dark:text-white font-medium">
-                      {total >= 50 ? (
+                      {total >= 5000 ? (
                         <span className="text-green-600 dark:text-green-400">
                           Free
                         </span>
@@ -152,10 +152,11 @@ function CartPage() {
                     </span>
                   </div>
 
-                  {total < 50 && (
+                  {total < 5000 && (
                     <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
                       <p className="text-sm text-blue-800 dark:text-blue-300">
-                        Add {formatPrice(50 - total)} more to get free shipping!
+                        Add {formatPrice(5000 - total)} more to get free
+                        shipping!
                       </p>
                     </div>
                   )}
@@ -168,7 +169,7 @@ function CartPage() {
                     </span>
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
                       {formatPrice(
-                        total + (total >= 50 ? 0 : 10) + total * 0.08,
+                        total + (total >= 5000 ? 0 : 1000) + total * 0.08,
                       )}
                     </span>
                   </div>
