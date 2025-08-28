@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  ArrowRightIcon,
+  ArchiveBoxIcon,
+  ChevronRightIcon,
   ShoppingBagIcon,
   TruckIcon,
   ShieldCheckIcon,
@@ -41,7 +42,7 @@ function Home() {
       description: '100% secure payment processing',
     },
     {
-      icon: ArrowRightIcon,
+      icon: ArchiveBoxIcon,
       title: 'Fast Delivery',
       description: '2-day delivery on most items',
     },
@@ -108,7 +109,7 @@ function Home() {
                 >
                   <ShoppingBagIcon className="w-6 h-6" />
                   <span>Shop Now</span>
-                  <ArrowRightIcon className="w-5 h-5" />
+                  <ChevronRightIcon className="w-5 h-5" />
                 </Link>
                 <button className="btn btn-ghost border border-white/30 hover:bg-white/10 btn-lg">
                   Learn More
@@ -265,7 +266,7 @@ function Home() {
               className="btn-primary flex items-center space-x-2"
             >
               <span>View All</span>
-              <ArrowRightIcon className="w-5 h-5" />
+              <ChevronRightIcon className="w-5 h-5" />
             </Link>
           </motion.div>
 
@@ -368,7 +369,7 @@ function Home() {
                 onChange={e => setEmail(e.target.value)}
               />
               <button
-                className="btn bg-white text-primary-600 hover:bg-gray-100 px-8"
+                className="btn bg-white text-primary-600 hover:bg-gray-200  px-8"
                 onClick={() => {
                   if (!email || !isValidEmail(email)) {
                     toast.error('Please enter a valid email.');

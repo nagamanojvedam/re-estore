@@ -34,7 +34,7 @@ function ProductFilter({
   const handlePriceChange = (type, value) => {
     onFilterChange({
       ...filters,
-      [type]: value ? Number(value) : undefined,
+      [type]: value ? +value : undefined,
     });
   };
 
@@ -158,7 +158,7 @@ function FilterContent({
       {hasActiveFilters && (
         <button
           onClick={onClearFilters}
-          className="w-full btn btn-ghost text-left flex items-center space-x-2 bg-gray-800"
+          className="w-full btn btn-ghost text-left flex items-center space-x-2 dark:bg-gray-700"
         >
           <XMarkIcon className="w-4 h-4" />
           <span>Clear all filters</span>
@@ -196,7 +196,7 @@ function FilterContent({
                   value=""
                   checked={!filters.category}
                   onChange={() => onFilterChange('category', '')}
-                  className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                  className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500 accent-primary-600"
                 />
                 <span className="ml-3 text-sm text-gray-600 dark:text-gray-400">
                   All Categories
@@ -211,7 +211,7 @@ function FilterContent({
                     value={category}
                     checked={filters.category === category}
                     onChange={() => onFilterChange('category', category)}
-                    className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                    className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500 accent-primary-600"
                   />
                   <span className="ml-3 text-sm text-gray-600 dark:text-gray-400">
                     {category}
@@ -341,7 +341,7 @@ function FilterContent({
                     value={rating}
                     checked={filters.minRating === rating}
                     onChange={() => onFilterChange('minRating', rating)}
-                    className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                    className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500 accent-primary-600"
                   />
                   <div className="ml-3 flex items-center">
                     <div className="flex">

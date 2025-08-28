@@ -37,7 +37,7 @@ function Footer() {
     {
       title: 'My Account',
       links: [
-        { name: 'Login', path: '/login' },
+        { name: 'Login', path: '/' },
         { name: 'Order History', path: '/orders' },
         { name: 'Wishlist', path: '/wishlist' },
         { name: 'Track Order', path: '/track' },
@@ -112,13 +112,13 @@ function Footer() {
                   Icon: YoutubeIcon,
                   label: 'YouTube',
                 },
-              ].map(({ href, Icon, label }) => (
+              ].map(({ href, Icon, label, color }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+                  className={`text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-primary-400 transition-colors`}
                   aria-label={label}
                 >
                   <Icon className="w-6 h-6" />

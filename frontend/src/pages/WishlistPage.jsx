@@ -4,8 +4,6 @@ import { HeartIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useWishlist } from '@hooks/useWishlist';
 import WishlistItem from '@components/wishlist/WishlistItem';
 
-// const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
 function WishlistPage() {
   const { wishlist, clearWishlist } = useWishlist();
   const navigate = useNavigate();
@@ -97,7 +95,6 @@ function WishlistPage() {
             <button
               onClick={() => {
                 clearWishlist();
-                // scrollToTop();
               }}
               className="btn-secondary"
             >

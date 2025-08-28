@@ -182,6 +182,6 @@ router.get(
  */
 router.patch("/:id/status", auth, authorize("admin"), updateOrderStatus);
 
-router.get("/:id", auth, getOrder);
+router.get("/:orderNumber", getOrder);
 
 module.exports = router;
