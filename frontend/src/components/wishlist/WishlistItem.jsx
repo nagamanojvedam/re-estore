@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useWishlist } from '@hooks/useWishlist';
+import { formatPrice } from '../../utils/helpers';
 
 function WishlistItem({ item }) {
   const { removeFromWishlist } = useWishlist();
@@ -28,7 +29,7 @@ function WishlistItem({ item }) {
             {item.name}
           </Link>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            ${item.price.toFixed(2)}
+            {formatPrice(item.price)}
           </p>
         </div>
       </div>

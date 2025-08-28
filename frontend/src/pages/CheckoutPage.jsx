@@ -15,6 +15,7 @@ import { useAuth } from '@hooks/useAuth';
 import { orderService } from '@services/orderService';
 import { LoadingButton } from '@components/common/Spinner';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/helpers';
 
 function CheckoutPage() {
   const { items, total, clearCart } = useCart();
@@ -59,7 +60,7 @@ function CheckoutPage() {
   }, [items, navigate]);
 
   const subtotal = total;
-  const shipping = total >= 50 ? 0 : 10;
+  const shipping = total >= 5000 ? 0 : 1000;
   const tax = subtotal * 0.08;
   const totalAmount = subtotal + shipping + tax;
 
@@ -78,6 +79,7 @@ function CheckoutPage() {
         country: data.country,
       },
       paymentStatus: paymentMethod === 'card' ? 'paid' : 'pending',
+      paymentMethod,
       // totalAmount, not neccessarty as backend will automatically calculated
     };
     setIsProcessing(true);
@@ -564,7 +566,7 @@ function CheckoutPage() {
                             </p>
                           </div>
                           <span className="text-sm font-medium text-gray-900 dark:text-white">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            {formatPrice(item.price * item.quantity)}
                           </span>
                         </div>
                       ))}
@@ -577,7 +579,7 @@ function CheckoutPage() {
                           Subtotal
                         </span>
                         <span className="text-gray-900 dark:text-white">
-                          ${subtotal.toFixed(2)}
+                          {formatPrice(subtotal)}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
@@ -585,7 +587,7 @@ function CheckoutPage() {
                           Shipping
                         </span>
                         <span className="text-gray-900 dark:text-white">
-                          {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+                          {shipping === 0 ? 'Free' : `${formatPrice(shipping)}`}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
@@ -593,7 +595,7 @@ function CheckoutPage() {
                           Tax
                         </span>
                         <span className="text-gray-900 dark:text-white">
-                          ${tax.toFixed(2)}
+                          {formatPrice(tax)}
                         </span>
                       </div>
                       <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
@@ -602,7 +604,7 @@ function CheckoutPage() {
                             Total
                           </span>
                           <span className="text-gray-900 dark:text-white">
-                            ${totalAmount.toFixed(2)}
+                            {formatPrice(totalAmount)}
                           </span>
                         </div>
                       </div>

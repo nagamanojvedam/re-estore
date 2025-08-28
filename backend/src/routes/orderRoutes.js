@@ -5,6 +5,7 @@ const {
   getAllOrders,
   updateOrderStatus,
   getOrder,
+  getOrderByNumber,
 } = require("../controllers/orderController");
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
@@ -182,6 +183,7 @@ router.get(
  */
 router.patch("/:id/status", auth, authorize("admin"), updateOrderStatus);
 
-router.get("/:orderNumber", getOrder);
+router.get("/:id", auth, getOrder);
+router.get("/orderNumber/:orderNumber", getOrderByNumber);
 
 module.exports = router;

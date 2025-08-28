@@ -4,6 +4,7 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '../../hooks/useDebounce';
 import { productService } from '../../services/productService';
 import Spinner from './Spinner';
+import { formatPrice } from '../../utils/helpers';
 
 function SearchBar({ onClose }) {
   const [query, setQuery] = useState('');
@@ -107,39 +108,30 @@ function SearchBar({ onClose }) {
         <div className="mt-4 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
           {results.length > 0 ? (
             <div className="py-2">
-              {results.map(product => {
-                const randomImageIndex = Math.floor(
-                  Math.random() * product.images.length,
-                );
-
-                return (
-                  <button
-                    key={product._id}
-                    onClick={() => handleProductClick(product._id)}
-                    className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
-                  >
-                    <img
-                      src={
-                        product.images?.[randomImageIndex] ||
-                        '/placeholder-image.jpg'
-                      }
-                      alt={product.name}
-                      className="w-12 h-12 rounded-lg object-cover"
-                    />
-                    <div className="flex-grow min-w-0">
-                      <h4 className="font-medium text-gray-900 dark:text-white truncate">
-                        {product.name}
-                      </h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                        {product.category}
-                      </p>
-                      <p className="text-primary-600 dark:text-primary-400 font-medium">
-                        ${product.price.toFixed(2)}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
+              {results.map(product => (
+                <button
+                  key={product._id}
+                  onClick={() => handleProductClick(product._id)}
+                  className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                >
+                  <img
+                    src={product.images?.[0] || '/placeholder-image.jpg'}
+                    alt={product.name}
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                  <div className="flex-grow min-w-0">
+                    <h4 className="font-medium text-gray-900 dark:text-white truncate">
+                      {product.name}
+                    </h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                      {product.category}
+                    </p>
+                    <p className="text-primary-600 dark:text-primary-400 font-medium">
+                      {formatPrice(product.price)}
+                    </p>
+                  </div>
+                </button>
+              ))}
 
               {query && (
                 <div className="border-t border-gray-200 dark:border-gray-700 p-3">
@@ -147,7 +139,7 @@ function SearchBar({ onClose }) {
                     onClick={handleSearch}
                     className="w-full text-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                   >
-                    View all results for "{query}"
+                    View all results for &ldquo;{query}&rdquo;
                   </button>
                 </div>
               )}

@@ -162,16 +162,13 @@
     animation-delay: 300ms;
   }
 
-  /* HTML: <div class="loader"></div> */
-  /* HTML: <div class="loader"></div> */
-  /* HTML: <div class="loader"></div> */
   .loading-spinner {
     width: 50px;
     aspect-ratio: 1;
     border-radius: 50%;
     background:
-      radial-gradient(farthest-side, #3a18d3 94%, #0000) top/8px 8px no-repeat,
-      conic-gradient(#0000 30%, #3a18d3);
+      radial-gradient(farthest-side, #ffffff 94%, #0000) top/8px 8px no-repeat,
+      conic-gradient(#0000 30%, #ffffff);
     /* Standard */
     mask: radial-gradient(farthest-side, transparent calc(100% - 8px), black 0);
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { formatDate, formatPrice } from '../../utils/helpers';
 
 const allowedStatus = {
   pending: ['confirmed', 'cancelled'],
@@ -30,21 +31,6 @@ const OrderCard = ({ order, updateStatusMutation }) => {
     return 'bg-gray-300'; // pending
   };
 
-  const formatDate = dateString =>
-    new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
-  const formatCurrency = amount =>
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-
   const currentStage = getStatusStage(status);
 
   return (
@@ -61,7 +47,7 @@ const OrderCard = ({ order, updateStatusMutation }) => {
         </div>
         <div className="text-right">
           <p className="font-bold text-lg text-gray-900 dark:text-white">
-            {formatCurrency(order.totalAmount)}
+            {formatPrice(order.totalAmount)}
           </p>
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -219,10 +205,10 @@ const OrderCard = ({ order, updateStatusMutation }) => {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                      {formatCurrency(item.price * item.quantity)}
+                      {formatPrice(item.price * item.quantity)}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {formatCurrency(item.product.price)} each
+                      {formatPrice(item.product.price)} each
                     </p>
                   </div>
                 </div>
@@ -238,11 +224,11 @@ const OrderCard = ({ order, updateStatusMutation }) => {
             <div className="text-sm space-y-2">
               <div className="flex justify-between text-gray-600 dark:text-gray-400">
                 <span>Subtotal:</span>
-                <span>{formatCurrency(order.totalAmount)}</span>
+                <span>{formatPrice(order.totalAmount)}</span>
               </div>
               <div className="flex justify-between font-semibold border-t border-gray-200 dark:border-gray-700 pt-2">
                 <span>Total:</span>
-                <span>{formatCurrency(order.totalAmount)}</span>
+                <span>{formatPrice(order.totalAmount)}</span>
               </div>
               <div className="flex justify-between text-xs text-gray-500 mt-2">
                 <span>Payment Status:</span>

@@ -1,23 +1,24 @@
-import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { XMarkIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-import { useCart } from '@hooks/useCart'
-import { useNavigate } from 'react-router-dom'
-import CartItem from './CartItem'
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { XMarkIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import { useCart } from '@hooks/useCart';
+import { useNavigate } from 'react-router-dom';
+import CartItem from './CartItem';
+import { formatPrice } from '../../utils/helpers';
 
 function CartSidebar() {
-  const { isOpen, setCartOpen, items, total, itemCount, clearCart } = useCart()
-  const navigate = useNavigate()
+  const { isOpen, setCartOpen, items, total, itemCount, clearCart } = useCart();
+  const navigate = useNavigate();
 
   const handleCheckout = () => {
-    setCartOpen(false)
-    navigate('/checkout')
-  }
+    setCartOpen(false);
+    navigate('/checkout');
+  };
 
   const handleViewCart = () => {
-    setCartOpen(false)
-    navigate('/cart')
-  }
+    setCartOpen(false);
+    navigate('/cart');
+  };
 
   return (
     <AnimatePresence>
@@ -49,7 +50,7 @@ function CartSidebar() {
                 </h2>
                 <span className="badge-primary">{itemCount}</span>
               </div>
-              
+
               <button
                 onClick={() => setCartOpen(false)}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -74,8 +75,8 @@ function CartSidebar() {
                   </p>
                   <button
                     onClick={() => {
-                      setCartOpen(false)
-                      navigate('/shop')
+                      setCartOpen(false);
+                      navigate('/shop');
                     }}
                     className="btn-primary"
                   >
@@ -84,7 +85,7 @@ function CartSidebar() {
                 </div>
               ) : (
                 <div className="p-4 space-y-4">
-                  {items.map((item) => (
+                  {items.map(item => (
                     <CartItem key={item.id} item={item} />
                   ))}
                 </div>
@@ -97,7 +98,7 @@ function CartSidebar() {
                 {/* Subtotal */}
                 <div className="flex items-center justify-between text-lg font-semibold text-gray-900 dark:text-white">
                   <span>Subtotal</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatPrice(total)}</span>
                 </div>
 
                 {/* Shipping Notice */}
@@ -113,18 +114,18 @@ function CartSidebar() {
                   >
                     Checkout
                   </button>
-                  
+
                   <button
                     onClick={handleViewCart}
                     className="w-full btn-secondary"
                   >
                     View Cart
                   </button>
-                  
+
                   <button
                     onClick={() => {
-                      setCartOpen(false)
-                      navigate('/shop')
+                      setCartOpen(false);
+                      navigate('/shop');
                     }}
                     className="w-full btn-ghost text-sm"
                   >
@@ -147,7 +148,7 @@ function CartSidebar() {
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }
 
-export default CartSidebar
+export default CartSidebar;

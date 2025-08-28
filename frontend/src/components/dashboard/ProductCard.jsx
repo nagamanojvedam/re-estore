@@ -2,30 +2,38 @@ import { useState } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  MinusCircleIcon,
+  MinusIcon,
+  PlusCircleIcon,
+  PlusIcon,
   StarIcon,
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { formatDate, formatPrice } from '../../utils/helpers';
+import { productService } from '../../services/productService';
+import toast from 'react-hot-toast';
 
 const ProductCard = ({ product, toggleMutation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isActive, setIsActive] = useState(product.isActive);
+  const [stock, setStock] = useState(product.stock);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const formatDate = dateString => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const formatCurrency = amount => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+  const handleStockChange = async delta => {
+    try {
+      setIsLoading(true);
+      const res = await productService.updateProduct(product._id, {
+        stock: Math.max(0, stock + delta),
+      });
+      setStock(res.product.stock);
+      toast.success('Stock updated successfully');
+    } catch (err) {
+      toast.error('Failed to update stock');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getStockStatus = stock => {
@@ -79,7 +87,7 @@ const ProductCard = ({ product, toggleMutation }) => {
     );
   };
 
-  const stockStatus = getStockStatus(product.stock);
+  const stockStatus = getStockStatus(stock);
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-5 transition hover:shadow-md">
@@ -115,7 +123,7 @@ const ProductCard = ({ product, toggleMutation }) => {
               </div>
               <div className="text-right">
                 <p className="font-bold text-lg text-gray-900 dark:text-white">
-                  {formatCurrency(product.price)}
+                  {formatPrice(product.price)}
                 </p>
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -134,7 +142,7 @@ const ProductCard = ({ product, toggleMutation }) => {
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${stockStatus.color}`}
               >
-                {stockStatus.text} ({product.stock})
+                {stockStatus.text} ({stock})
               </span>
               {renderStars(product.ratings.average, product.ratings.count)}
             </div>
@@ -192,7 +200,7 @@ const ProductCard = ({ product, toggleMutation }) => {
               <h4 className="font-medium text-gray-900 dark:text-white mb-2">
                 Images ({product.images.length})
               </h4>
-              <div className="flex space-x-2 overflow-x-auto pb-2">
+              <div className="flex  space-x-2 overflow-x-auto p-2">
                 {product.images.map((image, index) => (
                   <img
                     key={index}
@@ -238,7 +246,23 @@ const ProductCard = ({ product, toggleMutation }) => {
                   <span className="text-gray-600 dark:text-gray-400">
                     Stock:
                   </span>
-                  <span className="font-medium">{product.stock} units</span>
+                  <div className="flex items-center justify-center space-x-2">
+                    <button
+                      disabled={isLoading}
+                      className="h-4 w-4 bg-red-700 rounded-full text-semibold hover:scale-105"
+                      onClick={() => handleStockChange(-10)}
+                    >
+                      <MinusIcon />
+                    </button>
+                    <span> {stock} units </span>
+                    <button
+                      disabled={isLoading}
+                      className="h-4 w-4 bg-red-700 rounded-full text-semibold hover:scale-105"
+                      onClick={() => handleStockChange(10)}
+                    >
+                      <PlusIcon />
+                    </button>
+                  </div>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">

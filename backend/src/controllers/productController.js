@@ -120,6 +120,10 @@ const updateProduct = catchAsync(async (req, res) => {
     throw new ApiError(403, "You can only update your own products");
   }
 
+  if (req.body.stock != null && req.body.stock < 0) {
+    throw new ApiError(400, "Stock cannot be negative");
+  }
+
   Object.assign(product, req.body);
   await product.save();
   await product.populate("owner", "name email");

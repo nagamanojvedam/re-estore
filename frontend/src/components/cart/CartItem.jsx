@@ -1,31 +1,32 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { TrashIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
-import { useCart } from '@hooks/useCart'
-import { motion } from 'framer-motion'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { TrashIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { useCart } from '@hooks/useCart';
+import { motion } from 'framer-motion';
+import { formatPrice } from '../../utils/helpers';
 
 function CartItem({ item, showFullDetails = false }) {
-  const { updateQuantity, removeItem } = useCart()
-  const [isUpdating, setIsUpdating] = useState(false)
+  const { updateQuantity, removeItem } = useCart();
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleQuantityChange = async (newQuantity) => {
+  const handleQuantityChange = async newQuantity => {
     if (newQuantity <= 0) {
-      removeItem(item.id)
-      return
+      removeItem(item.id);
+      return;
     }
 
     if (newQuantity > item.stock) {
-      return
+      return;
     }
 
-    setIsUpdating(true)
-    updateQuantity(item.id, newQuantity)
-    setTimeout(() => setIsUpdating(false), 200) // Small delay for visual feedback
-  }
+    setIsUpdating(true);
+    updateQuantity(item.id, newQuantity);
+    setTimeout(() => setIsUpdating(false), 200); // Small delay for visual feedback
+  };
 
   const handleRemove = () => {
-    removeItem(item.id)
-  }
+    removeItem(item.id);
+  };
 
   return (
     <motion.div
@@ -48,7 +49,7 @@ function CartItem({ item, showFullDetails = false }) {
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <Link 
+        <Link
           to={`/product/${item.id}`}
           className="block hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
         >
@@ -56,7 +57,7 @@ function CartItem({ item, showFullDetails = false }) {
             {item.name}
           </h3>
         </Link>
-        
+
         {showFullDetails && item.variant && (
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             {item.variant}
@@ -66,18 +67,18 @@ function CartItem({ item, showFullDetails = false }) {
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center space-x-1">
             <span className="text-lg font-semibold text-gray-900 dark:text-white">
-              ${item.price.toFixed(2)}
+              {formatPrice(item.price)}
             </span>
             {item.originalPrice && item.originalPrice > item.price && (
               <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                ${item.originalPrice.toFixed(2)}
+                {formatPrice(item.originalPrice)}
               </span>
             )}
           </div>
-          
+
           {showFullDetails && (
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              ${(item.price * item.quantity).toFixed(2)}
+              {formatPrice(item.price * item.quantity)}
             </p>
           )}
         </div>
@@ -102,11 +103,11 @@ function CartItem({ item, showFullDetails = false }) {
           >
             <MinusIcon className="w-4 h-4" />
           </button>
-          
+
           <span className="px-3 py-1 text-sm font-medium text-gray-900 dark:text-white min-w-[2rem] text-center">
             {item.quantity}
           </span>
-          
+
           <button
             onClick={() => handleQuantityChange(item.quantity + 1)}
             disabled={isUpdating || item.quantity >= item.stock}
@@ -127,7 +128,7 @@ function CartItem({ item, showFullDetails = false }) {
         </button>
       </div>
     </motion.div>
-  )
+  );
 }
 
-export default CartItem
+export default CartItem;
