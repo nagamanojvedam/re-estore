@@ -25,9 +25,15 @@ export const orderService = {
     return response.data.data;
   },
 
-  // Get order by id
-  getOrder: async orderNumber => {
-    const response = await api.get(`/orders/${orderNumber}`);
+  // Get order by ID
+  getOrder: async id => {
+    const response = await api.get(`/orders/${id}`);
+    return response.data.data;
+  },
+
+  // Get order by orderNumber
+  getOrderByNumber: async orderNumber => {
+    const response = await api.get(`/orders/orderNumber/${orderNumber}`);
     return response.data.data;
   },
 };

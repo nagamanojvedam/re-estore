@@ -4,10 +4,10 @@ const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 
 const createOrder = catchAsync(async (req, res) => {
-  const { items, shippingAddress, paymentStatus } = req.body;
+  const { items, shippingAddress, paymentStatus, paymentMethod } = req.body;
 
   // Validate products and calculate total
-  let totalAmount = 0;
+  let subTotal = 0;
   const orderItems = [];
 
   for (const item of items) {
@@ -25,7 +25,7 @@ const createOrder = catchAsync(async (req, res) => {
     }
 
     const itemTotal = product.price * item.quantity;
-    totalAmount += itemTotal;
+    subTotal += itemTotal;
 
     orderItems.push({
       product: product._id,
@@ -38,13 +38,21 @@ const createOrder = catchAsync(async (req, res) => {
     await product.save();
   }
 
+  const shipping = subTotal < 5000 ? 1000 : 0;
+  const tax = subTotal * 0.08;
+  const totalAmount = subTotal + shipping + tax;
+
   // Create order
   const order = await Order.create({
     user: req.user._id,
     items: orderItems,
+    subTotal,
+    shipping,
+    tax,
     totalAmount,
     shippingAddress,
     paymentStatus,
+    paymentMethod,
   });
 
   await order.populate([
@@ -170,6 +178,23 @@ const updateOrderStatus = catchAsync(async (req, res) => {
 });
 
 const getOrder = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const order = await Order.findById(id).populate("items.product");
+
+  if (!order) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  res.json({
+    status: "success",
+    data: {
+      order,
+    },
+  });
+});
+
+const getOrderByNumber = catchAsync(async (req, res) => {
   const { orderNumber } = req.params;
 
   const order = await Order.findOne({ orderNumber }).populate("items.product");
@@ -189,6 +214,7 @@ const getOrder = catchAsync(async (req, res) => {
 module.exports = {
   createOrder,
   getOrder,
+  getOrderByNumber,
   getMyOrders,
   getAllOrders,
   updateOrderStatus,

@@ -24,6 +24,7 @@ import { useWishlist } from '@hooks/useWishlist';
 import ProductCard from '@components/products/ProductCard';
 import { LoadingScreen } from '@components/common/Spinner';
 import toast from 'react-hot-toast';
+import { formatPrice } from '@utils/helpers';
 
 function ProductDetailsPage() {
   const { id } = useParams();
@@ -282,13 +283,13 @@ function ProductDetailsPage() {
             {/* Price */}
             <div className="flex items-center space-x-4">
               <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                ${product.price.toFixed(2)}
+                {formatPrice(product.price)}
               </span>
               {product.originalPrice &&
                 product.originalPrice > product.price && (
                   <>
                     <span className="text-2xl text-gray-500 dark:text-gray-400 line-through">
-                      ${product.originalPrice.toFixed(2)}
+                      {formatPrice(product.originalPrice)}
                     </span>
                     <span className="badge bg-red-500 text-white">
                       {Math.round(

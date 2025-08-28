@@ -21,6 +21,7 @@ const createOrder = {
       country: Joi.string().required(),
     }),
     paymentStatus: Joi.string().valid("pending", "paid", "failed"),
+    paymentMethod: Joi.string().valid("card", "cash").required(),
   }),
 };
 

@@ -42,17 +42,19 @@ export default function ContactPage() {
             <div className="flex flex-col items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
               <Mail className="w-6 h-6 text-primary-600 mb-3" />
               <p className="font-semibold">Email</p>
-              <p>support@example.com</p>
+              <p>support@estore.com</p>
             </div>
             <div className="flex flex-col items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
               <Phone className="w-6 h-6 text-primary-600 mb-3" />
               <p className="font-semibold">Phone</p>
-              <p>+1 (234) 567-890</p>
+              <p>+91-9848032919</p>
             </div>
             <div className="flex flex-col items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
               <MapPin className="w-6 h-6 text-primary-600 mb-3" />
               <p className="font-semibold">Address</p>
-              <p>123 Market Street, NY</p>
+              <p className="text-center">
+                123 Commerce Street, Business District, City 12345
+              </p>
             </div>
           </motion.div>
 

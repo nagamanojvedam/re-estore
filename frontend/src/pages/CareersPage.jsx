@@ -8,8 +8,7 @@ const jobs = [
     type: 'Full-time',
     description:
       'Work with React, Next.js, and Tailwind to build stunning user experiences.',
-    image:
-      'https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&q=80&w=800&fit=crop',
+    image: '/careers/frontend.jpg',
   },
   {
     title: 'Backend Engineer',
@@ -17,8 +16,7 @@ const jobs = [
     type: 'Contract',
     description:
       'Design and maintain APIs with Node.js and MongoDB. Ensure scalability and security.',
-    image:
-      'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?ixlib=rb-4.0.3&q=80&w=800&fit=crop',
+    image: '/careers/backend.jpg',
   },
   {
     title: 'UI/UX Designer',
@@ -26,8 +24,7 @@ const jobs = [
     type: 'Internship',
     description:
       'Help craft intuitive designs and prototypes for our e-commerce platform.',
-    image:
-      'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    image: '/careers/designer.jpg',
   },
 ];
 

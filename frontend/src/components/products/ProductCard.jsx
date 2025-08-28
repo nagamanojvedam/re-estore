@@ -13,6 +13,7 @@ import { useAuth } from '@hooks/useAuth';
 import { useWishlist } from '@hooks/useWishlist';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
+import { formatPrice } from '../../utils/helpers';
 
 function ProductCard({ product, index = 0 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -23,8 +24,6 @@ function ProductCard({ product, index = 0 }) {
   const [isWishlisted, setIsWishlisted] = useState(() =>
     wishlist.some(item => item.productId._id === product._id),
   );
-
-  const randomImageIndex = Math.floor(Math.random() * product.images.length);
 
   const handleAddToCart = e => {
     e.preventDefault();
@@ -39,7 +38,7 @@ function ProductCard({ product, index = 0 }) {
       id: product._id,
       name: product.name,
       price: product.price,
-      image: product.images?.[randomImageIndex],
+      image: product.images?.[0],
       stock: product.stock,
       quantity: 1,
     };
@@ -102,9 +101,7 @@ function ProductCard({ product, index = 0 }) {
 
             {/* Product Image */}
             <img
-              src={
-                product.images?.[randomImageIndex] || '/placeholder-product.jpg'
-              }
+              src={product.images?.[0] || '/placeholder-product.jpg'}
               alt={product.name}
               className={clsx(
                 'lazy-image w-full h-full object-cover transition-opacity duration-500 group-hover:scale-105',
@@ -118,7 +115,7 @@ function ProductCard({ product, index = 0 }) {
             {/* Just Image */}
             {/* <img
               src={
-                product.images?.[randomImageIndex] || '/placeholder-product.jpg'
+                product.images?.[0] || '/placeholder-product.jpg'
               }
               alt={product.name}
               className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-105`}
@@ -207,12 +204,12 @@ function ProductCard({ product, index = 0 }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="text-lg font-bold text-gray-900 dark:text-white">
-                  ${product.price.toFixed(2)}
+                  {formatPrice(product.price)}
                 </span>
                 {product.originalPrice &&
                   product.originalPrice > product.price && (
                     <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                      ${product.originalPrice.toFixed(2)}
+                      {formatPrice(product.originalPrice)}
                     </span>
                   )}
               </div>

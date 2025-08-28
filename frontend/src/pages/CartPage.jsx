@@ -5,6 +5,7 @@ import { useCart } from '@hooks/useCart';
 import { useAuth } from '@hooks/useAuth';
 import CartItem from '@components/cart/CartItem';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/helpers';
 
 function CartPage() {
   const { items, total, itemCount, clearCart } = useCart();
@@ -35,7 +36,7 @@ function CartPage() {
             Your cart is empty
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            Looks like you haven't added any items to your cart yet. Start
+            Looks like you haven&apos;t added any items to your cart yet. Start
             shopping to fill it up!
           </p>
           <Link to="/shop" className="btn-primary">
@@ -123,7 +124,7 @@ function CartPage() {
                       Subtotal ({itemCount} items)
                     </span>
                     <span className="text-gray-900 dark:text-white font-medium">
-                      ${total.toFixed(2)}
+                      {formatPrice(total)}
                     </span>
                   </div>
 
@@ -147,15 +148,14 @@ function CartPage() {
                       Tax
                     </span>
                     <span className="text-gray-900 dark:text-white font-medium">
-                      ${(total * 0.08).toFixed(2)}
+                      {formatPrice(total * 0.08)}
                     </span>
                   </div>
 
                   {total < 50 && (
                     <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
                       <p className="text-sm text-blue-800 dark:text-blue-300">
-                        Add ${(50 - total).toFixed(2)} more to get free
-                        shipping!
+                        Add {formatPrice(50 - total)} more to get free shipping!
                       </p>
                     </div>
                   )}
@@ -167,9 +167,8 @@ function CartPage() {
                       Total
                     </span>
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
-                      $
-                      {(total + (total >= 50 ? 0 : 10) + total * 0.08).toFixed(
-                        2,
+                      {formatPrice(
+                        total + (total >= 50 ? 0 : 10) + total * 0.08,
                       )}
                     </span>
                   </div>

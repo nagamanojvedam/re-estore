@@ -26,10 +26,26 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     items: [orderItemSchema],
+    subTotal: {
+      type: Number,
+      required: true,
+    },
+    shipping: {
+      type: Number,
+      required: true,
+    },
+    tax: {
+      type: Number,
+      required: true,
+    },
     totalAmount: {
       type: Number,
       required: true,
       min: 0,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["card", "cash"],
     },
     status: {
       type: String,

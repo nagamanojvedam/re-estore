@@ -1,10 +1,10 @@
-import React from 'react';
 import { useQuery } from 'react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { orderService } from '@services/orderService';
 import { LoadingScreen } from '@components/common/Spinner';
 import { ORDER_STATUSES } from '@utils/constants';
+import { formatPrice } from '../utils/helpers';
 
 const STATUS_ORDER = [
   ORDER_STATUSES.PENDING,
@@ -118,14 +118,77 @@ function OrderDetailPage() {
                       </div>
                     </div>
                     <div className="font-semibold text-gray-900 dark:text-white">
-                      ${item.price.toFixed(2)}
+                      {formatPrice(item.price)}
                     </div>
                   </div>
                 );
               })}
             </div>
-            <div className="flex justify-end mt-4 text-lg font-semibold">
-              Total: ${order.totalAmount.toFixed(2)}
+
+            {/* Payment Summary */}
+            <div className="bg-white dark:bg-gray-900 shadow-md rounded-xl p-6 mt-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                Payment Summary
+              </h2>
+
+              <div className="space-y-3 text-gray-700 dark:text-gray-300">
+                {/* Order Amount / Subtotal */}
+                <div className="flex justify-between">
+                  <span>Order Amount</span>
+                  <span>{formatPrice(order.subTotal)}</span>
+                </div>
+
+                {/* Shipping */}
+                <div className="flex justify-between">
+                  <span>Shipping</span>
+                  <span>{formatPrice(order.shipping)}</span>
+                </div>
+
+                {/* Tax */}
+                <div className="flex justify-between">
+                  <span>Tax</span>
+                  <span>{formatPrice(order.tax)}</span>
+                </div>
+
+                <hr className="border-gray-300 dark:border-gray-700" />
+
+                {/* Total */}
+                <div className="flex justify-between text-lg font-semibold">
+                  <span>Total</span>
+                  <span>{formatPrice(order.totalAmount)}</span>
+                </div>
+              </div>
+
+              {/* Payment Info */}
+              <div className="mt-6">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  Payment Information
+                </h3>
+                <div className="text-gray-700 dark:text-gray-300 space-y-1">
+                  <p>
+                    Method:{' '}
+                    <span className="font-medium capitalize">
+                      {order.paymentMethod}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-medium">Status:</span>{' '}
+                    <span
+                      className={`${
+                        order.paymentStatus === 'paid'
+                          ? 'text-green-200 bg-green-700'
+                          : 'text-red-200 bg-red-700'
+                      } font-semibold text-xs capitalize rounded px-1.5 py-0.5`}
+                    >
+                      {order.paymentStatus}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-medium">Transaction ID:</span>{' '}
+                    {`TXID-${order._id}`}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 

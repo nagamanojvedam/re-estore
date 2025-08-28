@@ -103,17 +103,17 @@ export default function AboutPage() {
               {
                 name: 'Alex Johnson',
                 role: 'Founder & CEO',
-                img: '/team1.jpg',
+                img: '/avatars/team1.jpg',
               },
               {
                 name: 'Sara Lee',
                 role: 'Head of Marketing',
-                img: '/team2.jpg',
+                img: '/avatars/team2.jpg',
               },
               {
                 name: 'Michael Smith',
                 role: 'Lead Engineer',
-                img: '/team3.jpg',
+                img: '/avatars/team3.jpg',
               },
             ].map((member, i) => (
               <motion.div
@@ -156,7 +156,7 @@ export default function AboutPage() {
               won’t want to miss.
             </p>
             <a
-              href="/products"
+              href="/shop"
               className="px-6 py-3 bg-white text-primary-600 font-semibold rounded-lg shadow hover:bg-gray-100 transition"
             >
               Shop Now

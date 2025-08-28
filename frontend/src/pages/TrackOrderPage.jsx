@@ -2,13 +2,14 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { orderService } from '../services/orderService';
+import { LoadingScreen } from '../components/common/Spinner';
 
 export default function TrackOrderPage() {
   const [orderNumber, setOrderNumber] = useState('');
 
   const { data, isLoading, refetch } = useQuery(
     ['track'],
-    () => orderService.getOrder(orderNumber),
+    () => orderService.getOrderByNumber(orderNumber),
     {
       enabled: false,
       retry: false,
@@ -20,8 +21,6 @@ export default function TrackOrderPage() {
 
     refetch();
   };
-
-  if (isLoading) return <div>Loading...</div>;
 
   const order = data?.order;
 
@@ -35,7 +34,6 @@ export default function TrackOrderPage() {
           >
             Track Your Order
           </h1>
-
           {/* Input */}
           <input
             type="text"
@@ -48,7 +46,6 @@ export default function TrackOrderPage() {
               text-gray-900 dark:text-gray-100
               focus:outline-none focus:ring-2 focus:ring-primary-500 mb-4"
           />
-
           {/* Button */}
           <button
             onClick={handleTrack}
@@ -60,8 +57,10 @@ export default function TrackOrderPage() {
             Track Order
           </button>
 
+          {isLoading && <LoadingScreen message="Loading order..." />}
+
           {/* Order Details */}
-          {order && (
+          {order && !isLoading && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
