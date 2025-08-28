@@ -8,6 +8,7 @@ import {
   CheckCircleIcon,
   TruckIcon,
   MapPinIcon,
+  BanknotesIcon,
 } from '@heroicons/react/24/outline';
 import { useCart } from '@hooks/useCart';
 import { useAuth } from '@hooks/useAuth';
@@ -21,6 +22,7 @@ function CheckoutPage() {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState('card');
 
   const {
     register,
@@ -62,31 +64,29 @@ function CheckoutPage() {
   const totalAmount = subtotal + shipping + tax;
 
   const onSubmit = async data => {
+    // Create order
+    const orderData = {
+      items: items.map(item => ({
+        product: item.id,
+        quantity: item.quantity,
+      })),
+      shippingAddress: {
+        street: data.address,
+        city: data.city,
+        state: data.state,
+        zipCode: data.zipCode,
+        country: data.country,
+      },
+      paymentStatus: paymentMethod === 'card' ? 'paid' : 'pending',
+      // totalAmount, not neccessarty as backend will automatically calculated
+    };
     setIsProcessing(true);
 
     try {
       // Process payment (integrate with Stripe/PayPal here)
       await simulatePayment();
 
-      // Create order
-      const orderData = {
-        items: items.map(item => ({
-          product: item.id,
-          quantity: item.quantity,
-        })),
-        shippingAddress: {
-          street: data.address,
-          city: data.city,
-          state: data.state,
-          zipCode: data.zipCode,
-          country: data.country,
-        },
-        // totalAmount, not neccessarty as backend will automatically calculated
-      };
-
-
       const { order } = await orderService.createOrder(orderData);
-
 
       // Clear cart
       clearCart();
@@ -95,6 +95,7 @@ function CheckoutPage() {
       toast.success('Order placed successfully!');
       navigate(`/orders/${order._id}`);
     } catch (error) {
+      await orderService.createOrder({ ...orderData, paymentStatus: 'failed' });
       toast.error(error.message || 'Failed to process order');
     } finally {
       setIsProcessing(false);
@@ -384,12 +385,16 @@ function CheckoutPage() {
                   {/* Payment Method Selection */}
                   <div className="mb-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <label className="relative flex items-center p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-primary-300 dark:hover:border-primary-600">
+                      {/* Credit Card Option */}
+                      <label
+                        className={`relative flex items-center p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-primary-300 dark:hover:border-primary-600 ${paymentMethod === 'card' ? 'bg-primary-50 dark:bg-primary-900' : ''}`}
+                      >
                         <input
                           type="radio"
                           value="card"
                           {...register('paymentMethod')}
                           className="sr-only"
+                          onChange={() => setPaymentMethod('card')}
                         />
                         <div className="flex items-center space-x-3">
                           <CreditCardIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
@@ -403,96 +408,130 @@ function CheckoutPage() {
                           </div>
                         </div>
                       </label>
+
+                      {/* Cash Option */}
+                      <label
+                        className={`relative flex items-center p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-primary-300 dark:hover:border-primary-600 ${paymentMethod === 'cash' ? 'bg-primary-50 dark:bg-primary-900' : ''}`}
+                      >
+                        <input
+                          type="radio"
+                          value="cash"
+                          {...register('paymentMethod')}
+                          className="sr-only"
+                          onChange={() => setPaymentMethod('cash')}
+                        />
+                        <div className="flex items-center space-x-3">
+                          <BanknotesIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                          <div>
+                            <div className="font-medium text-gray-900 dark:text-white">
+                              Cash on Delivery
+                            </div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              Pay when you receive
+                            </div>
+                          </div>
+                        </div>
+                      </label>
                     </div>
                   </div>
 
-                  {/* Credit Card Form */}
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Card Number *
-                      </label>
-                      <input
-                        type="text"
-                        {...register('cardNumber', {
-                          required: 'Card number is required',
-                          onChange: e => {
-                            e.target.value = formatCardNumber(e.target.value);
-                          },
-                        })}
-                        className={`input ${errors.cardNumber ? 'input-error' : ''}`}
-                        placeholder="1234 5678 9012 3456"
-                        maxLength="19"
-                      />
-                      {errors.cardNumber && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.cardNumber.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
+                  {/* Credit Card Form - shown only if card is selected */}
+                  {paymentMethod === 'card' && (
+                    <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Expiry Date *
+                          Card Number *
                         </label>
                         <input
                           type="text"
-                          {...register('expiryDate', {
-                            required: 'Expiry date is required',
+                          {...register('cardNumber', {
+                            required: 'Card number is required',
                             onChange: e => {
-                              e.target.value = formatExpiryDate(e.target.value);
+                              e.target.value = formatCardNumber(e.target.value);
                             },
                           })}
-                          className={`input ${errors.expiryDate ? 'input-error' : ''}`}
-                          placeholder="MM/YY"
-                          maxLength="5"
+                          className={`input ${errors.cardNumber ? 'input-error' : ''}`}
+                          placeholder="1234 5678 9012 3456"
+                          maxLength="19"
                         />
-                        {errors.expiryDate && (
+                        {errors.cardNumber && (
                           <p className="mt-1 text-sm text-red-600">
-                            {errors.expiryDate.message}
+                            {errors.cardNumber.message}
                           </p>
                         )}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Expiry Date *
+                          </label>
+                          <input
+                            type="text"
+                            {...register('expiryDate', {
+                              required: 'Expiry date is required',
+                              onChange: e => {
+                                e.target.value = formatExpiryDate(
+                                  e.target.value,
+                                );
+                              },
+                            })}
+                            className={`input ${errors.expiryDate ? 'input-error' : ''}`}
+                            placeholder="MM/YY"
+                            maxLength="5"
+                          />
+                          {errors.expiryDate && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {errors.expiryDate.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            CVV *
+                          </label>
+                          <input
+                            type="text"
+                            {...register('cvv', {
+                              required: 'CVV is required',
+                            })}
+                            className={`input ${errors.cvv ? 'input-error' : ''}`}
+                            placeholder="123"
+                            maxLength="4"
+                          />
+                          {errors.cvv && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {errors.cvv.message}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          CVV *
+                          Cardholder Name *
                         </label>
                         <input
                           type="text"
-                          {...register('cvv', { required: 'CVV is required' })}
-                          className={`input ${errors.cvv ? 'input-error' : ''}`}
-                          placeholder="123"
-                          maxLength="4"
+                          {...register('cardName', {
+                            required: 'Cardholder name is required',
+                          })}
+                          className={`input ${errors.cardName ? 'input-error' : ''}`}
+                          placeholder="John Doe"
                         />
-                        {errors.cvv && (
+                        {errors.cardName && (
                           <p className="mt-1 text-sm text-red-600">
-                            {errors.cvv.message}
+                            {errors.cardName.message}
                           </p>
                         )}
                       </div>
                     </div>
+                  )}
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Cardholder Name *
-                      </label>
-                      <input
-                        type="text"
-                        {...register('cardName', {
-                          required: 'Cardholder name is required',
-                        })}
-                        className={`input ${errors.cardName ? 'input-error' : ''}`}
-                        placeholder="John Doe"
-                      />
-                      {errors.cardName && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.cardName.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                  {paymentMethod === 'cash' && (
+                    <p>You will pay when you receive your order</p>
+                  )}
                 </div>
               </div>
 

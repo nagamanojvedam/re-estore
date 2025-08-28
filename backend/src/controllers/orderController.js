@@ -4,7 +4,7 @@ const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 
 const createOrder = catchAsync(async (req, res) => {
-  const { items, shippingAddress } = req.body;
+  const { items, shippingAddress, paymentStatus } = req.body;
 
   // Validate products and calculate total
   let totalAmount = 0;
@@ -44,6 +44,7 @@ const createOrder = catchAsync(async (req, res) => {
     items: orderItems,
     totalAmount,
     shippingAddress,
+    paymentStatus,
   });
 
   await order.populate([
@@ -125,12 +126,30 @@ const getAllOrders = catchAsync(async (req, res) => {
   });
 });
 
+const allowedTransactions = {
+  pending: ["confirmed", "cancelled"],
+  confirmed: ["shipped", "cancelled"],
+  shipped: ["delivered", "cancelled"],
+  delivered: [],
+  cancelled: [],
+};
+
 const updateOrderStatus = catchAsync(async (req, res) => {
   const { status } = req.body;
 
   const order = await Order.findById(req.params.id);
   if (!order) {
     throw new ApiError(404, "Order not found");
+  }
+
+  const currentStatus = order.status;
+  const nextValidStatus = allowedTransactions[currentStatus] || [];
+
+  if (!nextValidStatus.includes(status)) {
+    throw new ApiError(
+      400,
+      `Invalid order status transition: ${currentStatus} -> ${status}`
+    );
   }
 
   order.status = status;

@@ -20,6 +20,7 @@ const createOrder = {
       zipCode: Joi.string().required(),
       country: Joi.string().required(),
     }),
+    paymentStatus: Joi.string().valid("pending", "paid", "failed"),
   }),
 };
 

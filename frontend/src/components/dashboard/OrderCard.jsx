@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
+const allowedStatus = {
+  pending: ['confirmed', 'cancelled'],
+  confirmed: ['shipped', 'cancelled'],
+  shipped: ['delivered', 'cancelled'],
+  delivered: [],
+  cancelled: [],
+};
+
 const OrderCard = ({ order, updateStatusMutation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [status, setStatus] = useState(order.status);
@@ -95,18 +103,33 @@ const OrderCard = ({ order, updateStatusMutation }) => {
               });
               setStatus(e.target.value);
             }}
-            className="text-xs border rounded-md px-2 py-1 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-blue-500"
+            className="text-xs border rounded-md px-2 py-1 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 capitalize"
           >
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
+            {['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'].map(
+              (item, idx) => (
+                <option
+                  key={idx + 1}
+                  value={item}
+                  className="capitalize"
+                  disabled={
+                    currentStage === item ||
+                    !allowedStatus[status].includes(item)
+                  }
+                >
+                  {item}
+                </option>
+              ),
+            )}
+            {/* // <option value="pending">Pending</option>
+            // <option value="confirmed">Confirmed</option>
+            // <option value="shipped">Shipped</option>
+            // <option value="delivered">Delivered</option>
+            // <option value="cancelled">Cancelled</option> */}
           </select>
         </div>
 
         {status !== 'cancelled' ? (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center ">
             {[1, 2, 3, 4].map(stage => (
               <div key={stage} className="flex items-center">
                 <div
@@ -114,10 +137,10 @@ const OrderCard = ({ order, updateStatusMutation }) => {
                     stage,
                     currentStage,
                   )}`}
-                ></div>
+                />
                 {stage < 4 && (
                   <div
-                    className={`h-0.5 w-8 ${
+                    className={`h-0.5 w-12  ${
                       stage < currentStage ? 'bg-green-500' : 'bg-gray-300'
                     }`}
                   ></div>
