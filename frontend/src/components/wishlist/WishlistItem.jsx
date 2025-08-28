@@ -15,7 +15,7 @@ function WishlistItem({ item }) {
       <div className="flex items-center space-x-4">
         <Link to={`/product/${item._id}`}>
           <img
-            src={item.image}
+            src={item.images[0]}
             alt={item.name}
             className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
           />

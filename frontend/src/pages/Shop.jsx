@@ -10,8 +10,6 @@ import { productService } from '@services/productService';
 import { useDebounce } from '@hooks/useDebounce';
 import { ENV } from '@utils/constants';
 
-// const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
-
 function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = useMemo(() => {
@@ -29,8 +27,6 @@ function Shop() {
   }, [searchParams]);
 
   const debouncedFilters = useDebounce(filters, 600);
-
-  // useEffect(scrollToTop, []);
 
   // Fetch products with filters
   const {
@@ -63,14 +59,12 @@ function Shop() {
     });
     newParams.set('page', 1); // reset page
     setSearchParams(newParams);
-    // scrollToTop();
   };
 
   const handlePageChange = newPage => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set('page', newPage);
     setSearchParams(newParams);
-    // scrollToTop();
   };
 
   const clearFilters = () => {
@@ -80,10 +74,9 @@ function Shop() {
     params.set('page', 1);
     params.set('limit', ENV.ITEMS_PER_PAGE);
     setSearchParams(params);
-    // scrollToTop();
   };
 
-  const products = productsData?.products || [];
+  const products = productsData?.products;
   const pagination = productsData?.pagination || {};
 
   return (
@@ -222,7 +215,7 @@ function Shop() {
 
                   <button
                     onClick={clearFilters}
-                    className="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                    className="text-sm px-2 py-1 rounded text-white bg-red-500 hover:bg-red-300 hover:text-red-500"
                   >
                     Clear all
                   </button>

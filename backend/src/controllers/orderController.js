@@ -151,9 +151,9 @@ const updateOrderStatus = catchAsync(async (req, res) => {
 });
 
 const getOrder = catchAsync(async (req, res) => {
-  const { id } = req.params;
+  const { orderNumber } = req.params;
 
-  const order = await Order.findById(id).populate("items.product");
+  const order = await Order.findOne({ orderNumber }).populate("items.product");
 
   if (!order) {
     throw new ApiError(404, "Order not found");

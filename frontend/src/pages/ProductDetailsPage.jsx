@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,11 +25,10 @@ import ProductCard from '@components/products/ProductCard';
 import { LoadingScreen } from '@components/common/Spinner';
 import toast from 'react-hot-toast';
 
-// const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
 function ProductDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const { addItem } = useCart();
   const { isAuthenticated } = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
@@ -40,8 +39,11 @@ function ProductDetailsPage() {
     wishlist.some(item => item.productId._id === id),
   );
 
-  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
+
+  const link = window.location.href;
 
   // Fetch product details
   const {
@@ -66,14 +68,6 @@ function ProductDetailsPage() {
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  // useEffect(scrollToTop, []);
-
-  useEffect(() => {
-    if (product && product.variants?.length > 0) {
-      setSelectedVariant(product.variants[0]);
-    }
-  }, [product]);
-
   const handleAddToCart = () => {
     if (product.stock <= 0) {
       toast.error('Product is out of stock');
@@ -88,11 +82,10 @@ function ProductDetailsPage() {
     const itemToAdd = {
       id: product._id,
       name: product.name,
-      price: selectedVariant?.price || product.price,
+      price: product.price,
       image: product.images?.[selectedImageIndex],
       stock: product.stock,
       quantity,
-      variant: selectedVariant?.name,
     };
 
     addItem(itemToAdd);
@@ -117,24 +110,15 @@ function ProductDetailsPage() {
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: product.name,
-          text: product.description,
-          url: window.location.href,
-        });
-      } catch (error) {
-        // User cancelled sharing
-      }
-    } else {
-      // Fallback - copy to clipboard
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        toast.success('Product link copied to clipboard!');
-      } catch (error) {
-        toast.error('Failed to copy link');
-      }
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      setOpen(false);
+      toast.success('Product link copied to clipboard');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      setCopied(false);
+      toast.error('Failed to copy link. Please try again.');
     }
   };
 
@@ -298,8 +282,7 @@ function ProductDetailsPage() {
             {/* Price */}
             <div className="flex items-center space-x-4">
               <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                $
-                {selectedVariant?.price?.toFixed(2) || product.price.toFixed(2)}
+                ${product.price.toFixed(2)}
               </span>
               {product.originalPrice &&
                 product.originalPrice > product.price && (
@@ -324,35 +307,6 @@ function ProductDetailsPage() {
               {product.shortDescription ||
                 product.description.substring(0, 200) + '...'}
             </p>
-
-            {/* Variants */}
-            {product.variants && product.variants.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                  Options
-                </h3>
-                <div className="flex flex-wrap gap-3">
-                  {product.variants.map(variant => (
-                    <button
-                      key={variant.id}
-                      onClick={() => setSelectedVariant(variant)}
-                      className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                        selectedVariant?.id === variant.id
-                          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                          : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
-                      }`}
-                    >
-                      <div className="text-sm font-medium">{variant.name}</div>
-                      {variant.price !== product.price && (
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          +${(variant.price - product.price).toFixed(2)}
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Quantity Selector */}
             <div className="flex items-center  space-x-4">
@@ -418,12 +372,43 @@ function ProductDetailsPage() {
                 )}
               </button>
 
-              <button
+              {/* <button
                 onClick={handleShare}
                 className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-600 dark:text-gray-400 transition-all"
               >
                 <ShareIcon className="w-6 h-6" />
-              </button>
+              </button> */}
+
+              <div className="relative inline-block">
+                {/* Share button */}
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-600 dark:text-gray-400 transition-all"
+                >
+                  <ShareIcon className="w-6 h-6" />
+                </button>
+
+                {/* Tooltip popup */}
+                {open && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-900 border rounded-xl shadow-lg p-3 z-10"
+                  >
+                    <p className="text-sm text-gray-600 dark:text-gray-400 p-2 truncate">
+                      {link}
+                    </p>
+                    <button
+                      onClick={handleShare}
+                      className="mt-2 w-full px-3 py-2 text-sm bg-gray-800 text-white rounded hover:bg-gray-700 transition"
+                    >
+                      {copied ? 'Copied!' : 'Copy Link'}
+                    </button>
+                  </motion.div>
+                )}
+              </div>
             </div>
 
             {/* Features */}

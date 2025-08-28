@@ -3,12 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@contexts/AuthContext';
 import { CartProvider } from '@contexts/CartContext';
 import { ThemeProvider } from '@contexts/ThemeContext';
+import { WishlistProvider } from './contexts/WishlistContext';
+import ErrorBoundary from '@components/common/ErrorBoundary';
 import Header from '@components/common/Header';
+import ProtectedRoute from '@components/auth/ProtectedRoute';
 import Footer from '@components/common/Footer';
 import { LoadingScreen } from '@components/common/Spinner';
-import ProtectedRoute from '@components/auth/ProtectedRoute';
-import ErrorBoundary from '@components/common/ErrorBoundary';
-import { WishlistProvider } from './contexts/WishlistContext';
 
 // Lazy load pages with improved loading states
 const Home = lazy(() => import('@pages/Home'));
@@ -24,6 +24,13 @@ const OrderDetailsPage = lazy(() => import('@pages/OrderDetailsPage'));
 const WishlistPage = lazy(() => import('@pages/WishlistPage'));
 const NotFound = lazy(() => import('@pages/NotFound'));
 const AdminDashboard = lazy(() => import('@pages/Dashboard'));
+const CareersPage = lazy(() => import('@pages/CareersPage'));
+const PressPage = lazy(() => import('@pages/PressPage'));
+const BlogPage = lazy(() => import('@pages/BlogPage'));
+const FAQPage = lazy(() => import('@pages/FAQPage'));
+const ShippingPage = lazy(() => import('@pages/ShippingPage'));
+const ReturnsPage = lazy(() => import('@pages/ReturnsPage'));
+const TrackOrderPage = lazy(() => import('@pages/TrackOrderPage'));
 
 function App() {
   return (
@@ -44,6 +51,14 @@ function App() {
                       <Route path="/shop" element={<Shop />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<Contact />} />
+                      <Route path="/careers" element={<CareersPage />} />
+                      <Route path="/press" element={<PressPage />} />
+                      <Route path="/blog" element={<BlogPage />} />
+                      <Route path="/faq" element={<FAQPage />} />
+                      <Route path="/shipping" element={<ShippingPage />} />
+                      <Route path="/returns" element={<ReturnsPage />} />
+                      <Route path="/track" element={<TrackOrderPage />} />
+
                       <Route
                         path="/product/:id"
                         element={<ProductDetailsPage />}

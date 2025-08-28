@@ -26,9 +26,8 @@ export const orderService = {
   },
 
   // Get order by id
-  getOrder: async id => {
-    const response = await api.get(`/orders/${id}`);
-    console.log('response', response);
+  getOrder: async orderNumber => {
+    const response = await api.get(`/orders/${orderNumber}`);
     return response.data.data;
   },
 };
