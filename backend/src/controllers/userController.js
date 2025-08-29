@@ -15,7 +15,7 @@ const getUsers = catchAsync(async (req, res) => {
   const skip = (page - 1) * limit;
 
   const users = await User.find({ isActive: true })
-    .select("-password")
+    .select("-password -__v")
     .skip(skip)
     .limit(Number(limit))
     .sort({ createdAt: -1 });
@@ -43,7 +43,7 @@ const updateMe = catchAsync(async (req, res) => {
   const user = await User.findByIdAndUpdate(id, updates, {
     new: true,
     runValidators: true,
-  }).select("-password");
+  }).select("-password -__v");
 
   res.json({
     status: "success",
@@ -54,7 +54,9 @@ const updateMe = catchAsync(async (req, res) => {
 const getWishlist = catchAsync(async (req, res) => {
   const { id } = req.user;
 
-  const user = await User.findById(id).populate("wishlist.productId");
+  const user = await User.findById(id)
+    .select("-password -__v")
+    .populate("wishlist.productId");
 
   res.json({ status: "success", data: { wishlist: user.wishlist } });
 });

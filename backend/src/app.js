@@ -1,11 +1,7 @@
 const express = require("express");
-// const helmet = require("helmet");
+const helmet = require("helmet");
 const cors = require("cors");
-// const mongoSanitize = require("express-mongo-sanitize");
-// const xss = require("xss-clean");
 const morgan = require("morgan");
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
 const path = require("path");
 
 const config = require("./config/config");
@@ -21,12 +17,20 @@ const orderRoutes = require("./routes/orderRoutes");
 const app = express();
 
 // Security middleware
-// app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+
 if (config.env === "development") {
   app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 }
-// app.use(mongoSanitize());
-// app.use(xss());
 
 // Logging
 if (config.env !== "production") {
@@ -39,37 +43,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
 app.use("/api", rateLimiter);
-
-// Swagger documentation
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "MERN Backend API",
-      version: "1.0.0",
-      description: "Production-ready E-commerce API",
-    },
-    servers: [
-      {
-        url: `http://localhost:${config.port}`,
-        description: "Development server",
-      },
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-    },
-  },
-  apis: ["./src/routes/*.js"],
-};
-
-const specs = swaggerJsdoc(swaggerOptions);
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Health check
 app.get("/health", (req, res) => {

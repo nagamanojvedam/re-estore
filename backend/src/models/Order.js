@@ -65,7 +65,6 @@ const orderSchema = new mongoose.Schema(
     },
     orderNumber: {
       type: String,
-      unique: true,
     },
   },
   {
@@ -78,7 +77,7 @@ orderSchema.pre("save", function (next) {
   if (!this.orderNumber) {
     this.orderNumber = `ORD-${Date.now()}-${Math.random()
       .toString(36)
-      .substr(2, 9)
+      .slice(2, 11)
       .toUpperCase()}`;
   }
   next();
@@ -87,6 +86,6 @@ orderSchema.pre("save", function (next) {
 // Indexes
 orderSchema.index({ user: 1 });
 orderSchema.index({ status: 1 });
-// orderSchema.index({ orderNumber: 1 }); also since unique is true in schema
+orderSchema.index({ orderNumber: 1 }, { unique: true });
 
 module.exports = mongoose.model("Order", orderSchema);
