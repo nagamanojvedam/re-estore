@@ -1,4 +1,3 @@
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const RefreshToken = require("../models/RefreshToken");
 const ApiError = require("../utils/ApiError");
@@ -99,6 +98,7 @@ const refresh = catchAsync(async (req, res) => {
 
     // Get user
     const user = await User.findById(decoded.sub);
+
     if (!user || !user.isActive) {
       throw new ApiError(401, "User not found or inactive");
     }

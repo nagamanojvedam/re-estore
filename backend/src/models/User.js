@@ -11,14 +11,13 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
       trim: true,
     },
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      minlength: 8,
       select: false,
     },
     role: {
@@ -51,7 +50,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // Index for email
-// userSchema.index({ email: 1 }); since unique is set true in schema
+userSchema.index({ email: 1 }, { unique: true }); // better to use unique: true here instead of index  set true in schema
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {
@@ -81,13 +80,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   }
   // False means NOT changed
   return false;
-};
-
-// Transform toJSON
-userSchema.methods.toJSON = function () {
-  const userObject = this.toObject();
-  delete userObject.password;
-  return userObject;
 };
 
 module.exports = mongoose.model("User", userSchema);

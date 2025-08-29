@@ -19,6 +19,7 @@ const auth = catchAsync(async (req, res, next) => {
     }
 
     const user = await User.findById(decoded.sub).select("+passwordChangedAt");
+
     if (!user || !user.isActive) {
       throw new ApiError(401, "User not found or inactive");
     }
