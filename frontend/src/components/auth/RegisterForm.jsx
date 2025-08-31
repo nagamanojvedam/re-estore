@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { EyeIcon, EyeSlashIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
-import { useAuth } from '@hooks/useAuth'
-import { LoadingButton } from '@components/common/Spinner'
+import { LoadingButton } from '@components/common/Spinner';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '@hooks/useAuth';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import api from '../../services/api';
 
 function RegisterForm({ onSuccess, onSwitchToLogin }) {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const { register: registerUser, loading, error, clearError } = useAuth()
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { register: registerUser, loading, error, clearError } = useAuth();
 
   const {
     register,
@@ -22,57 +23,83 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
       password: '',
       confirmPassword: '',
       agreeToTerms: false,
-    }
-  })
+    },
+  });
 
-  const password = watch('password')
+  const password = watch('password');
 
-  const passwordStrength = (pwd) => {
-    let strength = 0
-    if (pwd.length >= 8) strength += 1
-    if (/[A-Z]/.test(pwd)) strength += 1
-    if (/[a-z]/.test(pwd)) strength += 1
-    if (/[0-9]/.test(pwd)) strength += 1
-    if (/[^A-Za-z0-9]/.test(pwd)) strength += 1
-    return strength
-  }
+  const passwordStrength = pwd => {
+    if (pwd.length < 8) return 0;
 
-  const getStrengthText = (strength) => {
+    let strength = 0;
+    if (pwd.length >= 8) strength += 1;
+    if (/[A-Z]/.test(pwd)) strength += 1;
+    if (/[a-z]/.test(pwd)) strength += 1;
+    if (/[0-9]/.test(pwd)) strength += 1;
+    if (/[^A-Za-z0-9]/.test(pwd)) strength += 1;
+    return strength;
+  };
+
+  const getStrengthText = strength => {
     switch (strength) {
       case 0:
-      case 1: return { text: 'Very Weak', color: 'text-red-500' }
-      case 2: return { text: 'Weak', color: 'text-orange-500' }
-      case 3: return { text: 'Fair', color: 'text-yellow-500' }
-      case 4: return { text: 'Good', color: 'text-blue-500' }
-      case 5: return { text: 'Strong', color: 'text-green-500' }
-      default: return { text: '', color: '' }
+      case 1:
+        return { text: 'Very Weak', color: 'text-red-500' };
+      case 2:
+        return { text: 'Weak', color: 'text-orange-500' };
+      case 3:
+        return { text: 'Fair', color: 'text-yellow-500' };
+      case 4:
+        return { text: 'Good', color: 'text-blue-500' };
+      case 5:
+        return { text: 'Strong', color: 'text-green-500' };
+      default:
+        return { text: '', color: '' };
     }
-  }
+  };
 
-  const strength = passwordStrength(password || '')
-  const strengthInfo = getStrengthText(strength)
+  const strength = passwordStrength(password || '');
+  const strengthInfo = getStrengthText(strength);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async data => {
     try {
-      clearError()
-      const { confirmPassword, agreeToTerms, ...userData } = data
-      await registerUser(userData)
-      onSuccess()
+      clearError();
+      const { confirmPassword, agreeToTerms, ...userData } = data;
+
+      if (!agreeToTerms) {
+        setError('agreeToTerms', {
+          type: 'required',
+          message: 'You must agree to the terms and conditions.',
+        });
+        return;
+      }
+      await registerUser(userData);
+      onSuccess();
     } catch (err) {
-      if (err.response?.data?.details) {
-        Object.entries(err.response.data.details).forEach(([field, message]) => {
-          setError(field, { type: 'server', message })
-        })
+      const apiError = err.response?.data;
+
+      if (apiError?.details) {
+        // structured errors (if backend ever returns them)
+        console.log('error details', apiError.details);
+        Object.entries(apiError.details).forEach(([field, message]) => {
+          setError(field, { type: 'server', message });
+        });
+      } else if (apiError?.message) {
+        // fallback: attach the message to the email field
+        setError('email', { type: 'server', message: apiError.message });
       }
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-md mx-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Name Field */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Full Name
           </label>
           <input
@@ -85,12 +112,12 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
               required: 'Name is required',
               minLength: {
                 value: 2,
-                message: 'Name must be at least 2 characters'
+                message: 'Name must be at least 2 characters',
               },
               maxLength: {
                 value: 50,
-                message: 'Name must be less than 50 characters'
-              }
+                message: 'Name must be less than 50 characters',
+              },
             })}
           />
           {errors.name && (
@@ -102,7 +129,10 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
 
         {/* Email Field */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Email Address
           </label>
           <input
@@ -115,8 +145,8 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
               required: 'Email is required',
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: 'Invalid email address'
-              }
+                message: 'Invalid email address',
+              },
             })}
           />
           {errors.email && (
@@ -128,7 +158,10 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
 
         {/* Password Field */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Password
           </label>
           <div className="relative">
@@ -142,12 +175,12 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
                 required: 'Password is required',
                 minLength: {
                   value: 6,
-                  message: 'Password must be at least 6 characters'
+                  message: 'Password must be at least 6 characters',
                 },
-                validate: (value) => {
-                  const strength = passwordStrength(value)
-                  return strength >= 2 || 'Password is too weak'
-                }
+                validate: value => {
+                  const strength = passwordStrength(value);
+                  return strength >= 2 || 'Password is too weak';
+                },
               })}
             />
             <button
@@ -162,7 +195,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
               )}
             </button>
           </div>
-          
+
           {/* Password Strength Indicator */}
           {password && (
             <div className="mt-2">
@@ -171,9 +204,12 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
                   <div
                     key={i}
                     className={`h-1 flex-1 rounded ${
-                      i < strength 
-                        ? strength <= 2 ? 'bg-red-500' : 
-                          strength <= 3 ? 'bg-yellow-500' : 'bg-green-500'
+                      i < strength
+                        ? strength <= 2
+                          ? 'bg-red-500'
+                          : strength <= 3
+                            ? 'bg-yellow-500'
+                            : 'bg-green-500'
                         : 'bg-gray-200 dark:bg-gray-700'
                     }`}
                   />
@@ -184,7 +220,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
               </p>
             </div>
           )}
-          
+
           {errors.password && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">
               {errors.password.message}
@@ -194,7 +230,10 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
 
         {/* Confirm Password Field */}
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="confirmPassword"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Confirm Password
           </label>
           <div className="relative">
@@ -206,8 +245,8 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
               placeholder="Confirm your password"
               {...register('confirmPassword', {
                 required: 'Please confirm your password',
-                validate: (value) =>
-                  value === password || 'Passwords do not match'
+                validate: value =>
+                  value === password || 'Passwords do not match',
               })}
             />
             <button
@@ -236,16 +275,25 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
             type="checkbox"
             className="mt-1 h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
             {...register('agreeToTerms', {
-              required: 'You must agree to the terms and conditions'
+              required: 'You must agree to the terms and conditions',
             })}
           />
-          <label htmlFor="agreeToTerms" className="ml-3 text-sm text-gray-600 dark:text-gray-400">
+          <label
+            htmlFor="agreeToTerms"
+            className="ml-3 text-sm text-gray-600 dark:text-gray-400"
+          >
             I agree to the{' '}
-            <a href="/terms" className="text-primary-600 dark:text-primary-400 hover:underline">
+            <a
+              href="/terms"
+              className="text-primary-600 dark:text-primary-400 hover:underline"
+            >
               Terms and Conditions
             </a>{' '}
             and{' '}
-            <a href="/privacy" className="text-primary-600 dark:text-primary-400 hover:underline">
+            <a
+              href="/privacy"
+              className="text-primary-600 dark:text-primary-400 hover:underline"
+            >
               Privacy Policy
             </a>
           </label>
@@ -288,7 +336,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
         </div>
       </form>
     </div>
-  )
+  );
 }
 
-export default RegisterForm
+export default RegisterForm;

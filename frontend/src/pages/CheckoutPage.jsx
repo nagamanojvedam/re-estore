@@ -1,20 +1,19 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { motion } from 'framer-motion';
+import { LoadingButton } from '@components/common/Spinner';
 import {
+  BanknotesIcon,
   CreditCardIcon,
   LockClosedIcon,
-  CheckCircleIcon,
-  TruckIcon,
   MapPinIcon,
-  BanknotesIcon,
+  TruckIcon,
 } from '@heroicons/react/24/outline';
-import { useCart } from '@hooks/useCart';
 import { useAuth } from '@hooks/useAuth';
+import { useCart } from '@hooks/useCart';
 import { orderService } from '@services/orderService';
-import { LoadingButton } from '@components/common/Spinner';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '../utils/helpers';
 
 function CheckoutPage() {
@@ -22,15 +21,12 @@ function CheckoutPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('card');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-    setValue,
   } = useForm({
     defaultValues: {
       email: user?.email || '',
@@ -47,11 +43,8 @@ function CheckoutPage() {
       expiryDate: '',
       cvv: '',
       cardName: '',
-      sameAsBilling: true,
     },
   });
-
-  const watchSameAsBilling = watch('sameAsBilling');
 
   useEffect(() => {
     if (items.length === 0) {
@@ -80,7 +73,6 @@ function CheckoutPage() {
       },
       paymentStatus: paymentMethod === 'card' ? 'paid' : 'pending',
       paymentMethod,
-      // totalAmount, not neccessarty as backend will automatically calculated
     };
     setIsProcessing(true);
 
@@ -114,26 +106,6 @@ function CheckoutPage() {
     }
   };
 
-  const formatCardNumber = value => {
-    return value
-      .replace(/\s/g, '')
-      .replace(/(.{4})/g, '$1 ')
-      .trim();
-  };
-
-  const formatExpiryDate = value => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(.{2})(.{2})/, '$1/$2')
-      .substring(0, 5);
-  };
-
-  const steps = [
-    { id: 1, name: 'Shipping', completed: currentStep > 1 },
-    { id: 2, name: 'Payment', completed: currentStep > 2 },
-    { id: 3, name: 'Review', completed: false },
-  ];
-
   if (items.length === 0) {
     return null;
   }
@@ -154,43 +126,6 @@ function CheckoutPage() {
             <p className="text-gray-600 dark:text-gray-400 mt-2">
               Complete your purchase securely
             </p>
-          </div>
-
-          {/* Progress Steps */}
-          <div className="mb-8">
-            <div className="flex items-center justify-center">
-              {steps.map((step, index) => (
-                <div key={step.id} className="flex items-center">
-                  <div
-                    className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
-                      step.completed
-                        ? 'bg-green-500 border-green-500 text-white'
-                        : currentStep === step.id
-                          ? 'border-primary-500 text-primary-500'
-                          : 'border-gray-300 text-gray-300'
-                    }`}
-                  >
-                    {step.completed ? (
-                      <CheckCircleIcon className="w-5 h-5" />
-                    ) : (
-                      step.id
-                    )}
-                  </div>
-                  <span
-                    className={`ml-2 text-sm font-medium ${
-                      step.completed || currentStep === step.id
-                        ? 'text-gray-900 dark:text-white'
-                        : 'text-gray-500'
-                    }`}
-                  >
-                    {step.name}
-                  </span>
-                  {index < steps.length - 1 && (
-                    <div className="w-16 h-0.5 bg-gray-300 mx-4" />
-                  )}
-                </div>
-              ))}
-            </div>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)}>

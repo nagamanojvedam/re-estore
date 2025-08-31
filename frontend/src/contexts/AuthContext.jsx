@@ -121,8 +121,8 @@ export function AuthProvider({ children }) {
       toast.success(`Welcome back, ${response.user.name}!`);
       return response;
     } catch (error) {
-      dispatch({ type: 'AUTH_ERROR', payload: error.message });
-      toast.error(error.message);
+      dispatch({ type: 'AUTH_ERROR', payload: error.response.data.message });
+      toast.error(error.response.data.message);
       throw error;
     }
   };

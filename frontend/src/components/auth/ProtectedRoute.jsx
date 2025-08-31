@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import { useAuth } from '@hooks/useAuth'
-import { LoadingScreen } from '@components/common/Spinner'
-import LoginForm from './LoginForm'
+import { LoadingScreen } from '@components/common/Spinner';
+import { useAuth } from '@hooks/useAuth';
+import { useState } from 'react';
+import LoginForm from './LoginForm';
 
 function ProtectedRoute({ children, requireRole = null }) {
-  const { user, isAuthenticated, loading } = useAuth()
-  const [showLoginModal, setShowLoginModal] = useState(false)
+  const { user, isAuthenticated, loading } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Show loading while checking authentication
   if (loading) {
-    return <LoadingScreen message="Checking authentication..." />
+    return <LoadingScreen message="Checking authentication..." />;
   }
 
   // If not authenticated, show login modal
@@ -31,7 +31,7 @@ function ProtectedRoute({ children, requireRole = null }) {
           />
         </div>
       </div>
-    )
+    );
   }
 
   // Check role if required
@@ -58,18 +58,18 @@ function ProtectedRoute({ children, requireRole = null }) {
             Access Denied
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            You don't have permission to access this page.
+            You don&apos;t have permission to access this page.
           </p>
           <button onClick={() => window.history.back()} className="btn-primary">
             Go Back
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   // Render protected content
-  return children
+  return children;
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

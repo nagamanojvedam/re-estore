@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
-import { useAuth } from '@hooks/useAuth'
-import { LoadingButton } from '@components/common/Spinner'
+import { LoadingButton } from '@components/common/Spinner';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '@hooks/useAuth';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 
 function LoginForm({ onSuccess, onSwitchToRegister }) {
-  const [showPassword, setShowPassword] = useState(false)
-  const { login, loading, error, clearError } = useAuth()
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, loading, error, clearError } = useAuth();
 
   const {
     register,
@@ -17,30 +18,35 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
     defaultValues: {
       email: '',
       password: '',
-    }
-  })
+    },
+  });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async data => {
     try {
-      clearError()
-      await login(data)
-      onSuccess()
+      clearError();
+      await login(data);
+      onSuccess();
     } catch (err) {
       if (err.response?.data?.details) {
         // Handle validation errors
-        Object.entries(err.response.data.details).forEach(([field, message]) => {
-          setError(field, { type: 'server', message })
-        })
+        Object.entries(err.response.data.details).forEach(
+          ([field, message]) => {
+            setError(field, { type: 'server', message });
+          },
+        );
       }
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-md mx-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Email Field */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Email Address
           </label>
           <input
@@ -53,8 +59,8 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
               required: 'Email is required',
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: 'Invalid email address'
-              }
+                message: 'Invalid email address',
+              },
             })}
           />
           {errors.email && (
@@ -66,7 +72,10 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
 
         {/* Password Field */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Password
           </label>
           <div className="relative">
@@ -79,15 +88,15 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
               {...register('password', {
                 required: 'Password is required',
                 minLength: {
-                  value: 6,
-                  message: 'Password must be at least 6 characters'
-                }
+                  value: 8,
+                  message: 'Password must be at least 8 characters',
+                },
               })}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-primary-700 dark:text-gray-400 dark:hover:text-primary-300"
             >
               {showPassword ? (
                 <EyeSlashIcon className="w-5 h-5" />
@@ -125,6 +134,9 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
           <button
             type="button"
             className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300"
+            onClick={() =>
+              toast.error("Can't reset your password, create a new account 😁")
+            }
           >
             Forgot your password?
           </button>
@@ -133,7 +145,7 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
         {/* Switch to Register */}
         <div className="text-center border-t border-gray-200 dark:border-gray-700 pt-6">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <button
               type="button"
               onClick={onSwitchToRegister}
@@ -145,7 +157,7 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
         </div>
       </form>
     </div>
-  )
+  );
 }
 
-export default LoginForm
+export default LoginForm;

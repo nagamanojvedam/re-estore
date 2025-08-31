@@ -1,14 +1,14 @@
-import { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import ProtectedRoute from '@components/auth/ProtectedRoute';
+import ErrorBoundary from '@components/common/ErrorBoundary';
+import Footer from '@components/common/Footer';
+import Header from '@components/common/Header';
+import { LoadingScreen } from '@components/common/Spinner';
 import { AuthProvider } from '@contexts/AuthContext';
 import { CartProvider } from '@contexts/CartContext';
 import { ThemeProvider } from '@contexts/ThemeContext';
+import { Suspense, lazy } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { WishlistProvider } from './contexts/WishlistContext';
-import ErrorBoundary from '@components/common/ErrorBoundary';
-import Header from '@components/common/Header';
-import ProtectedRoute from '@components/auth/ProtectedRoute';
-import Footer from '@components/common/Footer';
-import { LoadingScreen } from '@components/common/Spinner';
 
 // Lazy load pages with improved loading states
 const Home = lazy(() => import('@pages/Home'));
@@ -31,6 +31,10 @@ const FAQPage = lazy(() => import('@pages/FAQPage'));
 const ShippingPage = lazy(() => import('@pages/ShippingPage'));
 const ReturnsPage = lazy(() => import('@pages/ReturnsPage'));
 const TrackOrderPage = lazy(() => import('@pages/TrackOrderPage'));
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
+const CookiePolicy = lazy(() => import('@/pages/CookiePolicy'));
+const GDPRPolicy = lazy(() => import('@/pages/GDPRPolicy'));
 
 function App() {
   return (
@@ -58,6 +62,10 @@ function App() {
                       <Route path="/shipping" element={<ShippingPage />} />
                       <Route path="/returns" element={<ReturnsPage />} />
                       <Route path="/track" element={<TrackOrderPage />} />
+                      <Route path="/privacy" element={<PrivacyPolicy />} />
+                      <Route path="/terms" element={<TermsOfService />} />
+                      <Route path="/cookies" element={<CookiePolicy />} />
+                      <Route path="/gdpr" element={<GDPRPolicy />} />
 
                       <Route
                         path="/product/:id"
