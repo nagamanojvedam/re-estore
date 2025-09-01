@@ -51,8 +51,8 @@ const getProducts = catchAsync(async (req, res) => {
 
   if (minPrice || maxPrice) {
     filter.price = {};
-    if (minPrice) filter.price.$gte = minPrice;
-    if (maxPrice) filter.price.$lte = maxPrice;
+    if (minPrice) filter.price.$gte = +minPrice * 100;
+    if (maxPrice) filter.price.$lte = +maxPrice * 100;
   }
 
   if (minRating) {

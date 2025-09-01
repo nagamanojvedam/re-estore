@@ -212,6 +212,25 @@ function Shop() {
                       </button>
                     </span>
                   )}
+                  {filters.minRating && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                      {`${Array.from({ length: +filters.minRating })
+                        .fill('⭐')
+                        .join(' ')} & up`}
+                      <button
+                        onClick={() =>
+                          handleFilterChange({
+                            ...filters,
+                            minPrice: undefined,
+                            maxPrice: undefined,
+                          })
+                        }
+                        className="ml-2 text-green-600 hover:text-green-700"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  )}
 
                   <button
                     onClick={clearFilters}

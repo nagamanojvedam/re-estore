@@ -31,10 +31,11 @@ function ProductFilter({
     onFilterChange({ ...filters, [filterType]: value });
   };
 
-  const handlePriceChange = (type, value) => {
+  const handlePriceChange = ({ minPrice, maxPrice }) => {
     onFilterChange({
       ...filters,
-      [type]: value ? +value : undefined,
+      ...(minPrice !== undefined ? { minPrice: +minPrice } : {}),
+      ...(maxPrice !== undefined ? { maxPrice: +maxPrice } : {}),
     });
   };
 
@@ -224,7 +225,7 @@ function FilterContent({
       </div>
 
       {/* Price Filter */}
-      <div className="border-b border-gray-200 dark:border-gray-700 pb-4 bg-red-700">
+      <div className="border-b border-gray-200 dark:border-gray-700 pb-4 ">
         <button
           onClick={() => toggleSection('price')}
           className="w-full flex items-center justify-between py-2 text-left"
@@ -256,7 +257,11 @@ function FilterContent({
                     type="number"
                     placeholder="$0"
                     value={filters.minPrice || ''}
-                    onChange={e => onPriceChange('minPrice', e.target.value)}
+                    onChange={e =>
+                      onPriceChange({
+                        minPrice: e.target.value,
+                      })
+                    }
                     className="input text-sm"
                     min="0"
                   />
@@ -269,7 +274,7 @@ function FilterContent({
                     type="number"
                     placeholder="$1000"
                     value={filters.maxPrice || ''}
-                    onChange={e => onPriceChange('maxPrice', e.target.value)}
+                    onChange={e => onPriceChange({ maxPrice: e.target.value })}
                     className="input text-sm"
                     min="0"
                   />
@@ -291,8 +296,7 @@ function FilterContent({
                   <button
                     key={label}
                     onClick={() => {
-                      onPriceChange('minPrice', min);
-                      onPriceChange('maxPrice', max);
+                      onPriceChange({ minPrice: min, maxPrice: max });
                     }}
                     className={`block w-full text-left text-xs py-1 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
                       filters.minPrice === min && filters.maxPrice === max
