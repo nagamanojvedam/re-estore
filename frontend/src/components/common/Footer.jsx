@@ -1,16 +1,15 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import {
   EnvelopeIcon,
-  PhoneIcon,
   MapPinIcon,
+  PhoneIcon,
 } from '@heroicons/react/24/outline';
 import {
   FacebookIcon,
-  TwitterIcon,
   InstagramIcon,
+  TwitterIcon,
   YoutubeIcon,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -55,7 +54,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+    <footer className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300 shadow-[0_-4px_6px_rgba(0,0,0,0.1)] border-t border-gray-200 dark:border-gray-700">
       <div className="container-custom py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
@@ -69,8 +68,8 @@ function Footer() {
 
             <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md">
               Your one-stop destination for quality products at unbeatable
-              prices. We're committed to providing exceptional customer service
-              and fast delivery.
+              prices. We&apos;re committed to providing exceptional customer
+              service and fast delivery.
             </p>
 
             {/* Contact Info */}
@@ -112,7 +111,7 @@ function Footer() {
                   Icon: YoutubeIcon,
                   label: 'YouTube',
                 },
-              ].map(({ href, Icon, label, color }) => (
+              ].map(({ href, Icon, label }) => (
                 <a
                   key={label}
                   href={href}

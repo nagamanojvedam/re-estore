@@ -34,7 +34,7 @@ function CartItem({ item, showFullDetails = false }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className={`flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg ${
+      className={`flex  items-center space-x-4 p-4 col bg-white dark:bg-gray-800 rounded-lg ${
         showFullDetails ? 'border border-gray-200 dark:border-gray-700' : ''
       } ${isUpdating ? 'opacity-50' : ''}`}
     >
@@ -48,23 +48,17 @@ function CartItem({ item, showFullDetails = false }) {
       </Link>
 
       {/* Product Details */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 ">
         <Link
           to={`/product/${item.id}`}
           className="block hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
         >
-          <h3 className="font-medium text-gray-900 dark:text-white line-clamp-2">
+          <h3 className="font-medium text-gray-900 dark:text-white truncate">
             {item.name}
           </h3>
         </Link>
 
-        {showFullDetails && item.variant && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {item.variant}
-          </p>
-        )}
-
-        <div className="flex items-center gap-2 mt-2">
+        <div className="flex items-center gap-2 mt-2 truncate">
           <div className="flex items-center space-x-1">
             <span className="text-lg font-semibold text-gray-900 dark:text-white">
               {formatPrice(item.price * item.quantity)}
@@ -87,7 +81,7 @@ function CartItem({ item, showFullDetails = false }) {
       </div>
 
       {/* Quantity Controls & Remove */}
-      <div className="flex flex-col items-end space-y-2">
+      <div className="flex flex-col items-end space-y-2 truncate">
         {/* Quantity Controls */}
         <div className="flex gap-2">
           <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">

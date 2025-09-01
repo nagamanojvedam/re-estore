@@ -163,26 +163,22 @@
   }
 
   .loading-spinner {
-    width: 50px;
-    aspect-ratio: 1;
+    width: 48px;
+    height: 48px;
+    border: 2px solid #fff;
+    border-bottom-color: transparent;
     border-radius: 50%;
-    background:
-      radial-gradient(farthest-side, #ffffff 94%, #0000) top/8px 8px no-repeat,
-      conic-gradient(#0000 30%, #ffffff);
-    /* Standard */
-    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), black 0);
-
-    /* WebKit */
-    -webkit-mask: radial-gradient(
-      farthest-side,
-      transparent calc(100% - 8px),
-      black 0
-    );
-    animation: l13 1s infinite linear;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
   }
-  @keyframes l13 {
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
     100% {
-      transform: rotate(1turn);
+      transform: rotate(360deg);
     }
   }
 

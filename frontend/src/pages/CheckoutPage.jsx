@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { formatPrice } from '../utils/helpers';
+import { formatCardNumber, formatPrice } from '../utils/helpers';
 
 function CheckoutPage() {
   const { items, total, clearCart } = useCart();
