@@ -224,7 +224,7 @@ function FilterContent({
       </div>
 
       {/* Price Filter */}
-      <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+      <div className="border-b border-gray-200 dark:border-gray-700 pb-4 bg-red-700">
         <button
           onClick={() => toggleSection('price')}
           className="w-full flex items-center justify-between py-2 text-left"

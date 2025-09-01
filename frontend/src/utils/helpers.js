@@ -13,3 +13,17 @@ export const formatDate = dateString =>
     hour: '2-digit',
     minute: '2-digit',
   });
+
+export const formatExpiryDate = value => {
+  return value
+    .replace(/\D/g, '')
+    .replace(/(.{2})(.{2})/, '$1/$2')
+    .substring(0, 5);
+};
+
+export const formatCardNumber = value => {
+  return value
+    .replace(/\s/g, '')
+    .replace(/(.{4})/g, '$1 ')
+    .trim();
+};

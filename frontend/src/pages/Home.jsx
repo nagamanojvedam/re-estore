@@ -1,29 +1,29 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import ProductCard from '@components/products/ProductCard';
 import {
   ArchiveBoxIcon,
   ChevronRightIcon,
-  ShoppingBagIcon,
-  TruckIcon,
   ShieldCheckIcon,
+  ShoppingBagIcon,
   StarIcon,
+  TruckIcon,
 } from '@heroicons/react/24/outline';
-import { useQuery } from 'react-query';
-import { toast } from 'react-hot-toast';
-import ProductCard from '@components/products/ProductCard';
 import { productService } from '@services/productService';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useQuery } from 'react-query';
+import { Link, useNavigate } from 'react-router-dom';
 
 const isValidEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 function Home() {
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
 
   // Fetch featured products
   const { data: featuredProducts, isLoading: productsLoading } = useQuery(
     'featured-products',
-    // () => productService.getProducts({ limit: 8, featured: true }),
     () => productService.getProducts({ limit: 8 }),
     {
       staleTime: 5 * 60 * 1000, // 5 minutes
@@ -111,7 +111,10 @@ function Home() {
                   <span>Shop Now</span>
                   <ChevronRightIcon className="w-5 h-5" />
                 </Link>
-                <button className="btn btn-ghost border border-white/30 hover:bg-white/10 btn-lg">
+                <button
+                  className="btn btn-ghost border border-white/30 hover:bg-white/10 btn-lg"
+                  onClick={() => navigate('/about')}
+                >
                   Learn More
                 </button>
               </div>
