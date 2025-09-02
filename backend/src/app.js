@@ -23,6 +23,7 @@ app.use(
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
       objectSrc: ["'none'"],
+      imgSrc: ["'self'", "https://images.unsplash.com", "data:"],
       upgradeInsecureRequests: [],
     },
   })
