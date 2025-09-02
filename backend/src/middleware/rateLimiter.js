@@ -1,4 +1,7 @@
 const rateLimit = require("express-rate-limit");
+const app = require("app");
+
+app.set("trust proxy", 1); // Trust first proxy if behind a reverse proxy (e.g., Heroku, Nginx)
 
 const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
