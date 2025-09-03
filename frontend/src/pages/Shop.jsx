@@ -1,14 +1,14 @@
-import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
-import { motion } from 'framer-motion';
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
-import ProductList from '@components/products/ProductList';
-import ProductFilter from '@components/products/ProductFilter';
 import Pagination from '@components/common/Pagination';
-import { productService } from '@services/productService';
+import ProductFilter from '@components/products/ProductFilter';
+import ProductList from '@components/products/ProductList';
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '@hooks/useDebounce';
+import { productService } from '@services/productService';
 import { ENV } from '@utils/constants';
+import { motion } from 'framer-motion';
+import { useMemo } from 'react';
+import { useQuery } from 'react-query';
+import { useSearchParams } from 'react-router-dom';
 
 function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();

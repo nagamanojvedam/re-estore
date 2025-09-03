@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const UserProduct = require("../models/UserProduct");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 
@@ -162,6 +163,22 @@ const updateOrderStatus = catchAsync(async (req, res) => {
 
   order.status = status;
   await order.save();
+
+  if (status === "delivered") {
+    for (const item of order.items) {
+      await UserProduct.findOneAndUpdate(
+        {
+          user: order.user,
+          product: item.product,
+        },
+        {
+          $set: { lastPurchasedAt: new Date() },
+          $inc: { purchaseCount: 1 },
+        },
+        { upsert: true, new: true }
+      );
+    }
+  }
 
   await order.populate([
     { path: "user", select: "name email" },

@@ -13,8 +13,11 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 const app = express();
+
+app.set("trust proxy", 1); // Trust first proxy if behind a reverse proxy (e.g., Heroku, Nginx)
 
 // Security middleware
 app.use(
@@ -59,6 +62,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Serve static files in production
 if (config.env === "production") {
