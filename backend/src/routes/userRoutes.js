@@ -12,8 +12,11 @@ const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
 const validate = require("../middleware/validate");
 const { updateMeValidation } = require("../validations/userValidation");
+const { getMyProducts } = require("../controllers/userProductController");
 
 const router = express.Router();
+
+router.get("/me/products", auth, getMyProducts);
 
 router.get("/me", auth, getMe);
 router.patch("/me", auth, validate(updateMeValidation), updateMe);
