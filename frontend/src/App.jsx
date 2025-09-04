@@ -35,6 +35,7 @@ const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
 const CookiePolicy = lazy(() => import('@/pages/CookiePolicy'));
 const GDPRPolicy = lazy(() => import('@/pages/GDPRPolicy'));
+const MyProducts = lazy(() => import('@/pages/MyProducts'));
 
 function App() {
   return (
@@ -113,6 +114,15 @@ function App() {
                         element={
                           <ProtectedRoute>
                             <OrderDetailsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+
+                      <Route
+                        path="/myProducts"
+                        element={
+                          <ProtectedRoute>
+                            <MyProducts />
                           </ProtectedRoute>
                         }
                       />

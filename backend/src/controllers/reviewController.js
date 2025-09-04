@@ -69,6 +69,29 @@ const addOrUpdateReview = catchAsync(async (req, res) => {
   });
 });
 
+const getReview = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  const { _id: userId } = req.user;
+
+  const review = await Review.findOne({
+    product: productId,
+    user: userId,
+  });
+
+  if (!review) {
+    return res.status(200).json({
+      status: "success",
+      data: { review: null },
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: { review },
+  });
+});
+
 module.exports = {
   addOrUpdateReview,
+  getReview,
 };
