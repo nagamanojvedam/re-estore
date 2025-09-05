@@ -24,7 +24,6 @@ function ProductReviewCard({ item, page }) {
       queryClient.invalidateQueries(['myProducts', page]);
 
       toast.success('Review added!');
-      setReviewForm({ rating: 0, title: '', comment: '' });
       setOpenReview(false);
     },
 

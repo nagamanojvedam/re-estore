@@ -64,6 +64,10 @@ const productSchema = new mongoose.Schema(
         type: Number,
         default: 0,
       },
+      sum: {
+        type: Number,
+        default: 0,
+      },
     },
     specifications: {
       type: Map,
