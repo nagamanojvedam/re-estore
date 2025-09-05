@@ -18,7 +18,7 @@ function ProductReviewCard({ item, page }) {
 
   const { product } = item;
 
-  const mutation = useMutation({
+  const addOrUpdateMutation = useMutation({
     mutationFn: reviewData => reviewService.addOrUpdate(reviewData),
     onSuccess: () => {
       queryClient.invalidateQueries(['myProducts', page]);
@@ -30,6 +30,17 @@ function ProductReviewCard({ item, page }) {
 
     onError: () => {
       toast.error('Failed to add review!');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: productId => reviewService.deleteReview(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['myProducts', page]);
+      toast.success('Review deleted!');
+    },
+    onError: () => {
+      toast.error('Failed to delete review!');
     },
   });
 
@@ -65,8 +76,8 @@ function ProductReviewCard({ item, page }) {
       toast.error('Please provide all required fields!');
       return;
     }
-    mutation.mutate({ ...reviewForm, productId: product._id });
-  }, [mutation, reviewForm, product._id]);
+    addOrUpdateMutation.mutate({ ...reviewForm, productId: product._id });
+  }, [addOrUpdateMutation, reviewForm, product._id]);
 
   const handleReviewToggle = useCallback(() => {
     setOpenReview(prev => !prev);
@@ -136,9 +147,7 @@ function ProductReviewCard({ item, page }) {
               {item.isReviewed && (
                 <button
                   className="btn btn-danger-outline"
-                  onClick={() =>
-                    toast.error('Delete review not implemented yet')
-                  }
+                  onClick={() => deleteMutation.mutate(product._id)}
                 >
                   Delete Review
                 </button>
