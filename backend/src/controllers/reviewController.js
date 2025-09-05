@@ -35,7 +35,7 @@ const addOrUpdateReview = catchAsync(async (req, res) => {
     const stats = await Review.aggregate([
       {
         $match: {
-          product: new mongoose.Types.ObjectId(productId),
+          product: new mongoose.mongo.ObjectId(productId),
           isActive: true,
         },
       },
@@ -47,7 +47,7 @@ const addOrUpdateReview = catchAsync(async (req, res) => {
           sum: { $sum: "$rating" },
         },
       },
-    ]).exec();
+    ]).session(session);
 
     if (stats.length > 0) {
       await Product.findByIdAndUpdate(
