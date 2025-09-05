@@ -6,11 +6,13 @@ const { addOrUpdate } = require("../validations/reviewValidation");
 const {
   addOrUpdateReview,
   getReview,
+  deleteReview,
 } = require("../controllers/reviewController");
 
 const router = express.Router();
 
 router.get("/:productId", auth, authorize("user"), getReview);
+router.delete("/:productId", auth, authorize("user"), deleteReview);
 
 router.post(
   "/",
