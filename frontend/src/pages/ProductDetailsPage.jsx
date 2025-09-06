@@ -22,9 +22,11 @@ import { useCart } from '@hooks/useCart';
 import { useAuth } from '@hooks/useAuth';
 import { useWishlist } from '@hooks/useWishlist';
 import ProductCard from '@components/products/ProductCard';
+import ProductReviews from '@components/products/ProductReviews';
 import { LoadingScreen } from '@components/common/Spinner';
 import toast from 'react-hot-toast';
 import { formatPrice } from '@utils/helpers';
+import { reviewService } from '../services/reviewService';
 
 function ProductDetailsPage() {
   const { id } = useParams();
@@ -49,25 +51,36 @@ function ProductDetailsPage() {
   // Fetch product details
   const {
     data: product,
-    isLoading,
+    isLoading: isProductLoading,
     error,
   } = useQuery(['product', id], () => productService.getProduct(id), {
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
   });
 
-  // Fetch related products
-  const { data: relatedProducts } = useQuery({
-    queryKey: ['related-products', product?.category],
-    queryFn: () =>
-      productService.getProducts({
-        category: product.category,
-        limit: 8,
-        exclude: id,
-      }),
-    enabled: !!product?.category,
+  // Fetch reviews
+  const { data, isLoading: isReviewsLoading } = useQuery({
+    queryKey: ['reviews', id],
+    queryFn: () => reviewService.getAllReviews(id),
+    enabled: !!id,
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
+
+  const reviews = data?.reviews;
+
+  // Fetch related products
+  const { data: relatedProducts, isLoading: isRelatedProductsLoading } =
+    useQuery({
+      queryKey: ['related-products', product?.category],
+      queryFn: () =>
+        productService.getProducts({
+          category: product.category,
+          limit: 8,
+          exclude: id,
+        }),
+      enabled: !!product?.category,
+      staleTime: 10 * 60 * 1000, // 10 minutes
+    });
 
   const handleAddToCart = () => {
     if (product.stock <= 0) {
@@ -136,7 +149,7 @@ function ProductDetailsPage() {
     ));
   };
 
-  if (isLoading) {
+  if (isProductLoading || isReviewsLoading || isRelatedProductsLoading) {
     return <LoadingScreen message="Loading product details..." />;
   }
 
@@ -373,13 +386,6 @@ function ProductDetailsPage() {
                 )}
               </button>
 
-              {/* <button
-                onClick={handleShare}
-                className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-600 dark:text-gray-400 transition-all"
-              >
-                <ShareIcon className="w-6 h-6" />
-              </button> */}
-
               <div className="relative inline-block">
                 {/* Share button */}
                 <button
@@ -537,50 +543,13 @@ function ProductDetailsPage() {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-6"
                 >
-                  {/* Review Summary */}
-                  <div className="flex items-center space-x-8 p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <div className="text-center">
-                      <div className="text-4xl font-bold text-gray-900 dark:text-white">
-                        {product.ratings?.average?.toFixed(1) || 'N/A'}
-                      </div>
-                      <div className="flex justify-center mt-1 mb-2">
-                        {renderStars(product.ratings?.average || 0)}
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        Based on {product.ratings?.count || 0} reviews
-                      </div>
-                    </div>
-
-                    <div className="flex-1">
-                      {[5, 4, 3, 2, 1].map(rating => (
-                        <div
-                          key={rating}
-                          className="flex items-center space-x-2 mb-1"
-                        >
-                          <span className="text-sm w-8">{rating}</span>
-                          <StarIcon className="w-4 h-4 text-yellow-400 fill-current" />
-                          <div className="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                            <div
-                              className="bg-yellow-400 h-2 rounded-full"
-                              style={{ width: '0%' }} // Replace with actual percentage
-                            />
-                          </div>
-                          <span className="text-sm text-gray-500 dark:text-gray-400 w-8">
-                            0
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
                   {/* Individual Reviews */}
-                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    No reviews yet. Be the first to review this product!
-                  </div>
-
-                  {/* Write Review Button */}
-                  {isAuthenticated && (
-                    <button className="btn-primary">Write a Review</button>
+                  {reviews?.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      No reviews yet. Be the first to review this product!
+                    </div>
+                  ) : (
+                    <ProductReviews reviews={reviews} />
                   )}
                 </motion.div>
               )}

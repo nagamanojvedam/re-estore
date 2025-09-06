@@ -7,10 +7,12 @@ const {
   addOrUpdateReview,
   getReview,
   deleteReview,
+  getAllReviews,
 } = require("../controllers/reviewController");
 
 const router = express.Router();
 
+router.get("/all/:productId", getAllReviews);
 router.get("/:productId", auth, authorize("user"), getReview);
 router.delete("/:productId", auth, authorize("user"), deleteReview);
 

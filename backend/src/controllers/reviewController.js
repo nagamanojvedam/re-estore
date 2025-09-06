@@ -194,8 +194,31 @@ const deleteReview = catchAsync(async (req, res) => {
   }
 });
 
+const getAllReviews = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+
+  if (!productId) {
+    throw new ApiError(400, "Invalid credentials / Missing fields.");
+  }
+
+  const reviews = await Review.find({ product: productId })
+    .select("_id comment rating title updatedAt user")
+    .populate("user", "_id name email")
+    .lean();
+
+  if (!reviews) {
+    throw new ApiError(404, "Reviews not found");
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: { reviews },
+  });
+});
+
 module.exports = {
   addOrUpdateReview,
   getReview,
   deleteReview,
+  getAllReviews,
 };
