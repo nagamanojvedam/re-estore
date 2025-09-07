@@ -1,110 +1,222 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDate } from '../../utils/helpers';
 
-export default function ProductReviews({ reviews }) {
+export default function ProductReviews({
+  reviews = [],
+  autoPlay = false,
+  autoPlayInterval = 3000,
+  allowHalf = false,
+}) {
   const [index, setIndex] = useState(0);
+  const containerRef = useRef(null);
 
-  const next = useCallback(
-    () => setIndex(prev => (prev + 1) % reviews.length),
-    [setIndex, reviews.length],
+  const length = reviews.length;
+
+  // The formula always maps correctly into the range 0 -> length-1
+  const safeIndex = useCallback(
+    i => ((i % length) + length) % length,
+    [length],
   );
-  const prev = () =>
-    setIndex(prev => (prev - 1 + reviews.length) % reviews.length);
 
-  // Optional auto-scroll every 5s
+  const next = useCallback(() => {
+    if (!length) return;
+    setIndex(p => safeIndex(p + 1));
+  }, [length, safeIndex]);
+
+  const prev = useCallback(() => {
+    if (!length) return;
+    setIndex(p => safeIndex(p - 1));
+  }, [length, safeIndex]);
+
+  // Optional autoplay (default disabled)
   useEffect(() => {
-    const timer = setInterval(next, 5000);
-    return () => clearInterval(timer);
-  }, [reviews, next]);
+    if (!autoPlay || length <= 1) return;
+    const t = setInterval(next, autoPlayInterval);
+    return () => clearInterval(t);
+  }, [autoPlay, length, next, autoPlayInterval]);
 
+  if (!length) return null;
   const review = reviews[index];
 
-  return (
-    <div className="w-full max-w-xl mx-auto">
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={review._id}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.4 }}
-          >
-            {/* User info */}
-            <div className="flex items-center mb-4">
-              <img
-                // src={review.user?.image || '/default-avatar.png'}
-                src={'/avatars/default-avatar.jpg'}
-                alt={review.user?.name || 'User'}
-                className="w-12 h-12 rounded-full object-cover border-2   border-primary-600 dark:border-primary-400"
-              />
-              <div className="ml-3">
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  {review.user?.name || 'Anonymous'}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {formatDate(review.updatedAt)}
-                </p>
-              </div>
-            </div>
-
-            {/* Title */}
-            <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
-              {review.title}
-            </h3>
-
-            {/* Stars */}
-            <div className="flex mb-3">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < review.rating
-                      ? 'text-yellow-400 fill-yellow-400'
-                      : 'text-gray-300'
-                  }`}
+  const renderStars = value => {
+    const full = Math.floor(value);
+    const hasHalf = allowHalf && value - full >= 0.5;
+    const total = 5;
+    const items = [];
+    for (let i = 0; i < total; i++) {
+      const filled = i < full;
+      const isHalf = hasHalf && i === full;
+      items.push(
+        <span
+          key={i}
+          className="inline-flex relative w-5 h-5"
+          aria-hidden="true"
+        >
+          {isHalf ? (
+            <svg viewBox="0 0 24 24" className="w-5 h-5 text-yellow-400">
+              <defs>
+                <linearGradient
+                  id="half-fill"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop offset="50%" stopColor="currentColor" />
+                  <stop offset="50%" stopColor="transparent" />
+                </linearGradient>
+              </defs>
+              {/* Outline star with half fill overlay */}
+              <path d="M0 0h24v24H0z" fill="none" />
+              <svg className="absolute inset-0 w-5 h-5">
+                <path
+                  d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.401 8.165L12 18.896l-7.335 3.865 1.401-8.165L.132 9.21l8.2-1.192L12 .587z"
+                  className="fill-current text-gray-300 dark:text-gray-600"
                 />
-              ))}
-            </div>
+              </svg>
+              <svg
+                className="absolute inset-0 w-5 h-5"
+                style={{ fill: 'url(#half-fill)' }}
+              >
+                <path
+                  d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.401 8.165L12 18.896l-7.335 3.865 1.401-8.165L.132 9.21l8.2-1.192L12 .587z"
+                  className="fill-current text-yellow-400"
+                />
+              </svg>
+            </svg>
+          ) : (
+            <Star
+              className={`w-5 h-5 ${filled ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+            />
+          )}
+        </span>,
+      );
+    }
+    return items;
+  };
 
-            {/* Comment */}
-            <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Controls */}
-        <div className="absolute top-1/2 left-3 -translate-y-1/2">
+  return (
+    <section
+      ref={containerRef}
+      className="w-full"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Product reviews"
+      tabIndex={0}
+      aria-live={autoPlay ? 'off' : 'polite'}
+    >
+      {/* Controls + card in a row to avoid overlap */}
+      <div className="flex items-stretch gap-3 sm:gap-4">
+        <div className="flex items-center">
           <button
             onClick={prev}
-            className="bg-gray-100 dark:bg-gray-800 rounded-full p-2 shadow"
+            aria-label="Previous review"
+            type="button"
+            className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 shadow focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            ◀
+            <ChevronLeft className="w-5 h-5" />
           </button>
         </div>
-        <div className="absolute top-1/2 right-3 -translate-y-1/2">
+
+        <div className="flex-1 min-w-0">
+          <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 sm:p-6 w-full max-w-none">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={review._id}
+                layout
+                initial={{ opacity: 0, x: 80 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -80 }}
+                transition={{
+                  duration: 0.3,
+                  ease: 'easeOut',
+                }}
+                aria-roledescription="slide"
+                aria-label={`Review ${index + 1} of ${length}`}
+              >
+                <div className="flex items-center mb-4">
+                  <img
+                    src={review.user?.image || '/avatars/default-avatar.jpg'}
+                    alt={
+                      review.user?.name
+                        ? `${review.user.name}'s avatar`
+                        : 'User avatar'
+                    }
+                    className="w-12 h-12 rounded-full object-cover border-2 border-primary-600 dark:border-primary-400"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="ml-3 min-w-0">
+                    <p className="font-semibold text-gray-900 dark:text-white truncate">
+                      {review.user?.name || 'Anonymous'}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {formatDate(review.updatedAt)}
+                    </p>
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
+                  {review.title}
+                </h3>
+
+                <div
+                  className="flex items-center mb-3"
+                  role="img"
+                  aria-label={`Rating ${review.rating} out of 5`}
+                >
+                  {renderStars(review.rating)}
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                    {Number(review.rating).toFixed(1)} / 5
+                  </span>
+                </div>
+
+                <p className="text-gray-700 dark:text-gray-300">
+                  {review.comment}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div
+            className="flex justify-center mt-3 sm:mt-4 space-x-2"
+            role="tablist"
+            aria-label="Review slides"
+          >
+            {reviews.map((_, i) => {
+              const selected = i === index;
+              return (
+                <button
+                  key={i}
+                  role="tab"
+                  aria-selected={selected}
+                  aria-label={`Go to review ${i + 1}`}
+                  type="button"
+                  onClick={() => setIndex(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                    selected
+                      ? 'bg-gray-800 dark:bg-gray-200'
+                      : 'bg-gray-300 dark:bg-gray-600'
+                  }`}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="flex items-center">
           <button
             onClick={next}
-            className="bg-gray-100 dark:bg-gray-800 rounded-full p-2 shadow"
+            aria-label="Next review"
+            type="button"
+            className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 shadow focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            ▶
+            <ChevronRight className="w-5 h-5" />
           </button>
         </div>
       </div>
-
-      {/* Dots */}
-      <div className="flex justify-center mt-4 space-x-2">
-        {reviews.map((_, i) => (
-          <button
-            key={i}
-            className={`w-2.5 h-2.5 rounded-full ${
-              i === index ? 'bg-gray-800 dark:bg-gray-200' : 'bg-gray-300'
-            }`}
-            onClick={() => setIndex(i)}
-          />
-        ))}
-      </div>
-    </div>
+    </section>
   );
 }

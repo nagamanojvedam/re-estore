@@ -549,7 +549,11 @@ function ProductDetailsPage() {
                       No reviews yet. Be the first to review this product!
                     </div>
                   ) : (
-                    <ProductReviews reviews={reviews} />
+                    <ProductReviews
+                      reviews={reviews}
+                      autoPlay={true}
+                      autoPlayInterval={7000}
+                    />
                   )}
                 </motion.div>
               )}
