@@ -1,7 +1,7 @@
 {
-  "name": "mern-backend-mastery",
+  "name": "re-estore",
   "version": "1.0.0",
-  "description": "Production-ready MERN Backend API",
+  "description": "re-estore Backend API",
   "main": "server.js",
   "directories": {},
   "scripts": {

@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { useQuery } from 'react-query';
-import { motion } from 'framer-motion';
-import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { orderService } from '@services/orderService';
-import OrderList from '@components/orders/OrderList';
 import Pagination from '@components/common/Pagination';
+import OrderList from '@components/orders/OrderList';
+import { orderService } from '@services/orderService';
 import { ORDER_STATUSES } from '@utils/constants';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import { Link } from 'react-router-dom';
 
 function OrdersPage() {
   const [filters, setFilters] = useState({
     status: '',
     page: 1,
-    limit: 10,
+    limit: 5,
   });
-  const [searchTerm, setSearchTerm] = useState('');
 
   const {
     data: ordersData,
@@ -97,46 +96,25 @@ function OrdersPage() {
           </div>
 
           {/* Filters and Search */}
-          <div className="card p-6 mb-8">
-            {/* Status Tabs */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {statusTabs.map(tab => (
-                <button
-                  key={tab.key}
-                  onClick={() => handleStatusFilter(tab.key)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filters.status === tab.key
-                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  {tab.label}
-                  {tab.count > 0 && (
-                    <span className="ml-2 px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded-full text-xs">
-                      {tab.count}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* Search */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search orders by product name or order number..."
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className="input pl-10"
-                />
-              </div>
-              <button className="btn-secondary flex items-center space-x-2">
-                <FunnelIcon className="w-5 h-5" />
-                <span>More Filters</span>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {statusTabs.map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => handleStatusFilter(tab.key)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  filters.status === tab.key
+                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                }`}
+              >
+                {tab.label}
+                {tab.count > 0 && (
+                  <span className="ml-2 px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded-full text-xs">
+                    {tab.count}
+                  </span>
+                )}
               </button>
-            </div>
+            ))}
           </div>
 
           {/* Orders List */}
@@ -179,9 +157,15 @@ function OrdersPage() {
               Have questions about your orders? We&apos;re here to help.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button className="btn-outline">Contact Support</button>
-              <button className="btn-secondary">Return Policy</button>
-              <button className="btn-secondary">Shipping Info</button>
+              <Link to="/contact" className="btn-outline">
+                Contact Support
+              </Link>
+              <Link to="/returns" className="btn-secondary">
+                Return Policy
+              </Link>
+              <Link to="/shipping" className="btn-secondary">
+                Shipping Info
+              </Link>
             </div>
           </motion.div>
         </motion.div>

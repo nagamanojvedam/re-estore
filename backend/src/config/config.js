@@ -7,7 +7,8 @@ module.exports = {
   port: parseInt(process.env.PORT, 10) || 4000,
   mongoose: {
     url:
-      process.env.MONGODB_URI || "mongodb://localhost:27017/mern-backend-api",
+      process.env.MONGODB_URI ||
+      "mongodb://localhost:27017/re-estore-backend-api",
     options: {},
   },
   jwt: {

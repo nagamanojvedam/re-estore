@@ -1,11 +1,12 @@
-import { motion } from 'framer-motion';
-import { useCallback, useEffect, useState } from 'react';
 import { StarIcon as StarOutline } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
-import { formatDate } from '../../utils/helpers';
+import { motion } from 'framer-motion';
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { reviewService } from '../../services/reviewService';
 import { useMutation, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { reviewService } from '../../services/reviewService';
+import { formatDate } from '../../utils/helpers';
 
 function ProductReviewCard({ item, page }) {
   const [openReview, setOpenReview] = useState(false);
@@ -15,6 +16,7 @@ function ProductReviewCard({ item, page }) {
     comment: '',
   });
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { product } = item;
 
@@ -105,7 +107,10 @@ function ProductReviewCard({ item, page }) {
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <h2
+                className="text-lg font-semibold text-gray-900 dark:text-gray-100 cursor-pointer hover:scale-[1.02] transition-all duration-200"
+                onClick={() => navigate(`/product/${product._id}`)}
+              >
                 {product.name}
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">

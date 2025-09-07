@@ -4,8 +4,8 @@ import { useQuery } from 'react-query';
 import { userService } from '../services/userService';
 
 import Pagination from '../components/common/Pagination';
-import ProductReviewCard from '../components/products/ProductReviewCard';
 import { LoadingScreen } from '../components/common/Spinner';
+import ProductReviewCard from '../components/products/ProductReviewCard';
 
 export default function MyProducts() {
   const [page, setPage] = useState(1);

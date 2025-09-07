@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useForm } from 'react-hook-form';
+import { LoadingButton } from '@components/common/Spinner';
 import {
-  UserIcon,
   CameraIcon,
+  CheckCircleIcon,
   EyeIcon,
   EyeSlashIcon,
-  CheckCircleIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '@hooks/useAuth';
-import { LoadingButton } from '@components/common/Spinner';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { authService } from '../services/authService';
 import { userService } from '../services/userService';
@@ -124,7 +124,7 @@ function ProfilePage() {
           className="max-w-4xl mx-auto"
         >
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               My Profile
             </h1>
@@ -179,8 +179,8 @@ function ProfilePage() {
                           : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                       }`}
                     >
-                      <tab.icon className="w-5 h-5" />
-                      <span className="font-medium">{tab.name}</span>
+                      <tab.icon className="w-6 h-6" />
+                      <span className="font-medium w-[50%]">{tab.name}</span>
                     </button>
                   ))}
                 </nav>

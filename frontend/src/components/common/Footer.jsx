@@ -10,6 +10,7 @@ import {
   YoutubeIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Logo from './Logo';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -53,83 +54,54 @@ function Footer() {
     },
   ];
 
+  const socials = [
+    {
+      href: 'https://facebook.com',
+      Icon: FacebookIcon,
+      label: 'Facebook',
+      hoverColor: 'hover:text-blue-600 dark:hover:text-blue-500',
+    },
+    {
+      href: 'https://twitter.com',
+      Icon: TwitterIcon,
+      label: 'Twitter',
+      hoverColor: 'hover:text-sky-400 dark:hover:text-sky-500',
+    },
+    {
+      href: 'https://instagram.com',
+      Icon: InstagramIcon,
+      label: 'Instagram',
+      hoverColor: 'hover:text-pink-500 dark:hover:text-pink-400',
+    },
+    {
+      href: 'https://youtube.com',
+      Icon: YoutubeIcon,
+      label: 'YouTube',
+      hoverColor: 'hover:text-red-600 dark:hover:text-red-500',
+    },
+  ];
+
   return (
-    <footer className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300 shadow-[0_-4px_6px_rgba(0,0,0,0.1)] border-t border-gray-200 dark:border-gray-700">
-      <div className="container-custom py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Company Info */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">E</span>
-              </div>
-              <span className="text-xl font-bold">EStore</span>
-            </Link>
+    <footer
+      className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300 border-t border-gray-200 dark:border-gray-700"
+      aria-labelledby="site-footer"
+    >
+      <div className="container-custom py-10">
+        <h2 id="site-footer" className="sr-only">
+          Site footer
+        </h2>
 
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md">
-              Your one-stop destination for quality products at unbeatable
-              prices. We&apos;re committed to providing exceptional customer
-              service and fast delivery.
-            </p>
-
-            {/* Contact Info */}
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-400">
-                <MapPinIcon className="w-5 h-5 flex-shrink-0" />
-                <span>123 Commerce Street, Business District, City 12345</span>
-              </div>
-              <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-400">
-                <PhoneIcon className="w-5 h-5 flex-shrink-0" />
-                <span>+91-9848032919</span>
-              </div>
-              <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-400">
-                <EnvelopeIcon className="w-5 h-5 flex-shrink-0" />
-                <span>support@estore.com</span>
-              </div>
-            </div>
-
-            {/* Social Media */}
-            <div className="flex space-x-4 mt-6">
-              {[
-                {
-                  href: 'https://facebook.com',
-                  Icon: FacebookIcon,
-                  label: 'Facebook',
-                },
-                {
-                  href: 'https://twitter.com',
-                  Icon: TwitterIcon,
-                  label: 'Twitter',
-                },
-                {
-                  href: 'https://instagram.com',
-                  Icon: InstagramIcon,
-                  label: 'Instagram',
-                },
-                {
-                  href: 'https://youtube.com',
-                  Icon: YoutubeIcon,
-                  label: 'YouTube',
-                },
-              ].map(({ href, Icon, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-primary-400 transition-colors`}
-                  aria-label={label}
-                >
-                  <Icon className="w-6 h-6" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Footer Links */}
+        {/* Row 1: Categories */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 text-center lg:text-left">
           {footerSections.map(section => (
-            <div key={section.title}>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+            <nav
+              key={section.title}
+              aria-labelledby={`footer-${section.title.replace(/\s+/g, '-').toLowerCase()}`}
+            >
+              <h3
+                id={`footer-${section.title.replace(/\s+/g, '-').toLowerCase()}`}
+                className="font-semibold text-gray-900 dark:text-white mb-4"
+              >
                 {section.title}
               </h3>
               <ul className="space-y-3">
@@ -137,38 +109,53 @@ function Footer() {
                   <li key={link.name}>
                     <Link
                       to={link.path}
-                      className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+                      className={`text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 rounded`}
                     >
                       {link.name}
                     </Link>
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           ))}
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-300 dark:border-gray-800 pt-8 mt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 md:mb-0">
-              © {currentYear} EStore. All rights reserved.
+        {/* Row 2: Logo + info (left) and social links (right) */}
+        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 border-t border-gray-200 dark:border-gray-700 pt-8">
+          {/* Left: Logo + Info */}
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
+            <Logo className="h-8 w-auto" />
+            <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md text-center md:text-left">
+              Your one-stop destination for quality products at unbeatable
+              prices. Committed to exceptional service.
             </p>
-
-            <div className="flex flex-wrap items-center space-x-6 text-sm">
-              <span className="text-gray-600 dark:text-gray-400">
-                We accept:
-              </span>
-              <div className="flex space-x-2">
-                <div className="bg-gray-200 dark:bg-white rounded px-2 py-1 text-xs font-bold text-gray-900">
-                  UPI
-                </div>
-                <div className="bg-gray-200 dark:bg-white rounded px-2 py-1 text-xs font-bold text-gray-900">
-                  Cash
-                </div>
-              </div>
-            </div>
           </div>
+
+          {/* Right: Social links */}
+          <ul className="flex gap-4">
+            {socials.map(({ href, Icon, label, hoverColor }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={`text-gray-600 dark:text-gray-400 transition-colors ${hoverColor}`}
+                >
+                  <Icon className="w-5 h-5" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Bottom bar: copyright */}
+      <div className="bg-black text-white">
+        <div className="container-custom py-4 text-center">
+          <p className="text-sm">
+            © {currentYear} EStore. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

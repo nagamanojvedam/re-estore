@@ -112,7 +112,7 @@ function Home() {
                   <ChevronRightIcon className="w-5 h-5" />
                 </Link>
                 <button
-                  className="btn btn-ghost border border-white/30 hover:bg-white/10 btn-lg"
+                  className="btn btn-ghost border border-white/30 hover:bg-white/10 btn-lg text-white"
                   onClick={() => navigate('/about')}
                 >
                   Learn More
@@ -339,7 +339,7 @@ function Home() {
                   ))}
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 mb-4 italic">
-                  "{testimonial.comment}"
+                  {`"${testimonial.comment}"`}
                 </p>
                 <h4 className="font-semibold text-gray-900 dark:text-white">
                   {testimonial.name}

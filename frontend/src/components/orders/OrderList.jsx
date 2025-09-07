@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import OrderItem from './OrderItem';
 import { Link } from 'react-router-dom';
+import OrderItem from './OrderItem';
 
 function OrderList({ orders, loading, error }) {
   if (loading) {
@@ -88,8 +88,8 @@ function OrderList({ orders, loading, error }) {
           No Orders Yet
         </h3>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          You haven't placed any orders yet. Start shopping to see your orders
-          here.
+          You haven&apos;t placed any orders yet. Start shopping to see your
+          orders here.
         </p>
         <Link to="/shop" className="btn-primary">
           Start Shopping

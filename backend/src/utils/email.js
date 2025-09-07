@@ -25,7 +25,7 @@ const sendEmail = async (to, subject, text, html) => {
 };
 
 const sendWelcomeEmail = async (user) => {
-  const subject = "Welcome to MERN Backend API";
+  const subject = "Welcome to re-estore Backend API";
   const text = `Hello ${user.name},\n\nWelcome to our platform!`;
   const html = `<h1>Hello ${user.name}</h1><p>Welcome to our platform!</p>`;
 
