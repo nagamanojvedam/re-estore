@@ -1,5 +1,6 @@
-'use client';
 import { motion } from 'framer-motion';
+import { toast } from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 const pressReleases = [
   {
@@ -7,7 +8,8 @@ const pressReleases = [
     date: 'March 2025',
     description:
       'We’re thrilled to announce our $10M Series A funding round, led by top global investors.',
-    image: 'https://source.unsplash.com/600x400/?startup,team',
+    image:
+      'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -15,7 +17,8 @@ const pressReleases = [
     date: 'Jan 2025',
     description:
       'We are expanding operations into key European markets to better serve our global customers.',
-    image: 'https://source.unsplash.com/600x400/?europe,city',
+    image:
+      'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -23,7 +26,8 @@ const pressReleases = [
     date: 'Dec 2024',
     description:
       'We’ve partnered with XYZ to enhance our platform and provide greater value to our users.',
-    image: 'https://source.unsplash.com/600x400/?partnership,business',
+    image:
+      'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -31,7 +35,8 @@ const pressReleases = [
     date: 'Oct 2024',
     description:
       'We launched our new AI-powered assistant to help businesses automate workflows more efficiently.',
-    image: 'https://source.unsplash.com/600x400/?technology,ai',
+    image:
+      'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -39,7 +44,8 @@ const pressReleases = [
     date: 'Aug 2024',
     description:
       'Recognized as the Best Startup of 2024 by the Global Tech Awards.',
-    image: 'https://source.unsplash.com/600x400/?award,trophy',
+    image:
+      'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -47,7 +53,8 @@ const pressReleases = [
     date: 'Jun 2024',
     description:
       'We hit a major milestone with over 1 million active users worldwide.',
-    image: 'https://source.unsplash.com/600x400/?users,celebration',
+    image:
+      'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -55,7 +62,8 @@ const pressReleases = [
     date: 'Apr 2024',
     description:
       'We opened our new headquarters in San Francisco to support our growing global team.',
-    image: 'https://source.unsplash.com/600x400/?office,sanfrancisco',
+    image:
+      'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -63,7 +71,8 @@ const pressReleases = [
     date: 'Feb 2024',
     description:
       'We acquired ABC to strengthen our platform and expand into new industries.',
-    image: 'https://source.unsplash.com/600x400/?merger,acquisition',
+    image:
+      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -71,7 +80,8 @@ const pressReleases = [
     date: 'Nov 2023',
     description:
       'We committed to becoming carbon neutral by 2030 through our new sustainability program.',
-    image: 'https://source.unsplash.com/600x400/?sustainability,green',
+    image:
+      'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
   {
@@ -79,7 +89,8 @@ const pressReleases = [
     date: 'Jul 2023',
     description:
       'We closed a $2M seed round to build the foundation of our product and team.',
-    image: 'https://source.unsplash.com/600x400/?funding,money',
+    image:
+      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80',
     link: '#',
   },
 ];
@@ -130,9 +141,13 @@ export default function PressPage() {
                   <p className="text-gray-600 dark:text-gray-300 flex-grow">
                     {press.description}
                   </p>
-                  <a href={press.link} className="btn-primary mt-4 text-center">
+                  <Link
+                    href={press.link}
+                    className="btn-secondary mt-4 text-center"
+                    onClick={() => toast.error("Can't read press posts yet!")}
+                  >
                     Read More
-                  </a>
+                  </Link>
                 </div>
               </motion.div>
             ))}

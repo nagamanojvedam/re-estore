@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  ShoppingCartIcon,
-  UserIcon,
-  MagnifyingGlassIcon,
-  SunIcon,
-  MoonIcon,
   Bars3Icon,
-  XMarkIcon,
   HeartIcon,
+  MagnifyingGlassIcon,
+  MoonIcon,
+  ShoppingCartIcon,
+  SunIcon,
+  UserIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
-import { useTheme } from '../../contexts/ThemeContext';
-import SearchBar from './SearchBar';
-import CartSidebar from '../cart/CartSidebar';
 import LoginForm from '../auth/LoginForm';
 import RegisterForm from '../auth/RegisterForm';
+import CartSidebar from '../cart/CartSidebar';
+import Logo from './Logo';
 import Modal from './Modal';
+import SearchBar from './SearchBar';
 
 function Header() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -56,14 +57,7 @@ function Header() {
       <nav className="container-custom">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary-300 to-primary-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">E</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white">
-              EStore
-            </span>
-          </Link>
+          <Logo />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -77,11 +71,15 @@ function Header() {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`font-medium transition-colors duration-200 ${
-                    location.pathname === item.path
-                      ? 'text-primary-600 dark:text-primary-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
-                  } ${user?.role === 'admin' && item.name === 'Dashboard' ? 'bg-red-700 text-white px-4 py-1 rounded-xl hover:bg-white hover:text-red-700' : ''}`}
+                  className={`font-medium transition-colors duration-200
+                      ${
+                        user?.role === 'admin' && item.name === 'Dashboard'
+                          ? 'bg-red-700 text-red-100 px-4 py-1 rounded-xl hover:bg-white hover:text-red-700'
+                          : location.pathname === item.path
+                            ? 'text-primary-600 dark:text-primary-400'
+                            : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
+                      }
+                      `.trim()}
                 >
                   {item.name}
                 </Link>

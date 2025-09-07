@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import {
+  EyeIcon,
   HeartIcon,
   ShoppingCartIcon,
-  EyeIcon,
   StarIcon,
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import { useCart } from '@hooks/useCart';
 import { useAuth } from '@hooks/useAuth';
+import { useCart } from '@hooks/useCart';
 import { useWishlist } from '@hooks/useWishlist';
-import toast from 'react-hot-toast';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import { formatPrice } from '../../utils/helpers';
 
 function ProductCard({ product, index = 0 }) {
@@ -111,15 +111,6 @@ function ProductCard({ product, index = 0 }) {
               onError={() => setImageLoaded(true)}
               loading="lazy"
             />
-
-            {/* Just Image */}
-            {/* <img
-              src={
-                product.images?.[0] || '/placeholder-product.jpg'
-              }
-              alt={product.name}
-              className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-105`}
-            /> */}
 
             {/* Stock Badge */}
             {product.stock <= 0 && (

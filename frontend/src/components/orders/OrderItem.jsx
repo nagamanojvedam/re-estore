@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  TruckIcon,
-} from '@heroicons/react/24/outline';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { ORDER_STATUSES, PAYMENT_STATUSES } from '@utils/constants';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { formatPrice } from '../../utils/helpers';
 
 function OrderItem({ order }) {
@@ -115,20 +110,6 @@ function OrderItem({ order }) {
         {/* Action Buttons */}
         <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex space-x-3">
-            {order.status === ORDER_STATUSES.SHIPPED && (
-              <button
-                className="btn btn-outline btn-sm flex items-center space-x-2"
-                onClick={() => toast.error('Tracking not implemented yet!')}
-              >
-                <TruckIcon className="w-4 h-4" />
-                <span>Track Order</span>
-              </button>
-            )}
-
-            {order.status === ORDER_STATUSES.DELIVERED && (
-              <button className="btn btn-outline btn-sm">Leave Review</button>
-            )}
-
             {[ORDER_STATUSES.PENDING, ORDER_STATUSES.CONFIRMED].includes(
               order.status,
             ) && (
@@ -191,10 +172,10 @@ function OrderItem({ order }) {
                         </div>
                         <div className="text-right">
                           <p className="font-medium text-gray-900 dark:text-white">
-                            {formatPrice(item.price)}
+                            {formatPrice(item.price * item.quantity)}
                           </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            each
+                          <p className="text-sm text-gray-500 dark:text-gray-500">
+                            {`${formatPrice(item.price)} each`}
                           </p>
                         </div>
                       </div>

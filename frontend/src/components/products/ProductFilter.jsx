@@ -159,7 +159,7 @@ function FilterContent({
       {hasActiveFilters && (
         <button
           onClick={onClearFilters}
-          className="w-full btn btn-ghost text-left flex items-center space-x-2 dark:bg-gray-700"
+          className="w-full btn btn-ghost text-left flex items-center space-x-2 bg-gray-200 dark:bg-gray-700"
         >
           <XMarkIcon className="w-4 h-4" />
           <span>Clear all filters</span>

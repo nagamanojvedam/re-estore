@@ -1,4 +1,4 @@
-'use client';
+import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 const blogs = [
@@ -6,7 +6,7 @@ const blogs = [
     slug: 'save-money-online',
     title: '5 Ways to Save Money Online',
     excerpt: 'Learn smart shopping hacks to maximize your budget.',
-    img: 'https://source.unsplash.com/600x400/?shopping,discount',
+    img: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=600&q=80',
     category: 'Shopping',
     date: 'March 2025',
   },
@@ -14,7 +14,7 @@ const blogs = [
     slug: 'ecommerce-trends-2025',
     title: 'E-commerce Trends 2025',
     excerpt: 'The future of online shopping is here.',
-    img: 'https://source.unsplash.com/600x400/?ecommerce,technology',
+    img: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80',
     category: 'Technology',
     date: 'Feb 2025',
   },
@@ -22,7 +22,7 @@ const blogs = [
     slug: 'sustainable-wardrobe',
     title: 'How to Build a Sustainable Wardrobe',
     excerpt: 'Eco-friendly shopping tips for a greener lifestyle.',
-    img: 'https://source.unsplash.com/600x400/?sustainable,fashion',
+    img: 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=600&q=80',
     category: 'Lifestyle',
     date: 'Jan 2025',
   },
@@ -30,7 +30,7 @@ const blogs = [
     slug: 'top-10-gadgets',
     title: 'Top 10 Gadgets Every Home Needs',
     excerpt: 'Smart devices that make everyday life easier.',
-    img: 'https://source.unsplash.com/600x400/?gadgets,tech',
+    img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
     category: 'Tech',
     date: 'Dec 2024',
   },
@@ -38,7 +38,7 @@ const blogs = [
     slug: 'startup-journey',
     title: 'Behind the Scenes: Our Startup Journey',
     excerpt: 'A glimpse into our growth, challenges, and wins.',
-    img: 'https://source.unsplash.com/600x400/?startup,office',
+    img: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80',
     category: 'Company',
     date: 'Nov 2024',
   },
@@ -46,7 +46,7 @@ const blogs = [
     slug: 'psychology-of-shopping',
     title: 'The Psychology of Online Shopping',
     excerpt: 'Why we click “Buy Now” more than we think.',
-    img: 'https://source.unsplash.com/600x400/?psychology,shopping',
+    img: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=600&q=80',
     category: 'Insights',
     date: 'Oct 2024',
   },
@@ -99,12 +99,12 @@ export default function BlogPage() {
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                     {blog.date}
                   </p>
-                  <a
-                    href={`/blog/${blog.slug}`}
-                    className="btn-secondary mt-auto w-fit"
+                  <button
+                    className="btn btn-secondary mt-auto w-fit"
+                    onClick={() => toast.error("Can't read blog posts yet!")}
                   >
                     Read More
-                  </a>
+                  </button>
                 </div>
               </motion.div>
             ))}
