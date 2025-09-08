@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import OrderItem from './OrderItem';
 
-function OrderList({ orders, loading, error }) {
+function OrderList({ orders, loading, error, queryKey }) {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -107,7 +107,7 @@ function OrderList({ orders, loading, error }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
         >
-          <OrderItem order={order} />
+          <OrderItem order={order} queryKey={queryKey} />
         </motion.div>
       ))}
     </div>

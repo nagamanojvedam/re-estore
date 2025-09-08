@@ -123,7 +123,12 @@ function OrdersPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <OrderList orders={orders} loading={isLoading} error={error} />
+            <OrderList
+              orders={orders}
+              loading={isLoading}
+              error={error}
+              queryKey={['orders', filters]}
+            />
           </motion.div>
 
           {/* Pagination */}

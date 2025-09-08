@@ -3,10 +3,14 @@ import { ORDER_STATUSES, PAYMENT_STATUSES } from '@utils/constants';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { formatPrice } from '../../utils/helpers';
+import { formatDate, formatPrice } from '../../utils/helpers';
+import { orderService } from '@services/orderService';
+import { useMutation, useQueryClient } from 'react-query';
+import toast from 'react-hot-toast';
 
-function OrderItem({ order }) {
+function OrderItem({ order, queryKey }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const queryClient = useQueryClient();
 
   const getStatusColor = status => {
     switch (status) {
@@ -40,13 +44,19 @@ function OrderItem({ order }) {
     }
   };
 
-  const formatDate = date => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+  const { mutate: cancelOrder, isLoading: isCancelling } = useMutation({
+    mutationFn: () => orderService.cancelMyOrder(order._id),
+    onSuccess: () => {
+      toast.success('Order cancelled!');
+      queryClient.invalidateQueries({ queryKey });
+    },
+    onError: error => {
+      toast.error('Failed to cancel order!');
+      console.error(error);
+    },
+  });
+
+  if (isCancelling) return <p>Loading...</p>;
 
   return (
     <div className="card">
@@ -113,7 +123,9 @@ function OrderItem({ order }) {
             {[ORDER_STATUSES.PENDING, ORDER_STATUSES.CONFIRMED].includes(
               order.status,
             ) && (
-              <button className="btn btn-danger btn-sm">Cancel Order</button>
+              <button className="btn btn-danger btn-sm" onClick={cancelOrder}>
+                Cancel Order
+              </button>
             )}
           </div>
 

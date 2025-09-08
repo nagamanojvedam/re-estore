@@ -1,9 +1,9 @@
-import { useQuery } from 'react-query';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { orderService } from '@services/orderService';
 import { LoadingScreen } from '@components/common/Spinner';
+import { orderService } from '@services/orderService';
 import { ORDER_STATUSES } from '@utils/constants';
+import { motion } from 'framer-motion';
+import { useQuery } from 'react-query';
+import { Link, useParams } from 'react-router-dom';
 import { formatPrice } from '../utils/helpers';
 
 const STATUS_ORDER = [
@@ -15,7 +15,6 @@ const STATUS_ORDER = [
 
 function OrderDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const { data, isLoading, error } = useQuery(
     ['order', id],
@@ -211,9 +210,9 @@ function OrderDetailPage() {
 
           {/* Actions */}
           <div className="flex justify-end gap-4">
-            <button onClick={() => navigate(-1)} className="btn-outline">
+            <Link to="/orders" className="btn-outline">
               Back to Orders
-            </button>
+            </Link>
           </div>
         </motion.div>
       </div>
