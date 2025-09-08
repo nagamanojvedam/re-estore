@@ -54,6 +54,7 @@ const createOrder = catchAsync(async (req, res) => {
     shippingAddress,
     paymentStatus,
     paymentMethod,
+    status: paymentStatus === "failed" ? "cancelled" : "pending",
   });
 
   await order.populate([
@@ -228,6 +229,40 @@ const getOrderByNumber = catchAsync(async (req, res) => {
   });
 });
 
+const cancelMyOrder = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { _id: userId } = req.user;
+  const order = await Order.findById(id);
+
+  if (!order) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  if (order.user.toString() !== userId.toString()) {
+    throw new ApiError(403, "You are not authorized to cancel this order");
+  }
+
+  if (!allowedTransactions[order.status].includes("cancelled")) {
+    throw new ApiError(400, "You cannot cancel this order");
+  }
+
+  if (order.status === "cancelled") {
+    throw new ApiError(400, "This order has already been cancelled");
+  }
+
+  order.status = "cancelled";
+  order.paymentStatus = order.paymentStatus === "paid" ? "refunded" : "failed";
+  await order.save();
+
+  res.json({
+    status: "success",
+    message: "Order cancelled successfully",
+    data: {
+      order,
+    },
+  });
+});
+
 module.exports = {
   createOrder,
   getOrder,
@@ -235,4 +270,5 @@ module.exports = {
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
+  cancelMyOrder,
 };

@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { messageService } from '../services/messageService';
+import toast from 'react-hot-toast';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -11,6 +14,24 @@ const fadeInUp = {
 };
 
 export default function ContactPage() {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async data => {
+    try {
+      await messageService.createMessage(data);
+      toast.success('Message sent successfully!');
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      reset();
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <section className="section-padding bg-gray-50 dark:bg-gray-900">
@@ -64,6 +85,7 @@ export default function ContactPage() {
             animate="visible"
             variants={fadeInUp}
             className="max-w-xl mx-auto space-y-6 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg"
+            onSubmit={handleSubmit(onSubmit)}
           >
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -73,7 +95,14 @@ export default function ContactPage() {
                 type="text"
                 placeholder="John Doe"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-600 outline-none bg-white dark:bg-gray-900"
+                {...register('name', { required: 'Name is required' })}
               />
+
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -84,7 +113,13 @@ export default function ContactPage() {
                 type="email"
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-600 outline-none bg-white dark:bg-gray-900"
+                {...register('email', { required: 'Email is required' })}
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -95,7 +130,13 @@ export default function ContactPage() {
                 rows="5"
                 placeholder="Write your message here..."
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-600 outline-none bg-white dark:bg-gray-900"
+                {...register('message', { required: 'Message is required' })}
               />
+              {errors.message && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.message.message}
+                </p>
+              )}
             </div>
 
             <button className="btn-primary w-full">Send Message</button>

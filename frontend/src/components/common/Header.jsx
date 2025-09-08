@@ -8,7 +8,7 @@ import {
   UserIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../hooks/useAuth';
@@ -52,6 +52,22 @@ function Header() {
     navigate('/');
   };
 
+  useEffect(() => {
+    const handlekeyDown = evnt => {
+      if ((evnt.ctrlKey || evnt.metaKey) && evnt.key.toLowerCase() === 'k') {
+        evnt.preventDefault();
+
+        setShowSearch(prev => !prev);
+      }
+
+      if (evnt.key === 'Escape') {
+        setShowSearch(false);
+      }
+    };
+    window.addEventListener('keydown', handlekeyDown);
+    return () => window.removeEventListener('keydown', handlekeyDown);
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700">
       <nav className="container-custom">
@@ -92,10 +108,11 @@ function Header() {
             {/* Search */}
             <button
               onClick={() => setShowSearch(true)}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex gap-2 items-center bg-primary-100/50 dark:bg-primary-950/50 rounded-full px-4"
               aria-label="Search products"
             >
-              <MagnifyingGlassIcon className="w-6 h-6" />
+              <MagnifyingGlassIcon className="w-4 h-4" />
+              <span className="text-sm">Ctrl + K</span>
             </button>
 
             {/* Theme Toggle */}

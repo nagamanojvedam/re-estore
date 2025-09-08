@@ -36,4 +36,9 @@ export const orderService = {
     const response = await api.get(`/orders/orderNumber/${orderNumber}`);
     return response.data.data;
   },
+
+  cancelMyOrder: async orderId => {
+    const response = await api.post(`/orders/cancelMyOrder/${orderId}`);
+    return response.data.data;
+  },
 };

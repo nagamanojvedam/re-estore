@@ -14,6 +14,7 @@ const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 const app = express();
 
@@ -63,6 +64,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Serve static files in production
 if (config.env === "production") {
