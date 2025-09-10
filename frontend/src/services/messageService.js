@@ -9,4 +9,9 @@ export const messageService = {
     const response = await api.post('/messages', data);
     return response.data.data;
   },
+  replyMessage: async data => {
+    const { messageId, reply } = data;
+    const response = await api.post(`/messages/${messageId}`, { reply });
+    return response.data.data;
+  },
 };

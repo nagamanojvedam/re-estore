@@ -3,6 +3,8 @@ import { Mail, MapPin, Phone } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { messageService } from '../services/messageService';
 import toast from 'react-hot-toast';
+import { useMutation } from 'react-query';
+import { LoadingButton } from '../components/common/Spinner';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -21,16 +23,20 @@ export default function ContactPage() {
     reset,
   } = useForm();
 
-  const onSubmit = async data => {
-    try {
-      await messageService.createMessage(data);
+  const { mutate: sendMessage, isLoading: isSendingMessage } = useMutation({
+    mutationFn: async data => {
+      // just to add some delay to display loading spinner
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return await messageService.createMessage(data);
+    },
+    onSuccess: () => {
       toast.success('Message sent successfully!');
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
       reset();
-    }
-  };
+    },
+    onError: err => {
+      toast.error(err.message);
+    },
+  });
 
   return (
     <div className="min-h-screen">
@@ -85,7 +91,7 @@ export default function ContactPage() {
             animate="visible"
             variants={fadeInUp}
             className="max-w-xl mx-auto space-y-6 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(sendMessage)}
           >
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -95,6 +101,7 @@ export default function ContactPage() {
                 type="text"
                 placeholder="John Doe"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-600 outline-none bg-white dark:bg-gray-900"
+                disabled={isSendingMessage}
                 {...register('name', { required: 'Name is required' })}
               />
 
@@ -113,6 +120,7 @@ export default function ContactPage() {
                 type="email"
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-600 outline-none bg-white dark:bg-gray-900"
+                disabled={isSendingMessage}
                 {...register('email', { required: 'Email is required' })}
               />
               {errors.email && (
@@ -130,6 +138,7 @@ export default function ContactPage() {
                 rows="5"
                 placeholder="Write your message here..."
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-600 outline-none bg-white dark:bg-gray-900"
+                disabled={isSendingMessage}
                 {...register('message', { required: 'Message is required' })}
               />
               {errors.message && (
@@ -139,7 +148,12 @@ export default function ContactPage() {
               )}
             </div>
 
-            <button className="btn-primary w-full">Send Message</button>
+            <LoadingButton
+              className="btn-primary w-full"
+              loading={isSendingMessage}
+            >
+              Send Message
+            </LoadingButton>
           </motion.form>
         </div>
       </section>

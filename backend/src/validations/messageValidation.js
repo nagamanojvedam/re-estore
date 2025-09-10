@@ -8,6 +8,13 @@ const createMessage = {
   }),
 };
 
+const replyMessage = {
+  body: Joi.object({
+    reply: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createMessage,
+  replyMessage,
 };
