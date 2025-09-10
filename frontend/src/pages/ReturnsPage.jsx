@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export default function ReturnsPage() {
   return (
@@ -77,13 +78,13 @@ export default function ReturnsPage() {
                 Contact Support
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                If you have any questions, reach out to our support team at{' '}
-                <a
-                  href="mailto:support@yourstore.com"
-                  className="text-blue-600 dark:text-blue-400 underline"
+                If there are any questions, reach out to our support team via{' '}
+                <Link
+                  to="/contact"
+                  className="text-blue-600 dark:text-blue-400 underline-offset-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-sm"
                 >
-                  support@yourstore.com
-                </a>
+                  contact
+                </Link>
                 . We’ll be glad to help.
               </p>
             </motion.div>

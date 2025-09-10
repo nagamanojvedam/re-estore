@@ -1,86 +1,158 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useId, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const faqs = [
+const BASE_FAQS = [
   {
     q: 'What is your return policy?',
-    a: 'You can return items within 30 days of delivery. No questions asked.',
+    a: 'Items can be returned within 30 days of delivery in original condition. Refunds are issued to the original payment method after inspection.',
   },
   {
     q: 'Do you offer international shipping?',
-    a: 'Yes, we ship worldwide. Shipping rates are calculated at checkout.',
+    a: 'Yes, worldwide shipping is available. Exact rates and duties are shown at checkout based on destination.',
   },
   {
     q: 'How can I track my order?',
-    a: 'Once shipped, you’ll receive a tracking link via email to monitor your package.',
+    a: 'A tracking link is emailed once the order ships. Tracking details are also available in the Orders section of the account.',
   },
   {
-    q: 'What payment methods do you accept?',
-    a: 'We accept credit/debit cards, PayPal, UPI, and net banking.',
+    q: 'What payment methods are accepted?',
+    a: 'Credit/debit cards, UPI, net banking, and PayPal are supported. Some options may vary by country.',
   },
   {
     q: 'How long does delivery take?',
-    a: 'Orders within the country usually arrive in 3–5 business days. International orders may take 7–14 days.',
+    a: 'Domestic deliveries typically arrive in 3–5 business days; international deliveries in 7–14 business days depending on customs.',
   },
   {
     q: 'Can I change or cancel my order?',
-    a: 'Orders can be modified or canceled within 24 hours of purchase by contacting support.',
-  },
-  {
-    q: 'Do you offer gift cards?',
-    a: 'Yes, we provide digital gift cards that can be used at checkout.',
+    a: 'Orders can be changed or canceled within 24 hours of purchase before fulfillment begins. Contact support with the order ID.',
   },
   {
     q: 'Is my payment secure?',
-    a: 'Absolutely. All payments are processed through encrypted and secure gateways.',
+    a: 'All transactions are processed over encrypted connections (TLS) via certified gateways. Card data is handled by PCI‑compliant processors.',
   },
   {
-    q: 'Do you offer discounts for bulk purchases?',
-    a: 'Yes, please contact our sales team for special bulk pricing.',
+    q: 'How do refunds work?',
+    a: 'Once a return is approved, refunds are initiated within 2–5 business days. Bank processing may add additional time.',
   },
   {
-    q: 'How can I contact customer support?',
-    a: 'You can reach us via email, live chat, or through our Help Center, available 24/7.',
+    q: 'Do you offer bulk pricing?',
+    a: 'Yes, volume discounts are available. Contact sales with product SKUs and quantities for a custom quote.',
+  },
+  {
+    q: 'How can I contact support?',
+    a: 'Reach support via email or live chat in the Help Center, available 24/7. Response times are typically under a few hours.',
   },
 ];
 
-export default function FAQPage() {
-  const [open, setOpen] = useState(null);
+// Minimal, “very important” FAQs subset for checkout/product pages
+const ESSENTIAL_FAQS = [
+  'What is your return policy?',
+  'How can I track my order?',
+  'How long does delivery take?',
+  'What payment methods are accepted?',
+  'Is my payment secure?',
+];
+
+function FAQItem({ id, index, q, a, open, onToggle }) {
+  const buttonId = `${id}-button-${index}`;
+  const panelId = `${id}-panel-${index}`;
+  const isOpen = open === index;
 
   return (
-    <div className="min-h-screen">
+    <div className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+      <h3>
+        <button
+          id={buttonId}
+          aria-controls={panelId}
+          aria-expanded={isOpen}
+          onClick={() => onToggle(isOpen ? null : index)}
+          className="w-full flex items-center justify-between gap-4 p-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg"
+        >
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {q}
+          </span>
+          <span
+            className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200"
+            aria-hidden="true"
+          >
+            {isOpen ? '−' : '+'}
+          </span>
+        </button>
+      </h3>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="content"
+            id={panelId}
+            role="region"
+            aria-labelledby={buttonId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4 text-gray-600 dark:text-gray-400">
+              {a}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export default function FAQPage({
+  faqs = BASE_FAQS,
+  showOnlyEssential = false,
+  className = '',
+}) {
+  const [open, setOpen] = useState(null);
+  const rootId = useId();
+
+  const items = useMemo(() => {
+    if (!showOnlyEssential) return faqs;
+    const set = new Set(ESSENTIAL_FAQS);
+    return faqs.filter(f => set.has(f.q));
+  }, [faqs, showOnlyEssential]);
+
+  return (
+    <div className={`min-h-screen ${className}`}>
       <section className="section-padding bg-gray-50 dark:bg-gray-800">
-        <div className="container-custom max-w-2xl mx-auto">
-          <h1 className="heading-1 text-center mb-12 text-gray-900 dark:text-white">
+        <div className="text-center mb-10">
+          <h2 className="text-5xl font-semibold tracking-tight text-gray-900 dark:text-white">
             FAQs
-          </h1>
-          <div className="space-y-4">
-            {faqs.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="p-4 rounded-lg bg-white dark:bg-gray-900 shadow cursor-pointer"
-                onClick={() => setOpen(open === i ? null : i)}
-              >
-                <h3 className="font-semibold text-gray-900 dark:text-white flex justify-between items-center">
-                  {item.q}
-                  <span className="text-xl">{open === i ? '−' : '+'}</span>
-                </h3>
-                {open === i && (
-                  <motion.p
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-2 text-gray-600 dark:text-gray-400"
-                  >
-                    {item.a}
-                  </motion.p>
-                )}
-              </motion.div>
+          </h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Answers to common questions about orders, shipping, returns, and
+            payments.
+          </p>
+        </div>
+        <div className="container-custom max-w-2xl mx-auto">
+          <div className="space-y-3">
+            {items.map((item, i) => (
+              <FAQItem
+                key={item.q}
+                id={rootId}
+                index={i}
+                q={item.q}
+                a={item.a}
+                open={open}
+                onToggle={setOpen}
+              />
             ))}
           </div>
+
+          {/* Optional helper text */}
+          <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+            Can’t find an answer? Contact{' '}
+            <Link to="/contact" className="underline text-primary-500">
+              support
+            </Link>{' '}
+            from the Help Center.
+          </p>
         </div>
       </section>
     </div>

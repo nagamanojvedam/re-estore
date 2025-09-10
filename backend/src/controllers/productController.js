@@ -61,7 +61,8 @@ const getProducts = catchAsync(async (req, res) => {
 
   // Build sort object
   const sort = {};
-  sort[sortBy] = sortOrder === "asc" ? 1 : -1;
+  sort[sortBy === "rating" ? "ratings.average" : sortBy] =
+    sortOrder === "asc" ? 1 : -1;
   sort["_id"] = -1; // Secondary sort by _id to ensure consistent order, because createdAt is same for multiple products it causes same products in different pages for pagination
 
   const skip = (page - 1) * limit;
