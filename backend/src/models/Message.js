@@ -17,6 +17,8 @@ const messageSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    reply: { type: String, trim: true },
+    isReplied: { type: Boolean, default: false },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },

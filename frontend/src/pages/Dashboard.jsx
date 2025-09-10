@@ -1,24 +1,26 @@
 import { useState } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import { orderService } from '@/services/orderService';
 import { productService } from '@/services/productService';
-import { authService } from '../services/authService';
-import { UserIcon } from '@heroicons/react/24/outline';
 import OrderCard from '@components/dashboard/OrderCard';
 import ProductCard from '@components/dashboard/ProductCard';
 import UserCard from '@components/dashboard/UserCard';
 import {
-  ShieldExclamationIcon,
   ArrowLeftIcon,
+  ShieldExclamationIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 
 import { useAuth } from '@/hooks/useAuth';
 import Pagination from '../components/common/Pagination';
 
 import { motion } from 'framer-motion';
 import { LoadingScreen } from '../components/common/Spinner';
+import { messageService } from '../services/messageService';
+import MessageCard from '../components/dashboard/MessageCard';
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState('orders');
@@ -109,7 +111,7 @@ export default function AdminDashboard() {
 
       {/* Tabs */}
       <div className="flex space-x-4 border-b mb-6">
-        <button
+        {/* <button
           onClick={() => setTab('orders')}
           className={`pb-2 px-4 ${
             tab === 'orders'
@@ -139,12 +141,36 @@ export default function AdminDashboard() {
         >
           Users
         </button>
+        <button
+          onClick={() => setTab('messages')}
+          className={`pb-2 px-4 ${
+            tab === 'messages'
+              ? 'border-b-2 border-blue-500 text-blue-600 font-semibold'
+              : 'text-gray-600 hover:text-blue-600'
+          }`}
+        >
+          Messages
+        </button> */}
+        {['orders', 'products', 'users', 'messages'].map(item => (
+          <button
+            key={item}
+            onClick={() => setTab(item)}
+            className={`pb-2 px-4 ${
+              tab === item
+                ? 'border-b-2 border-blue-500 text-blue-600 font-semibold'
+                : 'text-gray-600 hover:text-blue-600'
+            }`}
+          >
+            <span className="capitalize"> {item} </span>
+          </button>
+        ))}
       </div>
 
       {/* Tab Content */}
       {tab === 'orders' && <OrdersTab />}
       {tab === 'products' && <ProductsTab />}
       {tab === 'users' && <UsersTab />}
+      {tab === 'messages' && <MessagesTab />}
     </div>
   );
 }
@@ -270,6 +296,40 @@ function UsersTab() {
           ))}
         </div>
       )}
+
+      {/* Pagination */}
+      {pagination.pages > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-12"
+        >
+          <Pagination
+            currentPage={page}
+            totalPages={pagination.pages}
+            onPageChange={newPage => setPage(newPage)}
+            showInfo={true}
+          />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function MessagesTab() {
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useQuery(['adminMessages', page], () =>
+    messageService.getAllMessages({ page, limit: 5 }),
+  );
+
+  if (isLoading) return <LoadingScreen message="Loading orders..." />;
+
+  const { messages, pagination } = data;
+  return (
+    <div className="space-y-4">
+      {messages?.map(message => (
+        <MessageCard key={message._id} message={message} page={page} />
+      ))}
 
       {/* Pagination */}
       {pagination.pages > 1 && (

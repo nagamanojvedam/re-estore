@@ -41,7 +41,29 @@ const createMessage = catchAsync(async (req, res) => {
   });
 });
 
+const replyMessage = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { reply } = req.body;
+
+  const updated = await Message.findByIdAndUpdate(
+    { _id: id, isReplied: false },
+    {
+      $set: { reply, isReplied: true },
+    },
+    { new: true }
+  );
+
+  if (!updated) {
+    throw new ApiError(404, "Message already replied");
+  }
+  res.json({
+    status: "success",
+    message: "Message replied successfully",
+  });
+});
+
 module.exports = {
   getAllMessages,
   createMessage,
+  replyMessage,
 };
