@@ -161,7 +161,7 @@
   .loading-spinner {
     width: 48px;
     height: 48px;
-    border: 2px solid #fff;
+    border: 3px solid blue;
     border-bottom-color: transparent;
     border-radius: 50%;
     display: inline-block;

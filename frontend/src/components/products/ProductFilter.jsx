@@ -31,6 +31,10 @@ function ProductFilter({
     onFilterChange({ ...filters, [filterType]: value });
   };
 
+  const handleSortByChange = ({ sortBy, sortOrder }) => {
+    onFilterChange({ ...filters, sortBy, sortOrder });
+  };
+
   const handlePriceChange = ({ minPrice, maxPrice }) => {
     onFilterChange({
       ...filters,
@@ -71,6 +75,7 @@ function ProductFilter({
           expandedSections={expandedSections}
           onFilterChange={handleFilterChange}
           onPriceChange={handlePriceChange}
+          onSortByChange={handleSortByChange}
           onClearFilters={onClearFilters}
           toggleSection={toggleSection}
           hasActiveFilters={hasActiveFilters}
@@ -121,6 +126,7 @@ function ProductFilter({
                   expandedSections={expandedSections}
                   onFilterChange={handleFilterChange}
                   onPriceChange={handlePriceChange}
+                  onSortByChange={handleSortByChange}
                   onClearFilters={() => {
                     onClearFilters();
                     setIsOpen(false);
@@ -143,6 +149,7 @@ function FilterContent({
   expandedSections,
   onFilterChange,
   onPriceChange,
+  onSortByChange,
   onClearFilters,
   toggleSection,
   hasActiveFilters,
@@ -165,6 +172,29 @@ function FilterContent({
           <span>Clear all filters</span>
         </button>
       )}
+
+      {/* Sort Options */}
+      <div>
+        <h3 className="font-medium text-gray-900 dark:text-white mb-3">
+          Sort By
+        </h3>
+        <select
+          value={`${filters.sortBy || 'createdAt'}-${filters.sortOrder || 'desc'}`}
+          onChange={e => {
+            const [sortBy, sortOrder] = e.target.value.split('-');
+            onSortByChange({ sortBy, sortOrder });
+          }}
+          className="input text-sm"
+        >
+          <option value="createdAt-desc">Newest First</option>
+          <option value="createdAt-asc">Oldest First</option>
+          <option value="rating-desc">Top Rated</option>
+          <option value="name-asc">Name: A to Z</option>
+          <option value="name-desc">Name: Z to A</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+        </select>
+      </div>
 
       {/* Category Filter */}
       <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
@@ -373,30 +403,6 @@ function FilterContent({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Sort Options */}
-      <div>
-        <h3 className="font-medium text-gray-900 dark:text-white mb-3">
-          Sort By
-        </h3>
-        <select
-          value={`${filters.sortBy || 'createdAt'}-${filters.sortOrder || 'desc'}`}
-          onChange={e => {
-            const [sortBy, sortOrder] = e.target.value.split('-');
-            onFilterChange('sortBy', sortBy);
-            onFilterChange('sortOrder', sortOrder);
-          }}
-          className="input text-sm"
-        >
-          <option value="createdAt-desc">Newest First</option>
-          <option value="createdAt-asc">Oldest First</option>
-          <option value="name-asc">Name: A to Z</option>
-          <option value="name-desc">Name: Z to A</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="rating-desc">Highest Rated</option>
-        </select>
       </div>
     </div>
   );

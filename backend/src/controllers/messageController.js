@@ -2,7 +2,8 @@ const Message = require("../models/Message");
 const catchAsync = require("../utils/catchAsync");
 
 const getAllMessages = catchAsync(async (req, res) => {
-  const { page = 1, limit = 10 } = req.params;
+  console.log(req.query);
+  const { page = 1, limit = 10 } = req.query;
 
   const skip = (page - 1) * limit;
 

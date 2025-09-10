@@ -22,7 +22,7 @@ const getProducts = {
     minRating: Joi.number().min(1).max(4),
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(10),
-    sortBy: Joi.string().valid("name", "price", "createdAt"),
+    sortBy: Joi.string().valid("name", "price", "rating", "createdAt"),
     sortOrder: Joi.string().valid("asc", "desc").default("desc"),
     isActive: Joi.boolean(),
   }),
