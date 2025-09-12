@@ -1,4 +1,6 @@
+const { jwt } = require("../config/config");
 const User = require("../models/User");
+const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 
 const getMe = catchAsync(async (req, res) => {
@@ -118,6 +120,25 @@ const clearWishlist = catchAsync(async (req, res) => {
   });
 });
 
+const verifyEmail = catchAsync(async (req, res) => {
+  const { token } = req.params;
+
+  const decoded = await jwt.verify(token, config.jwt.secret);
+
+  if (!decoded) throw new ApiError(400, "Unable to activate user");
+
+  await User.findOneAndUpdate(
+    { _id: decoded.id },
+    { $set: { isEmailVerified: true } },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: "success",
+    message: "User email verified successfully",
+  });
+});
+
 module.exports = {
   getMe,
   updateMe,
@@ -126,4 +147,5 @@ module.exports = {
   addToWishlist,
   removeFromWishlist,
   clearWishlist,
+  verifyEmail,
 };
