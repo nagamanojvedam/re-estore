@@ -3,6 +3,14 @@ const RefreshToken = require("../models/RefreshToken");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { generateAuthTokens, verifyToken } = require("../utils/jwt");
+const { sendWelcomeEmail } = require("../utils/email");
+const jwt = require("jsonwebtoken");
+const config = require("../config/config");
+
+const getUrl = (req) => {
+  if (process.env.NODE_ENV === "development") return "http://localhost:5173";
+  return `${req.protocol}://${req.host}`;
+};
 
 const register = catchAsync(async (req, res) => {
   const { name, email, password } = req.body;
@@ -22,12 +30,27 @@ const register = catchAsync(async (req, res) => {
 
   // Generate tokens
   const tokens = await generateAuthTokens(user);
+  const verifyToken = jwt.sign({ id: user._id }, config.jwt.secret, {
+    expiresIn: "15m",
+  });
 
   // Save refresh token
   await RefreshToken.create({
     token: tokens.refresh.token,
     user: user._id,
     expires: tokens.refresh.expires,
+  });
+
+  const baseUrl = getUrl(req);
+
+  await sendWelcomeEmail({
+    name: user.name,
+    email: user.email,
+    activationLink: `${baseUrl}/users/verifyEmail/${verifyToken}`,
+    dashboardLink: `${baseUrl}/`,
+    supportLink: `${baseUrl}/contact`,
+    shopLink: `${baseUrl}/shop`,
+    unsubscribeLink: `${baseUrl}/`,
   });
 
   res.status(201).json({

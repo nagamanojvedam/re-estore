@@ -7,6 +7,7 @@ const {
   addToWishlist,
   removeFromWishlist,
   clearWishlist,
+  verifyEmail,
 } = require("../controllers/userController");
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
@@ -26,6 +27,8 @@ router.delete("/wishlist", auth, clearWishlist);
 
 router.post("/wishlist/:productId", auth, addToWishlist);
 router.delete("/wishlist/:productId", auth, removeFromWishlist);
+
+router.post("/verifyEmail/:token", verifyEmail);
 
 router.get("/", auth, authorize("admin"), getUsers);
 
