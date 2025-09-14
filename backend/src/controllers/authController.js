@@ -3,8 +3,10 @@ const RefreshToken = require("../models/RefreshToken");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { generateAuthTokens, verifyToken } = require("../utils/jwt");
-const { sendWelcomeEmail } = require("../utils/email");
+const { sendWelcomeEmail, sendPasswordResetEmail } = require("../utils/email");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 const config = require("../config/config");
 
 const getUrl = (req) => {
@@ -198,10 +200,84 @@ const updatePassword = catchAsync(async (req, res) => {
   });
 });
 
+const sendResetToken = catchAsync(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return;
+  }
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  const hashedResetToken = await bcrypt.hash(resetToken, 12);
+
+  user.resetToken = hashedResetToken;
+  user.resetTokenExpires = Date.now() + 15 * 60 * 1000;
+  await user.save();
+
+  await sendPasswordResetEmail({
+    name: user.name,
+    email: user.email,
+    resetLink: `${getUrl(req)}/reset-password?token=${resetToken}&userId=${
+      user._id
+    }`,
+  });
+
+  res.json({
+    status: "success",
+    message: "Password reset email sent successfully",
+  });
+});
+
+const resetPassword = catchAsync(async (req, res) => {
+  const { token, userId } = req.query;
+  const { password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    throw new ApiError(400, "New password and confirm password do not match");
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(400, "Invalid user");
+  }
+
+  console.log(!user.resetTokenExpires || user.resetTokenExpires < Date.now());
+
+  // Check token expiry
+  if (!user.resetTokenExpires || user.resetTokenExpires < Date.now()) {
+    throw new ApiError(400, "Reset token expired");
+  }
+
+  // Compare provided token with hashed one in DB
+  const isValid = await bcrypt.compare(token, user.resetToken);
+
+  if (!isValid) {
+    throw new ApiError(400, "Invalid or expired token");
+  }
+
+  // Update password
+  user.password = password;
+
+  // Invalidate token after successful reset
+  user.resetToken = undefined;
+  user.resetTokenExpiry = undefined;
+
+  await user.save();
+
+  res.json({
+    status: "success",
+    message: "Password updated successfully",
+  });
+});
 module.exports = {
   register,
   login,
   refresh,
   logout,
   updatePassword,
+  sendResetToken,
+  resetPassword,
 };

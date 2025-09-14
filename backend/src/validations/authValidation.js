@@ -35,10 +35,29 @@ const updatePassword = {
   }),
 };
 
+const sendResetToken = {
+  body: Joi.object({
+    email: Joi.string().required().email(),
+  }),
+};
+
+const resetPassword = {
+  body: Joi.object({
+    password: Joi.string().required(),
+    confirmPassword: Joi.string().required(),
+  }),
+  query: Joi.object({
+    token: Joi.string().required(),
+    userId: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   register,
   login,
   refresh,
   logout,
   updatePassword,
+  resetPassword,
+  sendResetToken,
 };

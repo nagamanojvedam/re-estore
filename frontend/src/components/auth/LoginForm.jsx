@@ -5,7 +5,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
-function LoginForm({ onSuccess, onSwitchToRegister }) {
+function LoginForm({
+  onSuccess,
+  onSwitchToRegister,
+  onSwitchToForgotPassword,
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const { login, loading, error, clearError } = useAuth();
 
@@ -134,9 +138,7 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
           <button
             type="button"
             className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300"
-            onClick={() =>
-              toast.error("Can't reset your password, create a new account 😁")
-            }
+            onClick={onSwitchToForgotPassword}
           >
             Forgot your password?
           </button>

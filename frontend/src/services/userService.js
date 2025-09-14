@@ -11,4 +11,9 @@ export const userService = {
     const response = await api.get('/users/me/products', { params });
     return response.data.data;
   },
+
+  forgotPassword: async data => {
+    const response = await api.get('/users/forgot-password', data);
+    return response.data.data;
+  },
 };

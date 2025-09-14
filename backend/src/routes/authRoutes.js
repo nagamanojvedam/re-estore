@@ -5,6 +5,8 @@ const {
   refresh,
   logout,
   updatePassword,
+  sendResetToken,
+  resetPassword,
 } = require("../controllers/authController");
 const validate = require("../middleware/validate");
 const {
@@ -13,6 +15,8 @@ const {
   refresh: refreshValidation,
   logout: logoutValidation,
   updatePassword: updatePasswordValidation,
+  sendResetToken: sendResetTokenValidation,
+  resetPassword: resetPasswordValidation,
 } = require("../validations/authValidation");
 const auth = require("../middleware/auth");
 
@@ -27,6 +31,17 @@ router.post(
   validate(updatePasswordValidation),
   auth,
   updatePassword
+);
+router.post(
+  "/forgot-password",
+  validate(sendResetTokenValidation),
+  sendResetToken
+);
+
+router.post(
+  "/reset-password",
+  validate(resetPasswordValidation),
+  resetPassword
 );
 
 module.exports = router;

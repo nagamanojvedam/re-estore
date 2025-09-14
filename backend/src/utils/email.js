@@ -45,8 +45,11 @@ const sendWelcomeEmail = async (user) => {
 
 const sendPasswordResetEmail = async (user, token) => {
   const subject = "Password Reset Request";
-  const text = `Hello ${user.name},\n\nYou requested a password reset. Use this token: ${token}`;
-  const html = `<h1>Password Reset</h1><p>Hello ${user.name}</p><p>Use this token: <strong>${token}</strong></p>`;
+  const text = `Hello ${user.name},\n\nYou requested a password reset.`;
+  const html = fs
+    .readFileSync(path.join(templatesDir, "reset-password.html"), "utf-8")
+    .replace(/{{NAME}}/g, user.name)
+    .replace(/{{RESET_LINK}}/g, user.resetLink);
 
   await sendEmail(user.email, subject, text, html);
 };

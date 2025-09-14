@@ -1,9 +1,8 @@
 import { LoadingButton } from '@components/common/Spinner';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import api from '../../services/api';
 
 function RegisterForm({ onSuccess, onSwitchToLogin }) {
   const [showPassword, setShowPassword] = useState(false);

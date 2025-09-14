@@ -19,6 +19,7 @@ import CartSidebar from '../cart/CartSidebar';
 import Logo from './Logo';
 import Modal from './Modal';
 import SearchBar from './SearchBar';
+import ForgotPasswordForm from '../auth/ForgotPasswordForm';
 
 function Header() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -32,6 +33,7 @@ function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const navigation = [
     { name: 'Home', path: '/' },
@@ -323,6 +325,10 @@ function Header() {
             setShowLogin(false);
             setShowRegister(true);
           }}
+          onSwitchToForgotPassword={() => {
+            setShowLogin(false);
+            setShowForgotPassword(true);
+          }}
         />
       </Modal>
 
@@ -346,6 +352,14 @@ function Header() {
         title="Search Products"
       >
         <SearchBar onClose={() => setShowSearch(false)} />
+      </Modal>
+
+      <Modal
+        isOpen={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+        title="Forgot Password"
+      >
+        <ForgotPasswordForm onSuccess={handleAuthSuccess} />
       </Modal>
 
       {/* Cart Sidebar */}

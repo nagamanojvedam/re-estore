@@ -36,6 +36,7 @@ const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
 const CookiePolicy = lazy(() => import('@/pages/CookiePolicy'));
 const GDPRPolicy = lazy(() => import('@/pages/GDPRPolicy'));
 const MyProducts = lazy(() => import('@/pages/MyProducts'));
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'));
 
 function App() {
   return (
@@ -73,6 +74,10 @@ function App() {
                         element={<ProductDetailsPage />}
                       />
                       <Route path="/cart" element={<CartPage />} />
+                      <Route
+                        path="/reset-password"
+                        element={<ResetPasswordPage />}
+                      />
 
                       {/* Protected Routes */}
 
