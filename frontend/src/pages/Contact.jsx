@@ -3,7 +3,7 @@ import { Mail, MapPin, Phone } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { messageService } from '../services/messageService';
 import toast from 'react-hot-toast';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { LoadingButton } from '../components/common/Spinner';
 
 const fadeInUp = {
@@ -23,7 +23,7 @@ export default function ContactPage() {
     reset,
   } = useForm();
 
-  const { mutate: sendMessage, isLoading: isSendingMessage } = useMutation({
+  const { mutate: sendMessage, isPending: isSendingMessage } = useMutation({
     mutationFn: async data => {
       // just to add some delay to display loading spinner
       await new Promise(resolve => setTimeout(resolve, 1000));

@@ -1,15 +1,28 @@
-import { useState } from 'react';
 import {
+  CheckCircleIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  CheckCircleIcon,
-  XCircleIcon,
   HeartIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/outline';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { userService } from '../../services/userService';
 import toast from 'react-hot-toast';
 
-const UserCard = ({ user, toggleUserMutation }) => {
+const UserCard = ({ user, page }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate: toggleUserMutation } = useMutation({
+    mutationFn: userService.toggleUserActive,
+    onSuccess: data => {
+      queryClient.invalidateQueries(['adminUsers', page]);
+      toast.success(
+        `User ${data.user.isActive ? 'Activated 🙂' : 'Deactivated 🙁'}`,
+      );
+    },
+  });
 
   const formatDate = dateString =>
     new Date(dateString).toLocaleDateString('en-US', {
@@ -146,7 +159,9 @@ const UserCard = ({ user, toggleUserMutation }) => {
           </button>
 
           <button
-            onClick={() => toast.error('Feature not implemented yet')}
+            onClick={() =>
+              toggleUserMutation({ id: user._id, isUserActive: user.isActive })
+            }
             className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ${
               user.isActive
                 ? 'bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700'

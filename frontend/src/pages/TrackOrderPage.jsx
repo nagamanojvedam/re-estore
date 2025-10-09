@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'; // v2 outline icon
 import { MotionConfig, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { LoadingScreen } from '../components/common/Spinner';
 import { orderService } from '../services/orderService';
 import { formatDate, formatPrice } from '../utils/helpers';
@@ -9,11 +9,18 @@ import { formatDate, formatPrice } from '../utils/helpers';
 export default function TrackOrderPage() {
   const [orderNumber, setOrderNumber] = useState('');
 
-  const { data, isLoading, isError, status, refetch } = useQuery(
-    ['track', { orderNumber }],
-    () => orderService.getOrderByNumber(orderNumber.trim()),
-    { enabled: false, retry: false },
-  );
+  const {
+    data,
+    isPending: isLoading,
+    isError,
+    status,
+    refetch,
+  } = useQuery({
+    queryKey: ['track', { orderNumber }],
+    queryFn: () => orderService.getOrderByNumber(orderNumber.trim()),
+    enabled: false,
+    retry: false,
+  });
 
   const order = data?.order;
 

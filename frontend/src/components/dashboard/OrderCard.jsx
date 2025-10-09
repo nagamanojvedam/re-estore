@@ -83,7 +83,7 @@ const OrderCard = ({ order, updateStatusMutation }) => {
           <select
             value={status}
             onChange={e => {
-              updateStatusMutation.mutate({
+              updateStatusMutation({
                 id: order._id,
                 status: e.target.value,
               });

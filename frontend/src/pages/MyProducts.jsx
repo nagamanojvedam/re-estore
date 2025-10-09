@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { userService } from '../services/userService';
 
 import Pagination from '../components/common/Pagination';
@@ -10,9 +10,10 @@ import ProductReviewCard from '../components/products/ProductReviewCard';
 export default function MyProducts() {
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useQuery(['myProducts', page], () =>
-    userService.getMyProducts({ page, limit: 5 }),
-  );
+  const { data, isPending: isLoading } = useQuery({
+    queryKey: ['myProducts', page],
+    queryFn: () => userService.getMyProducts({ page, limit: 5 }),
+  });
 
   if (isLoading) return <LoadingScreen message="Loading your products" />;
 

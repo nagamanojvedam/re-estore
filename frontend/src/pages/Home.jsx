@@ -11,7 +11,7 @@ import { productService } from '@services/productService';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 
 const isValidEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -22,13 +22,11 @@ function Home() {
   const navigate = useNavigate();
 
   // Fetch featured products
-  const { data: featuredProducts, isLoading: productsLoading } = useQuery(
-    'featured-products',
-    () => productService.getProducts({ limit: 8 }),
-    {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    },
-  );
+  const { data: featuredProducts, isPending: productsLoading } = useQuery({
+    queryKey: ['featured-products'],
+    queryFn: () => productService.getProducts({ limit: 8 }),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   const features = [
     {

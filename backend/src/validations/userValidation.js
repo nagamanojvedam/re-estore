@@ -13,6 +13,18 @@ const updateMeValidation = {
   }),
 };
 
+const toggleUserActiveValidation = {
+  params: Joi.object({
+    id: Joi.string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+  }),
+  body: Joi.object({
+    isUserActive: Joi.boolean(),
+  }),
+};
+
 module.exports = {
   updateMeValidation,
+  toggleUserActiveValidation,
 };

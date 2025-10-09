@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeftIcon,
@@ -51,15 +51,17 @@ function ProductDetailsPage() {
   // Fetch product details
   const {
     data: product,
-    isLoading: isProductLoading,
+    isPending: isProductLoading,
     error,
-  } = useQuery(['product', id], () => productService.getProduct(id), {
+  } = useQuery({
+    queryKey: ['product', id],
+    queryFn: () => productService.getProduct(id),
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
   });
 
   // Fetch reviews
-  const { data, isLoading: isReviewsLoading } = useQuery({
+  const { data, isPending: isReviewsLoading } = useQuery({
     queryKey: ['reviews', id],
     queryFn: () => reviewService.getAllReviews(id),
     enabled: !!id,
@@ -69,7 +71,7 @@ function ProductDetailsPage() {
   const reviews = data?.reviews;
 
   // Fetch related products
-  const { data: relatedProducts, isLoading: isRelatedProductsLoading } =
+  const { data: relatedProducts, isPending: isRelatedProductsLoading } =
     useQuery({
       queryKey: ['related-products', product?.category],
       queryFn: () =>

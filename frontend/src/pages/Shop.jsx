@@ -7,7 +7,7 @@ import { productService } from '@services/productService';
 import { ENV } from '@utils/constants';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 
 function Shop() {
@@ -31,7 +31,7 @@ function Shop() {
   // Fetch products with filters
   const {
     data: productsData,
-    isLoading,
+    isPending: isLoading,
     error,
   } = useQuery({
     queryKey: ['products', debouncedFilters],
