@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDate, formatPrice } from '../../utils/helpers';
 import { orderService } from '@services/orderService';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 function OrderItem({ order, queryKey }) {
@@ -44,11 +44,11 @@ function OrderItem({ order, queryKey }) {
     }
   };
 
-  const { mutate: cancelOrder, isLoading: isCancelling } = useMutation({
+  const { mutate: cancelOrder, isPending: isCancelling } = useMutation({
     mutationFn: () => orderService.cancelMyOrder(order._id),
     onSuccess: () => {
       toast.success('Order cancelled!');
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries([queryKey]);
     },
     onError: error => {
       toast.error('Failed to cancel order!');

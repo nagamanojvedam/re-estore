@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { messageService } from '../../services/messageService';
 import { formatDate } from '../../utils/helpers';
 
@@ -12,14 +12,14 @@ const MessageCard = ({ message, page }) => {
   const queryClient = useQueryClient();
   const isLong = (message?.message || '').length > 240;
 
-  const { mutate: replyMessage, isLoading: isReplying } = useMutation({
+  const { mutate: replyMessage, isPending: isReplying } = useMutation({
     mutationFn: () =>
       messageService.replyMessage({
         messageId: message._id,
         reply: replyText.trim(),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries('adminMessages', page);
+      queryClient.invalidateQueries(['adminMessages', page]);
       toast.success('Message sent successfully!');
     },
     onError: () => {

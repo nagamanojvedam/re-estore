@@ -4,7 +4,7 @@ import { orderService } from '@services/orderService';
 import { ORDER_STATUSES } from '@utils/constants';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 function OrdersPage() {
@@ -16,9 +16,11 @@ function OrdersPage() {
 
   const {
     data: ordersData,
-    isLoading,
+    isPending: isLoading,
     error,
-  } = useQuery(['orders', filters], () => orderService.getMyOrders(filters), {
+  } = useQuery({
+    queryKey: ['orders', filters],
+    queryFn: () => orderService.getMyOrders(filters),
     keepPreviousData: true,
     staleTime: 2 * 60 * 1000,
   });

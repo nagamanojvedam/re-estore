@@ -16,4 +16,10 @@ export const userService = {
     const response = await api.get('/users/forgot-password', data);
     return response.data.data;
   },
+  toggleUserActive: async ({ id, isUserActive }) => {
+    const response = await api.patch(`/users/${id}/toggle-user-active`, {
+      isUserActive,
+    });
+    return response.data.data;
+  },
 };

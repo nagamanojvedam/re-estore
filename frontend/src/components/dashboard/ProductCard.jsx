@@ -1,17 +1,15 @@
-import { useState } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
-  MinusCircleIcon,
   MinusIcon,
-  PlusCircleIcon,
   PlusIcon,
   StarIcon,
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
-import { formatDate, formatPrice } from '../../utils/helpers';
-import { productService } from '../../services/productService';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { productService } from '../../services/productService';
+import { formatDate, formatPrice } from '../../utils/helpers';
 
 const ProductCard = ({ product, toggleMutation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -167,7 +165,7 @@ const ProductCard = ({ product, toggleMutation }) => {
 
           <button
             onClick={() => {
-              toggleMutation.mutate(product._id);
+              toggleMutation(product._id);
               setIsActive(!isActive);
             }}
             className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ${

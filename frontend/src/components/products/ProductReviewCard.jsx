@@ -3,7 +3,7 @@ import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { reviewService } from '../../services/reviewService';
 import { formatDate } from '../../utils/helpers';
@@ -20,7 +20,7 @@ function ProductReviewCard({ item, page }) {
 
   const { product } = item;
 
-  const addOrUpdateMutation = useMutation({
+  const { mutate: addOrUpdateMutation } = useMutation({
     mutationFn: reviewData => reviewService.addOrUpdate(reviewData),
     onSuccess: () => {
       queryClient.invalidateQueries(['myProducts', page]);
@@ -34,7 +34,7 @@ function ProductReviewCard({ item, page }) {
     },
   });
 
-  const deleteMutation = useMutation({
+  const { mutate: deleteMutation } = useMutation({
     mutationFn: productId => reviewService.deleteReview(productId),
     onSuccess: () => {
       queryClient.invalidateQueries(['myProducts', page]);
@@ -77,7 +77,7 @@ function ProductReviewCard({ item, page }) {
       toast.error('Please provide all required fields!');
       return;
     }
-    addOrUpdateMutation.mutate({ ...reviewForm, productId: product._id });
+    addOrUpdateMutation({ ...reviewForm, productId: product._id });
   }, [addOrUpdateMutation, reviewForm, product._id]);
 
   const handleReviewToggle = useCallback(() => {
@@ -151,7 +151,7 @@ function ProductReviewCard({ item, page }) {
               {item.isReviewed && (
                 <button
                   className="btn btn-danger-outline"
-                  onClick={() => deleteMutation.mutate(product._id)}
+                  onClick={() => deleteMutation(product._id)}
                 >
                   Delete Review
                 </button>

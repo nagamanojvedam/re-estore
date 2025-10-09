@@ -2,7 +2,7 @@ import { LoadingScreen } from '@components/common/Spinner';
 import { orderService } from '@services/orderService';
 import { ORDER_STATUSES } from '@utils/constants';
 import { motion } from 'framer-motion';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { formatPrice } from '../utils/helpers';
 
@@ -16,13 +16,15 @@ const STATUS_ORDER = [
 function OrderDetailPage() {
   const { id } = useParams();
 
-  const { data, isLoading, error } = useQuery(
-    ['order', id],
-    () => orderService.getOrder(id),
-    {
-      staleTime: 5 * 60 * 1000,
-    },
-  );
+  const {
+    data,
+    isPending: isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['order', id],
+    queryFn: () => orderService.getOrder(id),
+    staleTime: 5 * 60 * 1000,
+  });
 
   if (isLoading) return <LoadingScreen message="Loading order details..." />;
   if (error) return <div className="text-red-500">Error loading order.</div>;

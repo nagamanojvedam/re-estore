@@ -1,5 +1,5 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
 
 import { orderService } from '@/services/orderService';
 import { productService } from '@/services/productService';
@@ -19,8 +19,8 @@ import Pagination from '../components/common/Pagination';
 
 import { motion } from 'framer-motion';
 import { LoadingScreen } from '../components/common/Spinner';
-import { messageService } from '../services/messageService';
 import MessageCard from '../components/dashboard/MessageCard';
+import { messageService } from '../services/messageService';
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState('orders');
@@ -178,11 +178,14 @@ export default function AdminDashboard() {
 /* ---------------- Orders Tab ---------------- */
 function OrdersTab() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery(['adminOrders', page], () =>
-    orderService.getAllOrders({ page, limit: 5 }),
-  );
 
-  const updateStatusMutation = useMutation(orderService.updateOrderStatus);
+  const { data, isPending: isLoading } = useQuery({
+    queryKey: ['adminOrders'],
+    queryFn: () => orderService.getAllOrders({ page, limit: 5 }),
+  });
+  const { mutate: updateStatusMutation } = useMutation({
+    mutationFn: orderService.updateOrderStatus,
+  });
 
   if (isLoading) return <LoadingScreen message="Loading orders..." />;
 
@@ -220,10 +223,14 @@ function OrdersTab() {
 /* ---------------- Products Tab ---------------- */
 function ProductsTab() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery(['adminProducts', page], () =>
-    productService.getProducts({ page }),
-  );
-  const toggleMutation = useMutation(productService.deleteProduct);
+  const { data, isPending: isLoading } = useQuery({
+    queryKey: ['adminProducts', page],
+    queryFn: () => productService.getProducts({ page }),
+  });
+
+  const { mutate: toggleMutation } = useMutation({
+    mutationFn: productService.deleteProduct,
+  });
 
   if (isLoading) return <LoadingScreen message="Loading products..." />;
 
@@ -231,7 +238,6 @@ function ProductsTab() {
 
   const handlePageChange = newPage => {
     // Handle page change logic here
-    console.log('Page changed', newPage);
     setPage(newPage);
   };
 
@@ -266,10 +272,11 @@ function ProductsTab() {
 /* ---------------- Users Tab ---------------- */
 function UsersTab() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery(['adminUsers', page], () =>
-    authService.getAllUsers({ page, limit: 5 }),
-  );
-  const toggleUserMutation = useMutation(authService.toggleUserActive);
+
+  const { data, isPending: isLoading } = useQuery({
+    queryKey: ['adminUsers', page],
+    queryFn: () => authService.getAllUsers({ page, limit: 5 }),
+  });
 
   if (isLoading) return <LoadingScreen message="Loading users..." />;
 
@@ -288,11 +295,7 @@ function UsersTab() {
       ) : (
         <div className="grid gap-4">
           {regularUsers.map(user => (
-            <UserCard
-              key={user._id}
-              user={user}
-              toggleUserMutation={toggleUserMutation}
-            />
+            <UserCard key={user._id} user={user} page={page} />
           ))}
         </div>
       )}
@@ -318,9 +321,10 @@ function UsersTab() {
 
 function MessagesTab() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useQuery(['adminMessages', page], () =>
-    messageService.getAllMessages({ page, limit: 5 }),
-  );
+  const { data, isPending: isLoading } = useQuery({
+    queryKey: ['adminMessages', page],
+    queryFn: () => messageService.getAllMessages({ page, limit: 5 }),
+  });
 
   if (isLoading) return <LoadingScreen message="Loading orders..." />;
 

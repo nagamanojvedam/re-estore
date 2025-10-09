@@ -16,7 +16,7 @@ const getUsers = catchAsync(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const skip = (page - 1) * limit;
 
-  const users = await User.find({ isActive: true })
+  const users = await User.find()
     .select("-password -__v")
     .skip(skip)
     .limit(Number(limit))
@@ -139,6 +139,30 @@ const verifyEmail = catchAsync(async (req, res) => {
   });
 });
 
+const toggleUserActive = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { isUserActive } = req.body;
+
+  const user = await User.findByIdAndUpdate(
+    { _id: id },
+    { $set: { isActive: !isUserActive } },
+    { new: true }
+  );
+
+  if (!user) {
+    return res.status(404).json({
+      status: "failed",
+      message: "User not found",
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: `User ${user.isActive ? "Activated" : "Deactivated"}`,
+    data: { user },
+  });
+});
+
 module.exports = {
   getMe,
   updateMe,
@@ -148,4 +172,5 @@ module.exports = {
   removeFromWishlist,
   clearWishlist,
   verifyEmail,
+  toggleUserActive,
 };
