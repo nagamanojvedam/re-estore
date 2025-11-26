@@ -1,84 +1,79 @@
-import {
-  FacebookIcon,
-  InstagramIcon,
-  TwitterIcon,
-  YoutubeIcon,
-} from "lucide-react";
-import Link from "next/link";
-import Logo from "./Logo";
+import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from 'lucide-react';
+import Link from 'next/link';
+import Logo from './Logo';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
 
   const footerSections = [
     {
-      title: "Company",
+      title: 'Company',
       links: [
-        { name: "About Us", path: "/about" },
-        { name: "Careers", path: "/careers" },
-        { name: "Press", path: "/press" },
-        { name: "Blog", path: "/blog" },
+        { name: 'About Us', path: '/about' },
+        { name: 'Careers', path: '/careers' },
+        { name: 'Press', path: '/press' },
+        { name: 'Blog', path: '/blog' },
       ],
     },
     {
-      title: "Customer Service",
+      title: 'Customer Service',
       links: [
-        { name: "Contact Us", path: "/contact" },
-        { name: "FAQ", path: "/faq" },
-        { name: "Shipping Info", path: "/shipping" },
-        { name: "Returns", path: "/returns" },
+        { name: 'Contact Us', path: '/contact' },
+        { name: 'FAQ', path: '/faq' },
+        { name: 'Shipping Info', path: '/shipping' },
+        { name: 'Returns', path: '/returns' },
       ],
     },
     {
-      title: "My Account",
+      title: 'My Account',
       links: [
-        { name: "Login", path: "/" },
-        { name: "Order History", path: "/orders" },
-        { name: "Wishlist", path: "/wishlist" },
-        { name: "Track Order", path: "/track" },
+        { name: 'Login', path: '/' },
+        { name: 'Order History', path: '/orders' },
+        { name: 'Wishlist', path: '/wishlist' },
+        { name: 'Track Order', path: '/track' },
       ],
     },
     {
-      title: "Legal",
+      title: 'Legal',
       links: [
-        { name: "Privacy Policy", path: "/privacy" },
-        { name: "Terms of Service", path: "/terms" },
-        { name: "Cookie Policy", path: "/cookies" },
-        { name: "GDPR", path: "/gdpr" },
+        { name: 'Privacy Policy', path: '/privacy' },
+        { name: 'Terms of Service', path: '/terms' },
+        { name: 'Cookie Policy', path: '/cookies' },
+        { name: 'GDPR', path: '/gdpr' },
       ],
     },
   ];
 
   const socials = [
     {
-      href: "https://facebook.com",
+      href: 'https://facebook.com',
       Icon: FacebookIcon,
-      label: "Facebook",
-      hoverColor: "hover:text-blue-600 dark:hover:text-blue-500",
+      label: 'Facebook',
+      hoverColor: 'hover:text-blue-600 dark:hover:text-blue-500',
     },
     {
-      href: "https://twitter.com",
+      href: 'https://twitter.com',
       Icon: TwitterIcon,
-      label: "Twitter",
-      hoverColor: "hover:text-sky-400 dark:hover:text-sky-500",
+      label: 'Twitter',
+      hoverColor: 'hover:text-sky-400 dark:hover:text-sky-500',
     },
     {
-      href: "https://instagram.com",
+      href: 'https://instagram.com',
       Icon: InstagramIcon,
-      label: "Instagram",
-      hoverColor: "hover:text-pink-500 dark:hover:text-pink-400",
+      label: 'Instagram',
+      hoverColor: 'hover:text-pink-500 dark:hover:text-pink-400',
     },
     {
-      href: "https://youtube.com",
+      href: 'https://youtube.com',
       Icon: YoutubeIcon,
-      label: "YouTube",
-      hoverColor: "hover:text-red-600 dark:hover:text-red-500",
+      label: 'YouTube',
+      hoverColor: 'hover:text-red-600 dark:hover:text-red-500',
     },
   ];
 
   return (
     <footer
-      className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300 border-t border-gray-200 dark:border-gray-700"
+      className="border-t border-gray-200 bg-gray-100 text-gray-800 transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
       aria-labelledby="site-footer"
     >
       <div className="container-custom py-10">
@@ -87,17 +82,15 @@ function Footer() {
         </h2>
 
         {/* Row 1: Categories */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 text-center lg:text-left">
+        <div className="mb-10 grid grid-cols-1 gap-8 text-center sm:grid-cols-2 lg:grid-cols-4 lg:text-left">
           {footerSections.map((section) => (
             <nav
               key={section.title}
-              aria-labelledby={`footer-${section.title
-                .replace(/\s+/g, "-")
-                .toLowerCase()}`}
+              aria-labelledby={`footer-${section.title.replace(/\s+/g, '-').toLowerCase()}`}
             >
               <h3
-                id={`footer-${section.title.replace(/\s+/g, "-").toLowerCase()}`}
-                className="font-semibold text-gray-900 dark:text-white mb-4"
+                id={`footer-${section.title.replace(/\s+/g, '-').toLowerCase()}`}
+                className="mb-4 font-semibold text-gray-900 dark:text-white"
               >
                 {section.title}
               </h3>
@@ -106,7 +99,7 @@ function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.path}
-                      className={`text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 rounded`}
+                      className={`rounded text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-gray-300 dark:hover:text-white`}
                     >
                       {link.name}
                     </Link>
@@ -118,13 +111,13 @@ function Footer() {
         </div>
 
         {/* Row 2: Logo + info (left) and social links (right) */}
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 border-t border-gray-200 dark:border-gray-700 pt-8">
+        <div className="flex flex-col items-center justify-between gap-6 border-t border-gray-200 pt-8 dark:border-gray-700 md:flex-row md:items-start">
           {/* Left: Logo + Info */}
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
+          <div className="flex flex-col items-center gap-4 md:flex-row md:items-start md:gap-6">
             <Logo className="h-8 w-auto" />
-            <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md text-center md:text-left">
-              Your one-stop destination for quality products at unbeatable
-              prices. Committed to exceptional service.
+            <p className="max-w-md text-center text-sm text-gray-600 dark:text-gray-400 md:text-left">
+              Your one-stop destination for quality products at unbeatable prices. Committed to
+              exceptional service.
             </p>
           </div>
 
@@ -137,9 +130,9 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className={`text-gray-600 dark:text-gray-400 transition-colors ${hoverColor}`}
+                  className={`text-gray-600 transition-colors dark:text-gray-400 ${hoverColor}`}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="h-5 w-5" />
                 </a>
               </li>
             ))}
@@ -150,9 +143,7 @@ function Footer() {
       {/* Bottom bar: copyright */}
       <div className="bg-black text-white">
         <div className="container-custom py-4 text-center">
-          <p className="text-sm">
-            © {currentYear} EStore. All rights reserved.
-          </p>
+          <p className="text-sm">© {currentYear} EStore. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -8,8 +10,8 @@ import {
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { productService } from '../../services/productService';
-import { formatDate, formatPrice } from '../../utils/helpers';
+import { productService } from '@/lib/services/productService';
+import { formatDate, formatPrice } from '@/lib/utils/helpers';
 
 const ProductCard = ({ product, toggleMutation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -18,7 +20,7 @@ const ProductCard = ({ product, toggleMutation }) => {
   const [stock, setStock] = useState(product.stock);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleStockChange = async delta => {
+  const handleStockChange = async (delta) => {
     try {
       setIsLoading(true);
       const res = await productService.updateProduct(product._id, {
@@ -34,7 +36,7 @@ const ProductCard = ({ product, toggleMutation }) => {
     }
   };
 
-  const getStockStatus = stock => {
+  const getStockStatus = (stock) => {
     if (stock === 0)
       return {
         text: 'Out of Stock',
@@ -43,13 +45,11 @@ const ProductCard = ({ product, toggleMutation }) => {
     if (stock <= 10)
       return {
         text: 'Low Stock',
-        color:
-          'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
+        color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
       };
     return {
       text: 'In Stock',
-      color:
-        'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
+      color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
     };
   };
 
@@ -60,27 +60,23 @@ const ProductCard = ({ product, toggleMutation }) => {
 
     for (let i = 0; i < 5; i++) {
       if (i < wholeStars) {
-        stars.push(
-          <StarIconSolid key={i} className="w-4 h-4 text-yellow-400" />,
-        );
+        stars.push(<StarIconSolid key={i} className="h-4 w-4 text-yellow-400" />);
       } else if (i === wholeStars && hasHalfStar) {
         stars.push(
-          <div key={i} className="relative w-4 h-4">
-            <StarIcon className="w-4 h-4 text-gray-300 absolute" />
-            <StarIconSolid className="w-4 h-4 text-yellow-400 absolute clip-half" />
-          </div>,
+          <div key={i} className="relative h-4 w-4">
+            <StarIcon className="absolute h-4 w-4 text-gray-300" />
+            <StarIconSolid className="clip-half absolute h-4 w-4 text-yellow-400" />
+          </div>
         );
       } else {
-        stars.push(<StarIcon key={i} className="w-4 h-4 text-gray-300" />);
+        stars.push(<StarIcon key={i} className="h-4 w-4 text-gray-300" />);
       }
     }
 
     return (
       <div className="flex items-center space-x-1">
         <div className="flex">{stars}</div>
-        <span className="text-sm text-gray-600 dark:text-gray-400">
-          ({count} reviews)
-        </span>
+        <span className="text-sm text-gray-600 dark:text-gray-400">({count} reviews)</span>
       </div>
     );
   };
@@ -88,21 +84,21 @@ const ProductCard = ({ product, toggleMutation }) => {
   const stockStatus = getStockStatus(stock);
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-5 transition hover:shadow-md">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
       {/* Main Details Section */}
       <div className="space-y-3">
         {/* Header with Image and Basic Info */}
         <div className="flex space-x-4">
           {/* Product Image */}
-          <div className="relative w-20 h-20 flex-shrink-0">
+          <div className="relative h-20 w-20 flex-shrink-0">
             {product.images && product.images.length > 0 ? (
               <img
                 src={product.images[currentImageIndex]}
                 alt={product.name}
-                className="w-full h-full object-cover rounded-lg"
+                className="h-full w-full rounded-lg object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-300 font-semibold">
+              <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-200 font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
                 {product.name.charAt(0)}
               </div>
             )}
@@ -110,21 +106,19 @@ const ProductCard = ({ product, toggleMutation }) => {
 
           {/* Basic Product Info */}
           <div className="flex-1 space-y-2">
-            <div className="flex justify-between items-start">
+            <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {product.name}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {product.category}
-                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{product.category}</p>
               </div>
               <div className="text-right">
-                <p className="font-bold text-lg text-gray-900 dark:text-white">
+                <p className="text-lg font-bold text-gray-900 dark:text-white">
                   {formatPrice(product.price)}
                 </p>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`rounded-full px-2 py-1 text-xs font-medium ${
                     isActive
                       ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                       : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
@@ -136,10 +130,8 @@ const ProductCard = ({ product, toggleMutation }) => {
             </div>
 
             {/* Stock and Rating */}
-            <div className="flex justify-between items-center">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${stockStatus.color}`}
-              >
+            <div className="flex items-center justify-between">
+              <span className={`rounded-full px-2 py-1 text-xs font-medium ${stockStatus.color}`}>
                 {stockStatus.text} ({stock})
               </span>
               {renderStars(product.ratings.average, product.ratings.count)}
@@ -148,18 +140,16 @@ const ProductCard = ({ product, toggleMutation }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center space-x-1 text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-medium"
+            className="flex items-center space-x-1 text-sm font-medium text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300"
           >
-            <span>
-              {isExpanded ? 'Show less details' : 'Show more details'}
-            </span>
+            <span>{isExpanded ? 'Show less details' : 'Show more details'}</span>
             {isExpanded ? (
-              <ChevronUpIcon className="w-4 h-4" />
+              <ChevronUpIcon className="h-4 w-4" />
             ) : (
-              <ChevronDownIcon className="w-4 h-4" />
+              <ChevronDownIcon className="h-4 w-4" />
             )}
           </button>
 
@@ -168,10 +158,8 @@ const ProductCard = ({ product, toggleMutation }) => {
               toggleMutation(product._id);
               setIsActive(!isActive);
             }}
-            className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ${
-              isActive
-                ? 'bg-red-500 hover:bg-red-600'
-                : 'bg-green-500 hover:bg-green-600'
+            className={`rounded-lg px-4 py-2 font-medium text-white transition-colors ${
+              isActive ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
             }`}
           >
             {isActive ? 'Deactivate' : 'Activate'}
@@ -181,33 +169,27 @@ const ProductCard = ({ product, toggleMutation }) => {
 
       {/* Expanded Details Section */}
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
+        <div className="mt-4 space-y-4 border-t border-gray-200 pt-4 dark:border-gray-700">
           {/* Product Description */}
           <div>
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Description
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {product.description}
-            </p>
+            <h4 className="mb-2 font-medium text-gray-900 dark:text-white">Description</h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{product.description}</p>
           </div>
 
           {/* Product Images Gallery */}
           {product.images && product.images.length > 1 && (
             <div>
-              <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+              <h4 className="mb-2 font-medium text-gray-900 dark:text-white">
                 Images ({product.images.length})
               </h4>
-              <div className="flex  space-x-2 overflow-x-auto p-2">
+              <div className="flex space-x-2 overflow-x-auto p-2">
                 {product.images.map((image, index) => (
                   <img
                     key={index}
                     src={image}
                     alt={`${product.name} ${index + 1}`}
-                    className={`w-16 h-16 object-cover rounded-lg cursor-pointer flex-shrink-0 ${
-                      index === currentImageIndex
-                        ? 'ring-2 ring-primary-500'
-                        : ''
+                    className={`h-16 w-16 flex-shrink-0 cursor-pointer rounded-lg object-cover ${
+                      index === currentImageIndex ? 'ring-2 ring-primary-500' : ''
                     }`}
                     onClick={() => setCurrentImageIndex(index)}
                   />
@@ -218,10 +200,8 @@ const ProductCard = ({ product, toggleMutation }) => {
 
           {/* Owner Information */}
           <div>
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Owner Information
-            </h4>
-            <div className="text-sm space-y-1">
+            <h4 className="mb-2 font-medium text-gray-900 dark:text-white">Owner Information</h4>
+            <div className="space-y-1 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Name:</span>
                 <span>{product.owner.name}</span>
@@ -235,19 +215,15 @@ const ProductCard = ({ product, toggleMutation }) => {
 
           {/* Product Stats */}
           <div>
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Product Statistics
-            </h4>
+            <h4 className="mb-2 font-medium text-gray-900 dark:text-white">Product Statistics</h4>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Stock:
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-400">Stock:</span>
                   <div className="flex items-center justify-center space-x-2">
                     <button
                       disabled={isLoading}
-                      className="h-4 w-4 bg-red-700 rounded-full text-semibold hover:scale-105"
+                      className="text-semibold h-4 w-4 rounded-full bg-red-700 hover:scale-105"
                       onClick={() => handleStockChange(-10)}
                     >
                       <MinusIcon />
@@ -255,7 +231,7 @@ const ProductCard = ({ product, toggleMutation }) => {
                     <span> {stock} units </span>
                     <button
                       disabled={isLoading}
-                      className="h-4 w-4 bg-red-700 rounded-full text-semibold hover:scale-105"
+                      className="text-semibold h-4 w-4 rounded-full bg-red-700 hover:scale-105"
                       onClick={() => handleStockChange(10)}
                     >
                       <PlusIcon />
@@ -263,25 +239,17 @@ const ProductCard = ({ product, toggleMutation }) => {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Rating:
-                  </span>
-                  <span className="font-medium">
-                    {product.ratings.average.toFixed(1)}/5.0
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-400">Rating:</span>
+                  <span className="font-medium">{product.ratings.average.toFixed(1)}/5.0</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Reviews:
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-400">Reviews:</span>
                   <span className="font-medium">{product.ratings.count}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Status:
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-400">Status:</span>
                   <span
                     className={`font-medium ${isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}
                   >
@@ -293,43 +261,32 @@ const ProductCard = ({ product, toggleMutation }) => {
           </div>
 
           {/* Specifications */}
-          {product.specifications &&
-            Object.keys(product.specifications).length > 0 && (
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-                  Specifications
-                </h4>
-                <div className="text-sm space-y-1">
-                  {Object.entries(product.specifications).map(
-                    ([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400 capitalize">
-                          {key.replace(/([A-Z])/g, ' $1')}:
-                        </span>
-                        <span>{value}</span>
-                      </div>
-                    ),
-                  )}
-                </div>
+          {product.specifications && Object.keys(product.specifications).length > 0 && (
+            <div>
+              <h4 className="mb-2 font-medium text-gray-900 dark:text-white">Specifications</h4>
+              <div className="space-y-1 text-sm">
+                {Object.entries(product.specifications).map(([key, value]) => (
+                  <div key={key} className="flex justify-between">
+                    <span className="capitalize text-gray-600 dark:text-gray-400">
+                      {key.replace(/([A-Z])/g, ' $1')}:
+                    </span>
+                    <span>{value}</span>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
+          )}
 
           {/* Timeline */}
           <div>
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Timeline
-            </h4>
-            <div className="text-sm space-y-1">
+            <h4 className="mb-2 font-medium text-gray-900 dark:text-white">Timeline</h4>
+            <div className="space-y-1 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Created:
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Created:</span>
                 <span>{formatDate(product.createdAt)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Last Updated:
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Last Updated:</span>
                 <span>{formatDate(product.updatedAt)}</span>
               </div>
             </div>
@@ -337,14 +294,10 @@ const ProductCard = ({ product, toggleMutation }) => {
 
           {/* Product ID for Reference */}
           <div>
-            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-              Reference
-            </h4>
+            <h4 className="mb-2 font-medium text-gray-900 dark:text-white">Reference</h4>
             <div className="text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Product ID:
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Product ID:</span>
                 <span className="font-mono text-xs">{product._id}</span>
               </div>
             </div>

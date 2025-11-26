@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { formatDate } from "@/lib/utils/helpers";
+import { useState, useEffect, useCallback, useRef } from 'react';
+
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { formatDate } from '@/lib/utils/helpers';
 
 export default function ProductReviews({
   reviews = [],
@@ -17,10 +17,7 @@ export default function ProductReviews({
   const length = reviews.length;
 
   // The formula always maps correctly into the range 0 -> length-1
-  const safeIndex = useCallback(
-    (i) => ((i % length) + length) % length,
-    [length]
-  );
+  const safeIndex = useCallback((i) => ((i % length) + length) % length, [length]);
 
   const next = useCallback(() => {
     if (!length) return;
@@ -51,37 +48,24 @@ export default function ProductReviews({
       const filled = i < full;
       const isHalf = hasHalf && i === full;
       items.push(
-        <span
-          key={i}
-          className="inline-flex relative w-5 h-5"
-          aria-hidden="true"
-        >
+        <span key={i} className="relative inline-flex h-5 w-5" aria-hidden="true">
           {isHalf ? (
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-yellow-400">
+            <svg viewBox="0 0 24 24" className="h-5 w-5 text-yellow-400">
               <defs>
-                <linearGradient
-                  id="half-fill"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="0%"
-                >
+                <linearGradient id="half-fill" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="50%" stopColor="currentColor" />
                   <stop offset="50%" stopColor="transparent" />
                 </linearGradient>
               </defs>
               {/* Outline star with half fill overlay */}
               <path d="M0 0h24v24H0z" fill="none" />
-              <svg className="absolute inset-0 w-5 h-5">
+              <svg className="absolute inset-0 h-5 w-5">
                 <path
                   d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.401 8.165L12 18.896l-7.335 3.865 1.401-8.165L.132 9.21l8.2-1.192L12 .587z"
                   className="fill-current text-gray-300 dark:text-gray-600"
                 />
               </svg>
-              <svg
-                className="absolute inset-0 w-5 h-5"
-                style={{ fill: "url(#half-fill)" }}
-              >
+              <svg className="absolute inset-0 h-5 w-5" style={{ fill: 'url(#half-fill)' }}>
                 <path
                   d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.401 8.165L12 18.896l-7.335 3.865 1.401-8.165L.132 9.21l8.2-1.192L12 .587z"
                   className="fill-current text-yellow-400"
@@ -90,10 +74,8 @@ export default function ProductReviews({
             </svg>
           ) : (
             <Star
-              className={`w-5 h-5 ${
-                filled
-                  ? "text-yellow-400 fill-yellow-400"
-                  : "text-gray-300 dark:text-gray-600"
+              className={`h-5 w-5 ${
+                filled ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 dark:text-gray-600'
               }`}
             />
           )}
@@ -111,7 +93,7 @@ export default function ProductReviews({
       aria-roledescription="carousel"
       aria-label="Product reviews"
       tabIndex={0}
-      aria-live={autoPlay ? "off" : "polite"}
+      aria-live={autoPlay ? 'off' : 'polite'}
     >
       {/* Controls + card in a row to avoid overlap */}
       <div className="flex items-stretch gap-3 sm:gap-4">
@@ -120,56 +102,41 @@ export default function ProductReviews({
             onClick={prev}
             aria-label="Previous review"
             type="button"
-            className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 shadow focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 shadow focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 sm:p-6 w-full max-w-none">
-            <AnimatePresence mode="wait">
-              <motion.div
+        <div className="min-w-0 flex-1">
+            <div className="relative w-full max-w-none rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-900 sm:p-6">
+              <div
                 key={review._id}
-                layout
-                initial={{ opacity: 0, x: 80 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -80 }}
-                transition={{
-                  duration: 0.3,
-                  ease: "easeOut",
-                }}
                 aria-roledescription="slide"
                 aria-label={`Review ${index + 1} of ${length}`}
               >
-                <div className="flex items-center mb-4">
+                <div className="mb-4 flex items-center">
                   <img
-                    src={review.user?.image || "/avatars/default-avatar.jpg"}
-                    alt={
-                      review.user?.name
-                        ? `${review.user.name}'s avatar`
-                        : "User avatar"
-                    }
-                    className="w-12 h-12 rounded-full object-cover border-2 border-primary-600 dark:border-primary-400"
+                    src={review.user?.image || '/avatars/default-avatar.jpg'}
+                    alt={review.user?.name ? `${review.user.name}'s avatar` : 'User avatar'}
+                    className="h-12 w-12 rounded-full border-2 border-primary-600 object-cover dark:border-primary-400"
                     loading="lazy"
                     decoding="async"
                   />
                   <div className="ml-3 min-w-0">
-                    <p className="font-semibold text-gray-900 dark:text-white truncate">
-                      {review.user?.name || "Anonymous"}
+                    <p className="truncate font-semibold text-gray-900 dark:text-white">
+                      {review.user?.name || 'Anonymous'}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(review.updatedAt)}
-                    </p>
+                    <p className="text-sm text-gray-500">{formatDate(review.updatedAt)}</p>
                   </div>
                 </div>
 
-                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
+                <h3 className="mb-2 text-lg font-medium text-gray-800 dark:text-gray-200">
                   {review.title}
                 </h3>
 
                 <div
-                  className="flex items-center mb-3"
+                  className="mb-3 flex items-center"
                   role="img"
                   aria-label={`Rating ${review.rating} out of 5`}
                 >
@@ -179,15 +146,12 @@ export default function ProductReviews({
                   </span>
                 </div>
 
-                <p className="text-gray-700 dark:text-gray-300">
-                  {review.comment}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
+              </div>
+            </div>
 
           <div
-            className="flex justify-center mt-3 sm:mt-4 space-x-2"
+            className="mt-3 flex justify-center space-x-2 sm:mt-4"
             role="tablist"
             aria-label="Review slides"
           >
@@ -201,10 +165,8 @@ export default function ProductReviews({
                   aria-label={`Go to review ${i + 1}`}
                   type="button"
                   onClick={() => setIndex(i)}
-                  className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                    selected
-                      ? "bg-gray-800 dark:bg-gray-200"
-                      : "bg-gray-300 dark:bg-gray-600"
+                  className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                    selected ? 'bg-gray-800 dark:bg-gray-200' : 'bg-gray-300 dark:bg-gray-600'
                   }`}
                 />
               );
@@ -217,9 +179,9 @@ export default function ProductReviews({
             onClick={next}
             aria-label="Next review"
             type="button"
-            className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 shadow focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 shadow focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="h-5 w-5" />
           </button>
         </div>
       </div>

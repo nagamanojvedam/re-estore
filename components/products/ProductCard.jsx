@@ -1,21 +1,16 @@
-"use client";
+'use client';
 
-import {
-  EyeIcon,
-  HeartIcon,
-  ShoppingCartIcon,
-  StarIcon,
-} from "@heroicons/react/24/outline";
-import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { useCart } from "@/lib/hooks/useCart";
-import { useWishlist } from "@/lib/hooks/useWishlist";
-import clsx from "clsx";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import Link from "next/link";
-import { formatPrice } from "@/lib/utils/helpers";
+import { EyeIcon, HeartIcon, ShoppingCartIcon, StarIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { useCart } from '@/lib/hooks/useCart';
+import { useWishlist } from '@/lib/hooks/useWishlist';
+import clsx from 'clsx';
+
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
+import { formatPrice } from '@/lib/utils/helpers';
 
 function ProductCard({ product, index = 0 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -32,7 +27,7 @@ function ProductCard({ product, index = 0 }) {
     e.stopPropagation();
 
     if (product.stock <= 0) {
-      toast.error("Product is out of stock");
+      toast.error('Product is out of stock');
       return;
     }
 
@@ -53,7 +48,7 @@ function ProductCard({ product, index = 0 }) {
     e.stopPropagation();
 
     if (!isAuthenticated) {
-      toast.error("Please login to add items to wishlist");
+      toast.error('Please login to add items to wishlist');
       return;
     }
 
@@ -65,17 +60,17 @@ function ProductCard({ product, index = 0 }) {
       setIsWishlisted(true);
     }
 
-    toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
   const renderStars = (rating) => {
     return [...Array(5)].map((_, i) => (
       <StarIcon
         key={i}
-        className={`w-4 h-4 ${
+        className={`h-4 w-4 ${
           i < Math.floor(rating)
-            ? "text-yellow-400 fill-current"
-            : "text-gray-300 dark:text-gray-600"
+            ? 'fill-current text-yellow-400'
+            : 'text-gray-300 dark:text-gray-600'
         }`}
       />
     ));
@@ -86,10 +81,7 @@ function ProductCard({ product, index = 0 }) {
   }, [wishlist, product._id]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.3 }}
+    <div
       className="group"
     >
       <Link href={`/product/${product._id}`}>
@@ -98,16 +90,16 @@ function ProductCard({ product, index = 0 }) {
           <div className="relative aspect-square overflow-hidden">
             {/* Skeleton Loader */}
             {!imageLoaded && (
-              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse" />
+              <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-gray-700" />
             )}
 
             {/* Product Image */}
             <img
-              src={product.images?.[0] || "/placeholder-product.jpg"}
+              src={product.images?.[0] || '/placeholder-product.jpg'}
               alt={product.name}
               className={clsx(
-                "lazy-image w-full h-full object-cover transition-opacity duration-500 group-hover:scale-105",
-                imageLoaded ? "loaded" : "loading"
+                'lazy-image h-full w-full object-cover transition-opacity duration-500 group-hover:scale-105',
+                imageLoaded ? 'loaded' : 'loading'
               )}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageLoaded(true)}
@@ -116,19 +108,17 @@ function ProductCard({ product, index = 0 }) {
 
             {/* Stock Badge */}
             {product.stock <= 0 && (
-              <div className="absolute top-2 left-2">
+              <div className="absolute left-2 top-2">
                 <span className="badge-danger">Out of Stock</span>
               </div>
             )}
 
             {/* Discount Badge */}
             {product.originalPrice && product.originalPrice > product.price && (
-              <div className="absolute top-2 right-2">
+              <div className="absolute right-2 top-2">
                 <span className="badge bg-red-500 text-white">
                   {Math.round(
-                    ((product.originalPrice - product.price) /
-                      product.originalPrice) *
-                      100
+                    ((product.originalPrice - product.price) / product.originalPrice) * 100
                   )}
                   % OFF
                 </span>
@@ -136,36 +126,34 @@ function ProductCard({ product, index = 0 }) {
             )}
 
             {/* Hover Actions */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 hidden group-hover:flex items-center justify-center transition-opacity duration-200">
+            <div className="absolute inset-0 hidden items-center justify-center bg-black bg-opacity-50 transition-opacity duration-200 group-hover:flex">
               <div className="flex space-x-2">
                 <button
                   onClick={handleWishlistToggle}
-                  className="p-2 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                  aria-label={
-                    isWishlisted ? "Remove from wishlist" : "Add to wishlist"
-                  }
+                  className="rounded-full bg-white p-2 text-gray-700 transition-colors hover:text-red-500 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-red-400"
+                  aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                 >
                   {isWishlisted ? (
-                    <HeartSolidIcon className="w-5 h-5 text-red-500" />
+                    <HeartSolidIcon className="h-5 w-5 text-red-500" />
                   ) : (
-                    <HeartIcon className="w-5 h-5" />
+                    <HeartIcon className="h-5 w-5" />
                   )}
                 </button>
 
                 <button
                   onClick={handleAddToCart}
                   disabled={product.stock <= 0}
-                  className="p-2 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-full bg-white p-2 text-gray-700 transition-colors hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-primary-400"
                   aria-label="Add to cart"
                 >
-                  <ShoppingCartIcon className="w-5 h-5" />
+                  <ShoppingCartIcon className="h-5 w-5" />
                 </button>
 
                 <button
-                  className="p-2 bg-white dark:bg-gray-800 rounded-full text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  className="rounded-full bg-white p-2 text-gray-700 transition-colors hover:text-primary-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-primary-400"
                   aria-label="Quick view"
                 >
-                  <EyeIcon className="w-5 h-5" />
+                  <EyeIcon className="h-5 w-5" />
                 </button>
               </div>
             </div>
@@ -174,19 +162,19 @@ function ProductCard({ product, index = 0 }) {
           {/* Product Info */}
           <div className="p-4">
             {/* Category */}
-            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+            <p className="mb-1 text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {product.category}
             </p>
 
             {/* Product Name */}
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+            <h3 className="mb-2 line-clamp-2 truncate font-semibold text-gray-900 transition-colors group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400">
               {product.name}
             </h3>
 
             {/* Rating */}
             {/* {product.ratings?.count > 0 && ( */}
 
-            <div className="flex items-center space-x-1 mb-2">
+            <div className="mb-2 flex items-center space-x-1">
               <div className="flex">{renderStars(product.ratings.average)}</div>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 ({product.ratings.count})
@@ -199,25 +187,24 @@ function ProductCard({ product, index = 0 }) {
                 <span className="text-lg font-bold text-gray-900 dark:text-white">
                   {formatPrice(product.price)}
                 </span>
-                {product.originalPrice &&
-                  product.originalPrice > product.price && (
-                    <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-                      {formatPrice(product.originalPrice)}
-                    </span>
-                  )}
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <span className="text-sm text-gray-500 line-through dark:text-gray-400">
+                    {formatPrice(product.originalPrice)}
+                  </span>
+                )}
               </div>
 
               {/* Stock Count */}
               <span
                 className={`text-xs ${
                   product.stock <= 5
-                    ? "text-red-500"
+                    ? 'text-red-500'
                     : product.stock <= 10
-                    ? "text-yellow-500"
-                    : "text-green-500"
+                      ? 'text-yellow-500'
+                      : 'text-green-500'
                 }`}
               >
-                {product.stock > 0 ? `${product.stock} left` : "Out of stock"}
+                {product.stock > 0 ? `${product.stock} left` : 'Out of stock'}
               </span>
             </div>
 
@@ -225,14 +212,14 @@ function ProductCard({ product, index = 0 }) {
             <button
               onClick={handleAddToCart}
               disabled={product.stock <= 0}
-              className="w-full mt-3 btn btn-primary btn-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary btn-sm mt-3 w-full disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {product.stock <= 0 ? "Out of Stock" : "Add to Cart"}
+              {product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
             </button>
           </div>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }
 

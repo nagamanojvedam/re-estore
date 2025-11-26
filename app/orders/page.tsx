@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import OrderList from "@/components/orders/OrderList";
-import { orderService } from "@/lib/services/orderService";
-import { ORDER_STATUSES } from "@/lib/utils/constants";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import Pagination from '@/components/common/Pagination';
+import OrderList from '@/components/orders/OrderList';
+import { orderService } from '@/lib/services/orderService';
+import { ORDER_STATUSES } from '@/lib/utils/constants';
+
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 
 function OrdersPage() {
   const [filters, setFilters] = useState({
-    status: "",
+    status: '',
     page: 1,
     limit: 5,
   });
@@ -21,7 +21,7 @@ function OrdersPage() {
     isPending: isLoading,
     error,
   } = useQuery({
-    queryKey: ["orders", filters],
+    queryKey: ['orders', filters],
     queryFn: () => orderService.getMyOrders(filters),
     placeholderData: (previousData) => previousData,
     staleTime: 2 * 60 * 1000,
@@ -30,7 +30,7 @@ function OrdersPage() {
   const handleStatusFilter = (status) => {
     setFilters((prev) => ({
       ...prev,
-      status: status === prev.status ? "" : status,
+      status: status === prev.status ? '' : status,
       page: 1,
     }));
   };
@@ -53,30 +53,30 @@ function OrdersPage() {
   };
 
   const statusTabs = [
-    { key: "", label: "All Orders", count: statusCounts.all },
+    { key: '', label: 'All Orders', count: statusCounts.all },
     {
       key: ORDER_STATUSES.PENDING,
-      label: "Pending",
+      label: 'Pending',
       count: statusCounts.pending,
     },
     {
       key: ORDER_STATUSES.CONFIRMED,
-      label: "Confirmed",
+      label: 'Confirmed',
       count: statusCounts.confirmed,
     },
     {
       key: ORDER_STATUSES.SHIPPED,
-      label: "Shipped",
+      label: 'Shipped',
       count: statusCounts.shipped,
     },
     {
       key: ORDER_STATUSES.DELIVERED,
-      label: "Delivered",
+      label: 'Delivered',
       count: statusCounts.delivered,
     },
     {
       key: ORDER_STATUSES.CANCELLED,
-      label: "Cancelled",
+      label: 'Cancelled',
       count: statusCounts.cancelled,
     },
   ];
@@ -84,36 +84,30 @@ function OrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container-custom py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-6xl mx-auto"
+        <div
+          className="mx-auto max-w-6xl"
         >
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              My Orders
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Track and manage your order history
-            </p>
+            <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">My Orders</h1>
+            <p className="text-gray-600 dark:text-gray-400">Track and manage your order history</p>
           </div>
 
           {/* Filters and Search */}
-          <div className="flex flex-wrap gap-2 mb-6">
+          <div className="mb-6 flex flex-wrap gap-2">
             {statusTabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => handleStatusFilter(tab.key)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   filters.status === tab.key
-                    ? "bg-primary-100 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
-                  <span className="ml-2 px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded-full text-xs">
+                  <span className="ml-2 rounded-full bg-gray-200 px-2 py-1 text-xs dark:bg-gray-600">
                     {tab.count}
                   </span>
                 )}
@@ -122,25 +116,18 @@ function OrdersPage() {
           </div>
 
           {/* Orders List */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
+          <div>
             <OrderList
               orders={orders}
               loading={isLoading}
               error={error}
-              queryKey={["orders", filters]}
+              queryKey={['orders', filters]}
             />
-          </motion.div>
+          </div>
 
           {/* Pagination */}
           {pagination.totalPages > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+            <div
               className="mt-8"
             >
               <Pagination
@@ -149,20 +136,15 @@ function OrdersPage() {
                 onPageChange={handlePageChange}
                 showInfo={true}
               />
-            </motion.div>
+            </div>
           )}
 
           {/* Help Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-12 card p-6 text-center"
+          <div
+            className="card mt-12 p-6 text-center"
           >
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              Need Help?
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Need Help?</h3>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
               Have questions about your orders? We&apos;re here to help.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
@@ -176,8 +158,8 @@ function OrdersPage() {
                 Shipping Info
               </Link>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );

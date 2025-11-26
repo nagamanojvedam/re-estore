@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { userService } from "@/lib/services/userService";
 
-import Pagination from "@/components/common/Pagination";
-import { LoadingScreen } from "@/components/common/Spinner";
-import ProductReviewCard from "@/components/products/ProductReviewCard";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { userService } from '@/lib/services/userService';
+
+import Pagination from '@/components/common/Pagination';
+import { LoadingScreen } from '@/components/common/Spinner';
+import ProductReviewCard from '@/components/products/ProductReviewCard';
 
 export default function MyProducts() {
   const [page, setPage] = useState(1);
 
   const { data, isPending: isLoading } = useQuery({
-    queryKey: ["myProducts", page],
+    queryKey: ['myProducts', page],
     queryFn: () => userService.getMyProducts({ page, limit: 5 }),
   });
 
@@ -24,16 +24,12 @@ export default function MyProducts() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container-custom py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-6xl mx-auto"
+        <div
+          className="mx-auto max-w-6xl"
         >
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              My Products
-            </h1>
+            <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">My Products</h1>
             <p className="text-gray-600 dark:text-gray-400">
               View purchased products and leave reviews
             </p>
@@ -42,16 +38,7 @@ export default function MyProducts() {
           {/* Products */}
           <div>
             {/* Product List */}
-            <motion.ul
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: { when: "beforeChildren", staggerChildren: 0.05 },
-                },
-              }}
+            <ul
               role="list"
               aria-label="Purchased products"
               className="divide-y divide-gray-200 dark:divide-gray-700"
@@ -61,21 +48,15 @@ export default function MyProducts() {
                   key={item._id}
                   item={item}
                   page={page}
-                  itemVariants={{
-                    hidden: { opacity: 0, y: 8 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
+
                 />
               ))}
-            </motion.ul>
+            </ul>
           </div>
 
           {/* Pagination */}
           {pagination.pages > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+            <div
               className="mt-8"
             >
               <Pagination
@@ -84,9 +65,9 @@ export default function MyProducts() {
                 onPageChange={setPage}
                 showInfo={true}
               />
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

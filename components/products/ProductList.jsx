@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion } from "framer-motion";
-import ProductCard from "./ProductCard";
+import React from 'react';
+
+import ProductCard from './ProductCard';
 // import ProductCardSkeleton from './ProductCardSkeleton'
 
-function ProductList({ products, loading, error, className = "" }) {
+function ProductList({ products, loading, error, className = '' }) {
   if (loading) {
     return (
       <div
-        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ${className}`}
+        className={`grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${className}`}
       >
         {[...Array(12)].map((_, i) => (
           <ProductCardSkeleton key={i} />
@@ -20,10 +20,10 @@ function ProductList({ products, loading, error, className = "" }) {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="mx-auto w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+      <div className="py-12 text-center">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
           <svg
-            className="w-12 h-12 text-red-600 dark:text-red-400"
+            className="h-12 w-12 text-red-600 dark:text-red-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -36,16 +36,13 @@ function ProductList({ products, loading, error, className = "" }) {
             />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
           Error Loading Products
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          {error.message || "Something went wrong while loading products."}
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
+          {error.message || 'Something went wrong while loading products.'}
         </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="btn-primary"
-        >
+        <button onClick={() => window.location.reload()} className="btn-primary">
           Try Again
         </button>
       </div>
@@ -54,14 +51,10 @@ function ProductList({ products, loading, error, className = "" }) {
 
   if (!products || products.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="text-center py-12"
-      >
-        <div className="mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+      <div className="py-12 text-center">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
           <svg
-            className="w-12 h-12 text-gray-400 dark:text-gray-600"
+            className="h-12 w-12 text-gray-400 dark:text-gray-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -74,26 +67,24 @@ function ProductList({ products, loading, error, className = "" }) {
             />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
           No Products Found
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
           We couldn't find any products matching your criteria.
         </p>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ${className}`}
+    <div
+      className={`grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${className}`}
     >
       {products.map((product, index) => (
         <ProductCard key={product._id} product={product} index={index} />
       ))}
-    </motion.div>
+    </div>
   );
 }
 
@@ -102,15 +93,15 @@ function ProductCardSkeleton() {
   return (
     <div className="card animate-pulse">
       <div className="aspect-square bg-gray-200 dark:bg-gray-700" />
-      <div className="p-4 space-y-3">
-        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
-        <div className="flex justify-between items-center">
-          <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
-          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
+      <div className="space-y-3 p-4">
+        <div className="h-3 w-1/3 rounded bg-gray-200 dark:bg-gray-700" />
+        <div className="h-4 w-full rounded bg-gray-200 dark:bg-gray-700" />
+        <div className="h-4 w-2/3 rounded bg-gray-200 dark:bg-gray-700" />
+        <div className="flex items-center justify-between">
+          <div className="h-5 w-1/4 rounded bg-gray-200 dark:bg-gray-700" />
+          <div className="h-3 w-1/4 rounded bg-gray-200 dark:bg-gray-700" />
         </div>
-        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded" />
+        <div className="h-8 rounded bg-gray-200 dark:bg-gray-700" />
       </div>
     </div>
   );

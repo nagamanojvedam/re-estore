@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { motion, AnimatePresence } from 'framer-motion';
+
 
 function Modal({ isOpen, onClose, title, children, size = 'md' }) {
   useEffect(() => {
-    const handleEscape = e => {
+    const handleEscape = (e) => {
       if (e.key === 'Escape') onClose();
     };
 
@@ -28,48 +28,38 @@ function Modal({ isOpen, onClose, title, children, size = 'md' }) {
   };
 
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             onClick={onClose}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 backdrop-blur-sm"
           >
             {/* Modal */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={e => e.stopPropagation()}
-              className={`bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full ${sizeClasses[size]} max-h-[90vh] overflow-hidden`}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className={`w-full rounded-lg bg-white shadow-xl dark:bg-gray-800 ${sizeClasses[size]} max-h-[90vh] overflow-hidden`}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {title}
-                </h2>
+              <div className="flex items-center justify-between border-b border-gray-200 p-6 dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
                   aria-label="Close modal"
                 >
-                  <XMarkIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                  <XMarkIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
-                {children}
-              </div>
-            </motion.div>
-          </motion.div>
+              <div className="max-h-[calc(90vh-80px)] overflow-y-auto p-6">{children}</div>
+            </div>
+          </div>
         </>
       )}
-    </AnimatePresence>
+    </>
   );
 }
 

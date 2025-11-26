@@ -1,45 +1,40 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import Link from "next/link";
+
+import Link from 'next/link';
 
 export default function CookiePolicy() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <section className="section-padding">
-        <div className="container-custom max-w-4xl mx-auto">
+        <div className="container-custom mx-auto max-w-4xl">
           {/* Title + subtitle */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          <div>
             <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Cookie Policy
             </h1>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              How cookies and similar technologies are used, and the choices
-              available to manage them.
+              How cookies and similar technologies are used, and the choices available to manage
+              them.
             </p>
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
               Last updated: Sept 10, 2025
             </p>
 
             {/* Comical Disclaimer */}
-            <p className="mt-4 text-sm text-green-700 dark:text-green-400 italic bg-green-300/60 dark:bg-green-900/40 rounded-md p-4">
-              ⚠️ Spoiler: This site doesn’t actually use cookies (yet)! I’m
-              still learning all this stuff — right now I only store login
-              tokens safely in{" "}
-              <span className="font-semibold">localStorage</span>. No ads, no
-              creepy tracking, no 🍪 crumbs on your device.
+            <p className="mt-4 rounded-md bg-green-300/60 p-4 text-sm italic text-green-700 dark:bg-green-900/40 dark:text-green-400">
+              ⚠️ Spoiler: This site doesn’t actually use cookies (yet)! I’m still learning all this
+              stuff — right now I only store login tokens safely in{' '}
+              <span className="font-semibold">localStorage</span>. No ads, no creepy tracking, no 🍪
+              crumbs on your device.
             </p>
-          </motion.div>
+          </div>
 
           {/* Intro */}
           <p className="mt-6 text-gray-700 dark:text-gray-300">
-            Cookies and similar technologies help operate the site, enhance
-            performance, analyze traffic, and personalize content. Some cookies
-            are essential for core functionality like authentication and cart
-            persistence.
+            Cookies and similar technologies help operate the site, enhance performance, analyze
+            traffic, and personalize content. Some cookies are essential for core functionality like
+            authentication and cart persistence.
           </p>
 
           {/* What are cookies */}
@@ -47,39 +42,33 @@ export default function CookiePolicy() {
             What Are Cookies?
           </h2>
           <p className="mt-2 text-gray-700 dark:text-gray-300">
-            Cookies are small text files placed on a device by a website. They
-            are widely used to make websites work, improve user experience, and
-            provide reporting information. Similar technologies include pixels,
-            local storage, and device identifiers.
+            Cookies are small text files placed on a device by a website. They are widely used to
+            make websites work, improve user experience, and provide reporting information. Similar
+            technologies include pixels, local storage, and device identifiers.
           </p>
 
           {/* Types of cookies */}
           <h2 className="mt-10 text-lg font-semibold text-gray-900 dark:text-white">
             Types of Cookies Used
           </h2>
-          <ul className="mt-2 list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2">
+          <ul className="mt-2 list-disc space-y-2 pl-6 text-gray-700 dark:text-gray-300">
             <li>
-              Essential cookies — Required for core functionality such as
-              sign-in, security, and shopping cart operations.
+              Essential cookies — Required for core functionality such as sign-in, security, and
+              shopping cart operations.
             </li>
             <li>
-              Analytics cookies — Help understand site usage to improve
-              performance and features.
+              Analytics cookies — Help understand site usage to improve performance and features.
             </li>
             <li>
-              Preference cookies — Remember choices like language, currency, and
-              display settings.
+              Preference cookies — Remember choices like language, currency, and display settings.
             </li>
-            <li>
-              Advertising cookies — Personalize ads and measure their
-              effectiveness.
-            </li>
+            <li>Advertising cookies — Personalize ads and measure their effectiveness.</li>
           </ul>
 
           {/* Category summary table */}
           <div className="mt-6 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
             <table className="w-full text-left text-sm text-gray-700 dark:text-gray-300">
-            <thead className="bg-gray-50 dark:bg-gray-800/60 text-gray-900 dark:text-gray-100">
+              <thead className="bg-gray-50 text-gray-900 dark:bg-gray-800/60 dark:text-gray-100">
                 <tr>
                   <th className="px-4 py-2">Category</th>
                   <th className="px-4 py-2">Purpose</th>
@@ -116,22 +105,16 @@ export default function CookiePolicy() {
             Managing Cookies
           </h2>
           <p className="mt-2 text-gray-700 dark:text-gray-300">
-            Cookie preferences can be managed via browser settings or a site
-            cookie settings panel if available. Blocking certain cookies may
-            impact functionality such as sign-in or checkout.
+            Cookie preferences can be managed via browser settings or a site cookie settings panel
+            if available. Blocking certain cookies may impact functionality such as sign-in or
+            checkout.
           </p>
-          <ul className="mt-3 list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2">
+          <ul className="mt-3 list-disc space-y-2 pl-6 text-gray-700 dark:text-gray-300">
+            <li>Most browsers allow blocking or deleting cookies in Settings or Preferences.</li>
+            <li>Some browsers support “Do Not Track”; behavior may vary across services.</li>
             <li>
-              Most browsers allow blocking or deleting cookies in Settings or
-              Preferences.
-            </li>
-            <li>
-              Some browsers support “Do Not Track”; behavior may vary across
-              services.
-            </li>
-            <li>
-              If a cookie banner or preferences center is provided, use it to
-              adjust categories anytime.
+              If a cookie banner or preferences center is provided, use it to adjust categories
+              anytime.
             </li>
           </ul>
 
@@ -140,9 +123,9 @@ export default function CookiePolicy() {
             Third-Party Cookies
           </h2>
           <p className="mt-2 text-gray-700 dark:text-gray-300">
-            Certain cookies may be set by third-party providers (e.g.,
-            analytics, advertising, payment, or customer support tools). These
-            providers have their own policies governing how they use cookies.
+            Certain cookies may be set by third-party providers (e.g., analytics, advertising,
+            payment, or customer support tools). These providers have their own policies governing
+            how they use cookies.
           </p>
 
           {/* Changes */}
@@ -150,20 +133,18 @@ export default function CookiePolicy() {
             Updates to This Policy
           </h2>
           <p className="mt-2 text-gray-700 dark:text-gray-300">
-            This policy may be updated periodically to reflect changes in
-            technology, services, or legal requirements. Continued use after
-            updates indicates acknowledgment of the revised policy.
+            This policy may be updated periodically to reflect changes in technology, services, or
+            legal requirements. Continued use after updates indicates acknowledgment of the revised
+            policy.
           </p>
 
           {/* Contact */}
-          <h2 className="mt-10 text-lg font-semibold text-gray-900 dark:text-white">
-            Contact
-          </h2>
+          <h2 className="mt-10 text-lg font-semibold text-gray-900 dark:text-white">Contact</h2>
           <p className="mt-2 text-gray-700 dark:text-gray-300">
-            Questions about this Cookie Policy can be directed via{" "}
+            Questions about this Cookie Policy can be directed via{' '}
             <Link
               href="/contact"
-              className="text-blue-600 dark:text-blue-400 underline-offset-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-sm"
+              className="rounded-sm text-blue-600 underline-offset-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-blue-400"
             >
               the contact page
             </Link>

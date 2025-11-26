@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { createContext, useEffect, useState } from "react";
-import api from "@/lib/services/api";
-import { useAuth } from "./AuthContext";
+import { createContext, useEffect, useState } from 'react';
+import api from '@/lib/services/api';
+import { useAuth } from './AuthContext';
 
 const WishlistContext = createContext();
 
@@ -15,12 +15,12 @@ function WishlistProvider({ children }) {
     if (isAuthenticated) {
       setLoading(true);
       api
-        .get("/users/wishlist")
+        .get('/users/wishlist')
         .then((res) => {
           setWishlist(res.data.data.wishlist);
         })
         .catch((err) => {
-          console.error("Failed to fetch wishlist:", err);
+          console.error('Failed to fetch wishlist:', err);
           setWishlist([]);
         })
         .finally(() => setLoading(false));
@@ -46,7 +46,7 @@ function WishlistProvider({ children }) {
 
   const clearWishlist = async () => {
     setLoading(true);
-    await api.delete("/users/wishlist");
+    await api.delete('/users/wishlist');
     setWishlist([]);
     setLoading(false);
   };

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Component } from "react";
+import { Component } from 'react';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -19,19 +19,19 @@ class ErrorBoundary extends Component {
     });
 
     // Log error to service in production
-    if (process.env.NODE_ENV === "production") {
-      console.error("Error caught by boundary:", error, errorInfo);
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Error caught by boundary:', error, errorInfo);
     }
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-          <div className="max-w-md w-full text-center">
-            <div className="mx-auto w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <div className="w-full max-w-md text-center">
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
               <svg
-                className="w-12 h-12 text-red-600 dark:text-red-400"
+                className="h-12 w-12 text-red-600 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -45,43 +45,36 @@ class ErrorBoundary extends Component {
               </svg>
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
               Oops! Something went wrong
             </h2>
 
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              We encountered an unexpected error. Please try refreshing the
-              page.
+            <p className="mb-6 text-gray-600 dark:text-gray-400">
+              We encountered an unexpected error. Please try refreshing the page.
             </p>
 
             <div className="space-y-3">
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full btn-primary"
-              >
+              <button onClick={() => window.location.reload()} className="btn-primary w-full">
                 Refresh Page
               </button>
 
-              <button
-                onClick={() => window.history.back()}
-                className="w-full btn-secondary"
-              >
+              <button onClick={() => window.history.back()} className="btn-secondary w-full">
                 Go Back
               </button>
             </div>
 
             {/* Show error details in development */}
-            {process.env.NODE_ENV === "development" && this.state.error && (
+            {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                   Show Error Details
                 </summary>
-                <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                  <p className="text-sm text-red-800 dark:text-red-300 font-mono">
+                <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
+                  <p className="font-mono text-sm text-red-800 dark:text-red-300">
                     {this.state.error.toString()}
                   </p>
                   {this.state.errorInfo.componentStack && (
-                    <pre className="mt-2 text-xs text-red-700 dark:text-red-400 overflow-auto">
+                    <pre className="mt-2 overflow-auto text-xs text-red-700 dark:text-red-400">
                       {this.state.errorInfo.componentStack}
                     </pre>
                   )}

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { createContext, useReducer, useEffect } from "react";
-import toast from "react-hot-toast";
+import React, { createContext, useReducer, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 const CartContext = createContext();
 
@@ -14,10 +14,8 @@ const initialState = {
 
 function cartReducer(state, action) {
   switch (action.type) {
-    case "ADD_ITEM": {
-      const existingItem = state.items.find(
-        (item) => item.id === action.payload.id
-      );
+    case 'ADD_ITEM': {
+      const existingItem = state.items.find((item) => item.id === action.payload.id);
 
       if (existingItem) {
         const updatedItems = state.items.map((item) =>
@@ -37,14 +35,14 @@ function cartReducer(state, action) {
       };
     }
 
-    case "REMOVE_ITEM": {
+    case 'REMOVE_ITEM': {
       return {
         ...state,
         items: state.items.filter((item) => item.id !== action.payload),
       };
     }
 
-    case "UPDATE_QUANTITY": {
+    case 'UPDATE_QUANTITY': {
       const updatedItems = state.items
         .map((item) =>
           item.id === action.payload.id
@@ -59,36 +57,30 @@ function cartReducer(state, action) {
       };
     }
 
-    case "CLEAR_CART": {
+    case 'CLEAR_CART': {
       return {
         ...state,
         items: [],
       };
     }
 
-    case "TOGGLE_CART": {
+    case 'TOGGLE_CART': {
       return {
         ...state,
         isOpen: !state.isOpen,
       };
     }
 
-    case "SET_CART_OPEN": {
+    case 'SET_CART_OPEN': {
       return {
         ...state,
         isOpen: action.payload,
       };
     }
 
-    case "CALCULATE_TOTALS": {
-      const itemCount = state.items.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-      const total = state.items.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      );
+    case 'CALCULATE_TOTALS': {
+      const itemCount = state.items.reduce((total, item) => total + item.quantity, 0);
+      const total = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
 
       return {
         ...state,
@@ -97,7 +89,7 @@ function cartReducer(state, action) {
       };
     }
 
-    case "LOAD_CART": {
+    case 'LOAD_CART': {
       return {
         ...state,
         items: action.payload,
@@ -114,55 +106,55 @@ export function CartProvider({ children }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedCart = localStorage.getItem("cartItems");
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cartItems');
       if (savedCart) {
-        dispatch({ type: "LOAD_CART", payload: JSON.parse(savedCart) });
+        dispatch({ type: 'LOAD_CART', payload: JSON.parse(savedCart) });
       }
     }
   }, []);
 
   // Calculate totals when items change
   useEffect(() => {
-    dispatch({ type: "CALCULATE_TOTALS" });
+    dispatch({ type: 'CALCULATE_TOTALS' });
   }, [state.items]);
 
   // Save to localStorage when items change
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("cartItems", JSON.stringify(state.items));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cartItems', JSON.stringify(state.items));
     }
   }, [state.items]);
 
   const addItem = (product) => {
     console.log(product);
-    dispatch({ type: "ADD_ITEM", payload: product });
+    dispatch({ type: 'ADD_ITEM', payload: product });
     toast.success(`${product.name} added to cart`);
   };
 
   const removeItem = (id) => {
     const item = state.items.find((item) => item.id === id);
-    dispatch({ type: "REMOVE_ITEM", payload: id });
+    dispatch({ type: 'REMOVE_ITEM', payload: id });
     if (item) {
       toast.success(`${item.name} removed from cart`);
     }
   };
 
   const updateQuantity = (id, quantity) => {
-    dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } });
+    dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
   };
 
   const clearCart = () => {
-    dispatch({ type: "CLEAR_CART" });
-    toast.success("Cart cleared");
+    dispatch({ type: 'CLEAR_CART' });
+    toast.success('Cart cleared');
   };
 
   const toggleCart = () => {
-    dispatch({ type: "TOGGLE_CART" });
+    dispatch({ type: 'TOGGLE_CART' });
   };
 
   const setCartOpen = (isOpen) => {
-    dispatch({ type: "SET_CART_OPEN", payload: isOpen });
+    dispatch({ type: 'SET_CART_OPEN', payload: isOpen });
   };
 
   const getItemQuantity = (id) => {

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-function Spinner({ size = "md", className = "" }) {
+function Spinner({ size = 'md', className = '' }) {
   const sizeClasses = {
-    sm: "w-4 h-4",
-    md: "w-8 h-8",
-    lg: "w-12 h-12",
-    xl: "w-16 h-16",
+    sm: 'w-4 h-4',
+    md: 'w-8 h-8',
+    lg: 'w-12 h-12',
+    xl: 'w-16 h-16',
   };
 
   return (
@@ -15,11 +15,11 @@ function Spinner({ size = "md", className = "" }) {
   );
 }
 
-export function LoadingScreen({ message = "Loading..." }) {
+export function LoadingScreen({ message = 'Loading...' }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
       <Spinner size="xl" />
-      <p className="mt-4 text-gray-600 dark:text-gray-400 text-lg">{message}</p>
+      <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">{message}</p>
     </div>
   );
 }
@@ -29,9 +29,7 @@ export function LoadingButton({ loading, children, ...props }) {
     <button {...props} disabled={loading || props.disabled}>
       <div className="flex items-center justify-center space-x-2">
         {loading && <Spinner size="sm" />}
-        <span className="flex items-center justify-center space-x-2">
-          {children}
-        </span>
+        <span className="flex items-center justify-center space-x-2">{children}</span>
       </div>
     </button>
   );

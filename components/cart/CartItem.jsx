@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { TrashIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { useCart } from "@/lib/hooks/useCart";
-import { motion } from "framer-motion";
-import { formatPrice } from "@/lib/utils/helpers";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { TrashIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { useCart } from '@/lib/hooks/useCart';
+
+import { formatPrice } from '@/lib/utils/helpers';
 
 function CartItem({ item, showFullDetails = false }) {
   const { updateQuantity, removeItem } = useCart();
@@ -31,36 +31,30 @@ function CartItem({ item, showFullDetails = false }) {
   };
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className={`flex  items-center space-x-4 p-4 col bg-white dark:bg-gray-800 rounded-lg ${
-        showFullDetails ? "border border-gray-200 dark:border-gray-700" : ""
-      } ${isUpdating ? "opacity-50" : ""}`}
+    <div
+      className={`col flex items-center space-x-4 rounded-lg bg-white p-4 dark:bg-gray-800 ${
+        showFullDetails ? 'border border-gray-200 dark:border-gray-700' : ''
+      } ${isUpdating ? 'opacity-50' : ''}`}
     >
       {/* Product Image */}
       <Link href={`/product/${item.id}`} className="flex-shrink-0">
         <img
-          src={item.image || "/placeholder-product.jpg"}
+          src={item.image || '/placeholder-product.jpg'}
           alt={item.name}
-          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg hover:opacity-80 transition-opacity"
+          className="h-16 w-16 rounded-lg object-cover transition-opacity hover:opacity-80 sm:h-20 sm:w-20"
         />
       </Link>
 
       {/* Product Details */}
-      <div className="flex-1 min-w-0 ">
+      <div className="min-w-0 flex-1">
         <Link
           href={`/product/${item.id}`}
-          className="block hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          className="block transition-colors hover:text-primary-600 dark:hover:text-primary-400"
         >
-          <h3 className="font-medium text-gray-900 dark:text-white truncate">
-            {item.name}
-          </h3>
+          <h3 className="truncate font-medium text-gray-900 dark:text-white">{item.name}</h3>
         </Link>
 
-        <div className="flex items-center gap-2 mt-2 truncate">
+        <div className="mt-2 flex items-center gap-2 truncate">
           <div className="flex items-center space-x-1">
             <span className="text-lg font-semibold text-gray-900 dark:text-white">
               {formatPrice(item.price * item.quantity)}
@@ -76,7 +70,7 @@ function CartItem({ item, showFullDetails = false }) {
 
         {/* Stock Warning */}
         {item.quantity >= item.stock && (
-          <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+          <p className="mt-1 text-xs text-red-500 dark:text-red-400">
             Only {item.stock} left in stock
           </p>
         )}
@@ -86,41 +80,41 @@ function CartItem({ item, showFullDetails = false }) {
       <div className="flex flex-col items-end space-y-2 truncate">
         {/* Quantity Controls */}
         <div className="flex gap-2">
-          <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+          <div className="flex items-center space-x-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
             <button
               onClick={() => handleQuantityChange(item.quantity - 1)}
               disabled={isUpdating}
-              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+              className="rounded p-1 transition-colors hover:bg-gray-200 disabled:opacity-50 dark:hover:bg-gray-600"
               aria-label="Decrease quantity"
             >
-              <MinusIcon className="w-4 h-4" />
+              <MinusIcon className="h-4 w-4" />
             </button>
 
-            <span className="px-3 py-1 text-sm font-medium text-gray-900 dark:text-white min-w-[2rem] text-center">
+            <span className="min-w-[2rem] px-3 py-1 text-center text-sm font-medium text-gray-900 dark:text-white">
               {item.quantity}
             </span>
 
             <button
               onClick={() => handleQuantityChange(item.quantity + 1)}
               disabled={isUpdating || item.quantity >= item.stock}
-              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+              className="rounded p-1 transition-colors hover:bg-gray-200 disabled:opacity-50 dark:hover:bg-gray-600"
               aria-label="Increase quantity"
             >
-              <PlusIcon className="w-4 h-4" />
+              <PlusIcon className="h-4 w-4" />
             </button>
           </div>
 
           {/* Remove Button */}
           <button
             onClick={handleRemove}
-            className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+            className="p-1 text-gray-400 transition-colors hover:text-red-500 dark:hover:text-red-400"
             aria-label="Remove item"
           >
-            <TrashIcon className="w-4 h-4" />
+            <TrashIcon className="h-4 w-4" />
           </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { LoadingScreen } from "@/components/common/Spinner";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { useState } from "react";
-import LoginForm from "./LoginForm";
-import { useRouter } from "next/navigation";
+import { LoadingScreen } from '@/components/common/Spinner';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { useState } from 'react';
+import LoginForm from './LoginForm';
+import { useRouter } from 'next/navigation';
 
 function ProtectedRoute({ children, requireRole = null }) {
   const { user, isAuthenticated, loading } = useAuth();
@@ -19,15 +19,13 @@ function ProtectedRoute({ children, requireRole = null }) {
   // If not authenticated, show login modal
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
+          <div className="mb-6 text-center">
+            <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
               Authentication Required
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              Please sign in to access this page
-            </p>
+            <p className="text-gray-600 dark:text-gray-400">Please sign in to access this page</p>
           </div>
           <LoginForm
             onSuccess={() => window.location.reload()}
@@ -41,11 +39,11 @@ function ProtectedRoute({ children, requireRole = null }) {
   // Check role if required
   if (requireRole && user?.role !== requireRole) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <div className="mx-auto w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
             <svg
-              className="w-12 h-12 text-red-600 dark:text-red-400"
+              className="h-12 w-12 text-red-600 dark:text-red-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -58,10 +56,8 @@ function ProtectedRoute({ children, requireRole = null }) {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Access Denied
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Access Denied</h2>
+          <p className="mb-6 text-gray-600 dark:text-gray-400">
             You don&apos;t have permission to access this page.
           </p>
           <button onClick={() => router.back()} className="btn-primary">

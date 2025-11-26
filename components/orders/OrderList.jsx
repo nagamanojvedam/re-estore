@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+
 import Link from 'next/link';
 import OrderItem from './OrderItem';
 
@@ -8,21 +8,21 @@ function OrderList({ orders, loading, error, queryKey }) {
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
           <div key={i} className="card animate-pulse">
-            <div className="p-6 space-y-4">
-              <div className="flex justify-between items-start">
+            <div className="space-y-4 p-6">
+              <div className="flex items-start justify-between">
                 <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32" />
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-24" />
+                  <div className="h-4 w-32 rounded bg-gray-200 dark:bg-gray-700" />
+                  <div className="h-3 w-24 rounded bg-gray-200 dark:bg-gray-700" />
                 </div>
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20" />
+                <div className="h-6 w-20 rounded bg-gray-200 dark:bg-gray-700" />
               </div>
               <div className="space-y-3">
                 {[...Array(2)].map((_, j) => (
                   <div key={j} className="flex space-x-4">
-                    <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded" />
+                    <div className="h-16 w-16 rounded bg-gray-200 dark:bg-gray-700" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+                      <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
+                      <div className="h-3 w-1/2 rounded bg-gray-200 dark:bg-gray-700" />
                     </div>
                   </div>
                 ))}
@@ -36,10 +36,10 @@ function OrderList({ orders, loading, error, queryKey }) {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="mx-auto w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+      <div className="py-12 text-center">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
           <svg
-            className="w-12 h-12 text-red-600 dark:text-red-400"
+            className="h-12 w-12 text-red-600 dark:text-red-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -52,7 +52,7 @@ function OrderList({ orders, loading, error, queryKey }) {
             />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
           Error Loading Orders
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
@@ -64,14 +64,11 @@ function OrderList({ orders, loading, error, queryKey }) {
 
   if (!orders || orders.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="text-center py-12"
-      >
-        <div className="mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+
+      <div className="py-12 text-center">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
           <svg
-            className="w-12 h-12 text-gray-400 dark:text-gray-600"
+            className="h-12 w-12 text-gray-400 dark:text-gray-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -84,31 +81,25 @@ function OrderList({ orders, loading, error, queryKey }) {
             />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-          No Orders Yet
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          You haven&apos;t placed any orders yet. Start shopping to see your
-          orders here.
+        <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">No Orders Yet</h3>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
+          You haven&apos;t placed any orders yet. Start shopping to see your orders here.
         </p>
         <Link href="/shop" className="btn-primary">
           Start Shopping
         </Link>
-      </motion.div>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
       {orders.map((order, index) => (
-        <motion.div
+        <div
           key={order._id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
         >
           <OrderItem order={order} queryKey={queryKey} />
-        </motion.div>
+        </div>
       ))}
     </div>
   );

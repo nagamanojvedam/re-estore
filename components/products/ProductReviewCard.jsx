@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { StarIcon as StarOutline } from "@heroicons/react/24/outline";
-import { StarIcon as StarSolid } from "@heroicons/react/24/solid";
-import { motion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { reviewService } from "@/lib/services/reviewService";
-import { formatDate } from "@/lib/utils/helpers";
+import { StarIcon as StarOutline } from '@heroicons/react/24/outline';
+import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
+
+import { useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { reviewService } from '@/lib/services/reviewService';
+import { formatDate } from '@/lib/utils/helpers';
 
 function ProductReviewCard({ item, page }) {
   const [openReview, setOpenReview] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     rating: 0,
-    title: "",
-    comment: "",
+    title: '',
+    comment: '',
   });
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -25,25 +25,25 @@ function ProductReviewCard({ item, page }) {
   const { mutate: addOrUpdateMutation } = useMutation({
     mutationFn: (reviewData) => reviewService.addOrUpdate(reviewData),
     onSuccess: () => {
-      queryClient.invalidateQueries(["myProducts", page]);
+      queryClient.invalidateQueries(['myProducts', page]);
 
-      toast.success("Review added!");
+      toast.success('Review added!');
       setOpenReview(false);
     },
 
     onError: () => {
-      toast.error("Failed to add review!");
+      toast.error('Failed to add review!');
     },
   });
 
   const { mutate: deleteMutation } = useMutation({
     mutationFn: (productId) => reviewService.deleteReview(productId),
     onSuccess: () => {
-      queryClient.invalidateQueries(["myProducts", page]);
-      toast.success("Review deleted!");
+      queryClient.invalidateQueries(['myProducts', page]);
+      toast.success('Review deleted!');
     },
     onError: () => {
-      toast.error("Failed to delete review!");
+      toast.error('Failed to delete review!');
     },
   });
 
@@ -61,22 +61,22 @@ function ProductReviewCard({ item, page }) {
 
         setReviewForm({
           rating: review?.rating || 0,
-          title: review?.title || "",
-          comment: review?.comment || "",
+          title: review?.title || '',
+          comment: review?.comment || '',
         });
       } catch (err) {
         console.error(err);
-        setReviewForm({ rating: 0, title: "", comment: "" });
+        setReviewForm({ rating: 0, title: '', comment: '' });
       }
     };
 
-    if (!item.isReviewed) setReviewForm({ rating: 0, title: "", comment: "" });
+    if (!item.isReviewed) setReviewForm({ rating: 0, title: '', comment: '' });
     else fetchReview();
   }, [item.product._id, item.user._id, item.isReviewed]);
 
   const handleSubmitReview = useCallback(async () => {
     if (!reviewForm.rating || !reviewForm.title || !reviewForm.comment) {
-      toast.error("Please provide all required fields!");
+      toast.error('Please provide all required fields!');
       return;
     }
     addOrUpdateMutation({ ...reviewForm, productId: product._id });
@@ -87,20 +87,18 @@ function ProductReviewCard({ item, page }) {
   }, []);
 
   return (
-    <motion.li
+    <li
       key={item._id}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm mb-4"
+      className="mb-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
       role="listitem"
-      aria-label={product?.name || "Product"}
+      aria-label={product?.name || 'Product'}
     >
       <div className="flex items-center gap-4">
         {/* Product Image */}
         <img
           src={product.images?.[0]}
-          alt={product.name || "Product image"}
-          className="w-32 h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+          alt={product.name || 'Product image'}
+          className="h-32 w-32 rounded-lg border border-gray-200 bg-gray-50 object-cover dark:border-gray-700 dark:bg-gray-900"
           loading="lazy"
           decoding="async"
         />
@@ -110,25 +108,25 @@ function ProductReviewCard({ item, page }) {
           <div className="flex items-center justify-between">
             <div>
               <h2
-                className="text-lg font-semibold text-gray-900 dark:text-gray-100 cursor-pointer hover:scale-[1.02] transition-all duration-200"
+                className="cursor-pointer text-lg font-semibold text-gray-900 transition-all duration-200 hover:scale-[1.02] dark:text-gray-100"
                 onClick={() => router.push(`/product/${product._id}`)}
               >
                 {product.name}
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+              <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
                 {product.description}
               </p>
 
               <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">
                 <p>
-                  Purchased:{" "}
+                  Purchased:{' '}
                   <span className="font-medium text-gray-900 dark:text-gray-100">
                     {item.purchaseCount}
-                  </span>{" "}
+                  </span>{' '}
                   times
                 </p>
                 <p>
-                  Last Purchased:{" "}
+                  Last Purchased:{' '}
                   <span className="font-medium text-gray-900 dark:text-gray-100">
                     {formatDate(item.lastPurchasedAt)}
                   </span>
@@ -144,11 +142,7 @@ function ProductReviewCard({ item, page }) {
                 aria-expanded={openReview}
                 aria-controls={`review-${product._id}`}
               >
-                {openReview
-                  ? "Close Review"
-                  : item.isReviewed
-                  ? "Update Review"
-                  : "Add Review"}
+                {openReview ? 'Close Review' : item.isReviewed ? 'Update Review' : 'Add Review'}
               </button>
               {item.isReviewed && (
                 <button
@@ -167,18 +161,14 @@ function ProductReviewCard({ item, page }) {
           {openReview && (
             <div
               id={`review-${product._id}`}
-              className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-3"
+              className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700"
             >
-              <h3 className="text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                {item.isReviewed ? "Update Review" : "Add Review"}
+              <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
+                {item.isReviewed ? 'Update Review' : 'Add Review'}
               </h3>
 
               {/* Star Rating */}
-              <div
-                role="radiogroup"
-                aria-label="Rating"
-                className="flex space-x-1 mb-3"
-              >
+              <div role="radiogroup" aria-label="Rating" className="mb-3 flex space-x-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     type="button"
@@ -186,13 +176,13 @@ function ProductReviewCard({ item, page }) {
                     onClick={() => handleReviewChange({ rating: star })}
                     role="radio"
                     aria-checked={reviewForm.rating === star}
-                    className="focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
-                    aria-label={`${star} star${star > 1 ? "s" : ""}`}
+                    className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    aria-label={`${star} star${star > 1 ? 's' : ''}`}
                   >
                     {reviewForm.rating >= star ? (
-                      <StarSolid className="w-6 h-6 text-yellow-400" />
+                      <StarSolid className="h-6 w-6 text-yellow-400" />
                     ) : (
-                      <StarOutline className="w-6 h-6 text-gray-300 dark:text-gray-600" />
+                      <StarOutline className="h-6 w-6 text-gray-300 dark:text-gray-600" />
                     )}
                   </button>
                 ))}
@@ -209,7 +199,7 @@ function ProductReviewCard({ item, page }) {
                 maxLength={50}
                 value={reviewForm.title}
                 onChange={(e) => handleReviewChange({ title: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg mb-2 text-sm bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 dark:text-gray-100"
+                className="mb-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
               />
 
               {/* Review Comment */}
@@ -222,22 +212,22 @@ function ProductReviewCard({ item, page }) {
                 maxLength={1000}
                 value={reviewForm.comment}
                 onChange={(e) => handleReviewChange({ comment: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg mb-3 text-sm bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 dark:text-gray-100"
+                className="mb-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
                 rows={3}
               />
 
               {/* Submit Button */}
               <button
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 dark:focus-visible:ring-offset-gray-900"
+                className="w-full rounded-lg bg-blue-600 py-2 text-sm text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
                 onClick={handleSubmitReview}
               >
-                {item.isReviewed ? "Update Review" : "Submit Review"}
+                {item.isReviewed ? 'Update Review' : 'Submit Review'}
               </button>
             </div>
           )}
         </div>
       </div>
-    </motion.li>
+    </li>
   );
 }
 

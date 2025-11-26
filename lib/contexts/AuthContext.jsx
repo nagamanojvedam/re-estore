@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, useReducer, useEffect } from "react";
-import { authService } from "@/lib/services/authService";
-import toast from "react-hot-toast";
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { authService } from '@/lib/services/authService';
+import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
@@ -17,13 +17,13 @@ const initialState = {
 
 function authReducer(state, action) {
   switch (action.type) {
-    case "AUTH_START":
+    case 'AUTH_START':
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case "AUTH_SUCCESS":
+    case 'AUTH_SUCCESS':
       return {
         ...state,
         user: action.payload.user,
@@ -33,7 +33,7 @@ function authReducer(state, action) {
         loading: false,
         error: null,
       };
-    case "AUTH_ERROR":
+    case 'AUTH_ERROR':
       return {
         ...state,
         user: null,
@@ -43,7 +43,7 @@ function authReducer(state, action) {
         loading: false,
         error: action.payload,
       };
-    case "LOGOUT":
+    case 'LOGOUT':
       return {
         ...state,
         user: null,
@@ -53,17 +53,17 @@ function authReducer(state, action) {
         loading: false,
         error: null,
       };
-    case "SET_LOADING":
+    case 'SET_LOADING':
       return {
         ...state,
         loading: action.payload,
       };
-    case "CLEAR_ERROR":
+    case 'CLEAR_ERROR':
       return {
         ...state,
         error: null,
       };
-    case "UPDATE_USER":
+    case 'UPDATE_USER':
       return {
         ...state,
         user: action.payload,
@@ -79,16 +79,16 @@ export function AuthProvider({ children }) {
   // Check if user is authenticated on mount
   useEffect(() => {
     const initAuth = async () => {
-      if (typeof window === "undefined") return;
+      if (typeof window === 'undefined') return;
 
-      const token = localStorage.getItem("token");
-      const refreshToken = localStorage.getItem("refreshToken");
+      const token = localStorage.getItem('token');
+      const refreshToken = localStorage.getItem('refreshToken');
 
       if (token) {
         try {
           const user = await authService.getCurrentUser();
           dispatch({
-            type: "AUTH_SUCCESS",
+            type: 'AUTH_SUCCESS',
             payload: {
               user,
               tokens: {
@@ -98,12 +98,12 @@ export function AuthProvider({ children }) {
             },
           });
         } catch (error) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("refreshToken");
-          dispatch({ type: "AUTH_ERROR", payload: error.message });
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          dispatch({ type: 'AUTH_ERROR', payload: error.message });
         }
       } else {
-        dispatch({ type: "SET_LOADING", payload: false });
+        dispatch({ type: 'SET_LOADING', payload: false });
       }
     };
 
@@ -113,22 +113,22 @@ export function AuthProvider({ children }) {
   // Login function
   const login = async (credentials) => {
     try {
-      dispatch({ type: "AUTH_START" });
+      dispatch({ type: 'AUTH_START' });
       const response = await authService.login(credentials);
 
-      localStorage.setItem("token", response.tokens.access.token);
-      localStorage.setItem("refreshToken", response.tokens.refresh.token);
+      localStorage.setItem('token', response.tokens.access.token);
+      localStorage.setItem('refreshToken', response.tokens.refresh.token);
 
       dispatch({
-        type: "AUTH_SUCCESS",
+        type: 'AUTH_SUCCESS',
         payload: response,
       });
 
       toast.success(`Welcome back, ${response.user.name}!`);
       return response;
     } catch (error) {
-      dispatch({ type: "AUTH_ERROR", payload: error.response?.data?.message || "Login failed" });
-      toast.error(error.response?.data?.message || "Login failed");
+      dispatch({ type: 'AUTH_ERROR', payload: error.response?.data?.message || 'Login failed' });
+      toast.error(error.response?.data?.message || 'Login failed');
       throw error;
     }
   };
@@ -136,21 +136,21 @@ export function AuthProvider({ children }) {
   // Register function
   const register = async (userData) => {
     try {
-      dispatch({ type: "AUTH_START" });
+      dispatch({ type: 'AUTH_START' });
       const response = await authService.register(userData);
 
-      localStorage.setItem("token", response.tokens.access.token);
-      localStorage.setItem("refreshToken", response.tokens.refresh.token);
+      localStorage.setItem('token', response.tokens.access.token);
+      localStorage.setItem('refreshToken', response.tokens.refresh.token);
 
       dispatch({
-        type: "AUTH_SUCCESS",
+        type: 'AUTH_SUCCESS',
         payload: response,
       });
 
       toast.success(`Welcome, ${response.user.name}!`);
       return response;
     } catch (error) {
-      dispatch({ type: "AUTH_ERROR", payload: error.message });
+      dispatch({ type: 'AUTH_ERROR', payload: error.message });
       toast.error(error.message);
       throw error;
     }
@@ -159,31 +159,31 @@ export function AuthProvider({ children }) {
   // Logout function
   const logout = async () => {
     try {
-      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         await authService.logout({ refreshToken });
       }
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
-      dispatch({ type: "LOGOUT" });
-      toast.success("Logged out successfully");
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      dispatch({ type: 'LOGOUT' });
+      toast.success('Logged out successfully');
     }
   };
 
   // Refresh token function
   const refreshAccessToken = async () => {
     try {
-      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
-        throw new Error("No refresh token available");
+        throw new Error('No refresh token available');
       }
 
       const response = await authService.refreshToken({ refreshToken });
-      localStorage.setItem("token", response.tokens.access.token);
-      localStorage.setItem("refreshToken", response.tokens.refresh.token);
+      localStorage.setItem('token', response.tokens.access.token);
+      localStorage.setItem('refreshToken', response.tokens.refresh.token);
 
       return response.tokens.access.token;
     } catch (error) {
@@ -193,11 +193,11 @@ export function AuthProvider({ children }) {
   };
 
   const clearError = () => {
-    dispatch({ type: "CLEAR_ERROR" });
+    dispatch({ type: 'CLEAR_ERROR' });
   };
 
   const updateUser = (user) => {
-    dispatch({ type: "UPDATE_USER", payload: user });
+    dispatch({ type: 'UPDATE_USER', payload: user });
   };
 
   const value = {
@@ -216,7 +216,7 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

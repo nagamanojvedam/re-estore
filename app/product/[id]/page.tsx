@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, use } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, use } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+
 import {
   ArrowLeftIcon,
   HeartIcon,
@@ -18,18 +18,20 @@ import {
   XCircleIcon,
   PlusIcon,
   MinusIcon,
-} from "@heroicons/react/24/outline";
-import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
-import { productService } from "@/lib/services/productService";
-import { useCart } from "@/lib/hooks/useCart";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { useWishlist } from "@/lib/hooks/useWishlist";
-import ProductCard from "@/components/products/ProductCard";
-import ProductReviews from "@/components/products/ProductReviews";
-import { LoadingScreen } from "@/components/common/Spinner";
-import toast from "react-hot-toast";
-import { formatPrice } from "@/lib/utils/helpers";
-import { reviewService } from "@/lib/services/reviewService";
+} from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { productService } from '@/lib/services/productService';
+import { useCart } from '@/lib/hooks/useCart';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { useWishlist } from '@/lib/hooks/useWishlist';
+import ProductCard from '@/components/products/ProductCard';
+import ProductReviews from '@/components/products/ProductReviews';
+import { LoadingScreen } from '@/components/common/Spinner';
+import toast from 'react-hot-toast';
+import { formatPrice } from '@/lib/utils/helpers';
+import { reviewService } from '@/lib/services/reviewService';
+
+import ProductImages from '@/components/products/ProductImages';
 
 function ProductDetailsPage({ params }) {
   // Unwrap params using React.use()
@@ -40,7 +42,6 @@ function ProductDetailsPage({ params }) {
   const { isAuthenticated } = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(() =>
     wishlist.some((item) => item.productId._id === id)
@@ -48,7 +49,8 @@ function ProductDetailsPage({ params }) {
 
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("description");
+  const [activeTab, setActiveTab] = useState('description');
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // Fetch product details
   const {
@@ -56,7 +58,7 @@ function ProductDetailsPage({ params }) {
     isPending: isProductLoading,
     error,
   } = useQuery({
-    queryKey: ["product", id],
+    queryKey: ['product', id],
     queryFn: () => productService.getProduct(id),
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
@@ -64,7 +66,7 @@ function ProductDetailsPage({ params }) {
 
   // Fetch reviews
   const { data, isPending: isReviewsLoading } = useQuery({
-    queryKey: ["reviews", id],
+    queryKey: ['reviews', id],
     queryFn: () => reviewService.getAllReviews(id),
     enabled: !!id,
     staleTime: 10 * 60 * 1000, // 10 minutes
@@ -73,22 +75,21 @@ function ProductDetailsPage({ params }) {
   const reviews = data?.reviews;
 
   // Fetch related products
-  const { data: relatedProducts, isPending: isRelatedProductsLoading } =
-    useQuery({
-      queryKey: ["related-products", product?.category],
-      queryFn: () =>
-        productService.getProducts({
-          category: product.category,
-          limit: 8,
-          exclude: id,
-        }),
-      enabled: !!product?.category,
-      staleTime: 10 * 60 * 1000, // 10 minutes
-    });
+  const { data: relatedProducts, isPending: isRelatedProductsLoading } = useQuery({
+    queryKey: ['related-products', product?.category],
+    queryFn: () =>
+      productService.getProducts({
+        category: product.category,
+        limit: 8,
+        exclude: id,
+      }),
+    enabled: !!product?.category,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   const handleAddToCart = () => {
     if (product.stock <= 0) {
-      toast.error("Product is out of stock");
+      toast.error('Product is out of stock');
       return;
     }
 
@@ -113,7 +114,7 @@ function ProductDetailsPage({ params }) {
 
   const handleWishlistToggle = async () => {
     if (!isAuthenticated) {
-      toast.error("Please login to add items to wishlist");
+      toast.error('Please login to add items to wishlist');
       return;
     }
 
@@ -124,7 +125,7 @@ function ProductDetailsPage({ params }) {
       await removeFromWishlist(product._id);
       setIsWishlisted(false);
     }
-    toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
   const handleShare = async () => {
@@ -132,11 +133,11 @@ function ProductDetailsPage({ params }) {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setOpen(false);
-      toast.success("Product link copied to clipboard");
+      toast.success('Product link copied to clipboard');
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       setCopied(false);
-      toast.error("Failed to copy link. Please try again.");
+      toast.error('Failed to copy link. Please try again.');
     }
   };
 
@@ -144,11 +145,10 @@ function ProductDetailsPage({ params }) {
     return [...Array(5)].map((_, i) => (
       <StarIcon
         key={i}
-        className={`w-5 h-5 ${
-          i < Math.floor(rating)
-            ? "text-yellow-400 fill-current"
-            : "text-gray-300 dark:text-gray-600"
-        }`}
+        className={`h-5 w-5 ${i < Math.floor(rating)
+            ? 'fill-current text-yellow-400'
+            : 'text-gray-300 dark:text-gray-600'
+          }`}
       />
     ));
   };
@@ -159,29 +159,22 @@ function ProductDetailsPage({ params }) {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center max-w-md mx-auto px-4">
-          <div className="w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <XCircleIcon className="w-12 h-12 text-red-600 dark:text-red-400" />
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="mx-auto max-w-md px-4 text-center">
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
+            <XCircleIcon className="h-12 w-12 text-red-600 dark:text-red-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
             Product Not Found
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-8">
-            The product you&apos;re looking for doesn&apos;t exist or has been
-            removed.
+          <p className="mb-8 text-gray-600 dark:text-gray-400">
+            The product you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
           <div className="space-y-3">
-            <button
-              onClick={() => router.push("/shop")}
-              className="w-full btn-primary"
-            >
+            <button onClick={() => router.push('/shop')} className="btn-primary w-full">
               Browse Products
             </button>
-            <button
-              onClick={() => router.back()}
-              className="w-full btn-secondary"
-            >
+            <button onClick={() => router.back()} className="btn-secondary w-full">
               Go Back
             </button>
           </div>
@@ -194,82 +187,43 @@ function ProductDetailsPage({ params }) {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container-custom py-8">
         {/* Back Button */}
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
+        <button
           onClick={() => router.back()}
-          className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-8 transition-colors"
+          className="mb-8 flex items-center space-x-2 text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
         >
-          <ArrowLeftIcon className="w-5 h-5" />
+          <ArrowLeftIcon className="h-5 w-5" />
           <span>Back</span>
-        </motion.button>
+        </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
           {/* Product Images */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-4"
-          >
-            {/* Main Image */}
-            <div className="aspect-square rounded-2xl overflow-hidden bg-white dark:bg-gray-800 shadow-lg">
-              <img
-                src={
-                  product.images?.[selectedImageIndex] ||
-                  "/placeholder-product.jpg"
-                }
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Thumbnail Images */}
-            {product.images && product.images.length > 1 && (
-              <div className="flex space-x-4 overflow-x-auto pb-2">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImageIndex === index
-                        ? "border-primary-500"
-                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.name} ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-          </motion.div>
+          <ProductImages 
+            product={product} 
+            selectedImageIndex={selectedImageIndex} 
+            setSelectedImageIndex={setSelectedImageIndex} 
+          />
 
           {/* Product Info */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
+          <div
             className="space-y-6"
           >
             {/* Category & Stock Status */}
             <div className="flex items-center justify-between">
               <Link
                 href={`/shop?category=${encodeURIComponent(product.category)}`}
-                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
               >
                 {product.category}
               </Link>
               <div className="flex items-center space-x-2">
                 {product.stock > 0 ? (
                   <div className="flex items-center space-x-1 text-green-600 dark:text-green-400">
-                    <CheckCircleIcon className="w-4 h-4" />
+                    <CheckCircleIcon className="h-4 w-4" />
                     <span className="text-sm font-medium">In Stock</span>
                   </div>
                 ) : (
                   <div className="flex items-center space-x-1 text-red-600 dark:text-red-400">
-                    <XCircleIcon className="w-4 h-4" />
+                    <XCircleIcon className="h-4 w-4" />
                     <span className="text-sm font-medium">Out of Stock</span>
                   </div>
                 )}
@@ -277,7 +231,7 @@ function ProductDetailsPage({ params }) {
             </div>
 
             {/* Product Name */}
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white lg:text-4xl">
               {product.name}
             </h1>
 
@@ -285,9 +239,7 @@ function ProductDetailsPage({ params }) {
 
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-1">
-                <div className="flex">
-                  {renderStars(product.ratings.average)}
-                </div>
+                <div className="flex">{renderStars(product.ratings.average)}</div>
                 <span className="text-lg font-medium text-gray-900 dark:text-white">
                   {product.ratings.average.toFixed(1)}
                 </span>
@@ -302,55 +254,49 @@ function ProductDetailsPage({ params }) {
               <span className="text-4xl font-bold text-gray-900 dark:text-white">
                 {formatPrice(product.price)}
               </span>
-              {product.originalPrice &&
-                product.originalPrice > product.price && (
-                  <>
-                    <span className="text-2xl text-gray-500 dark:text-gray-400 line-through">
-                      {formatPrice(product.originalPrice)}
-                    </span>
-                    <span className="badge bg-red-500 text-white">
-                      {Math.round(
-                        ((product.originalPrice - product.price) /
-                          product.originalPrice) *
-                          100
-                      )}
-                      % OFF
-                    </span>
-                  </>
-                )}
+              {product.originalPrice && product.originalPrice > product.price && (
+                <>
+                  <span className="text-2xl text-gray-500 line-through dark:text-gray-400">
+                    {formatPrice(product.originalPrice)}
+                  </span>
+                  <span className="badge bg-red-500 text-white">
+                    {Math.round(
+                      ((product.originalPrice - product.price) / product.originalPrice) * 100
+                    )}
+                    % OFF
+                  </span>
+                </>
+              )}
             </div>
 
             {/* Short Description */}
-            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              {product.shortDescription ||
-                product.description.substring(0, 200) + "..."}
+            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+              {product.shortDescription || product.description.substring(0, 200) + '...'}
             </p>
 
             {/* Quantity Selector */}
-            <div className="flex items-center  space-x-4">
+            <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-4">
-                <label className="block text-md font-medium text-gray-500 dark:text-gray-300 mb-2">
+                <label className="text-md mb-2 block font-medium text-gray-500 dark:text-gray-300">
                   Quantity
                 </label>
-                <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                <div className="flex items-center space-x-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
-                    className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+                    className="rounded p-2 transition-colors hover:bg-gray-200 disabled:opacity-50 dark:hover:bg-gray-600"
                   >
-                    <MinusIcon className="w-4 h-4" />
+                    <MinusIcon className="h-4 w-4" />
                   </button>
-                  <span className="px-4 py-2 text-lg font-medium text-gray-900 dark:text-white min-w-[3rem] text-center">
+                  <span className="min-w-[3rem] px-4 py-2 text-center text-lg font-medium text-gray-900 dark:text-white">
                     {quantity}
                   </span>
                   <button
-                    onClick={() =>
-                      setQuantity(Math.min(product.stock, quantity + 1))
-                    }
+                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                     disabled={quantity >= product.stock}
-                    className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50"
+                    className="rounded p-2 transition-colors hover:bg-gray-200 disabled:opacity-50 dark:hover:bg-gray-600"
                   >
-                    <PlusIcon className="w-4 h-4" />
+                    <PlusIcon className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -367,26 +313,23 @@ function ProductDetailsPage({ params }) {
               <button
                 onClick={handleAddToCart}
                 disabled={product.stock <= 0}
-                className="flex-1 btn-primary flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary flex flex-1 items-center justify-center space-x-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <ShoppingCartIcon className="w-5 h-5" />
-                <span>
-                  {product.stock <= 0 ? "Out of Stock" : "Add to Cart"}
-                </span>
+                <ShoppingCartIcon className="h-5 w-5" />
+                <span>{product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}</span>
               </button>
 
               <button
                 onClick={handleWishlistToggle}
-                className={`p-3 rounded-lg border-2 transition-all ${
-                  isWishlisted
-                    ? "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                    : "border-gray-300 dark:border-gray-600 hover:border-red-300 dark:hover:border-red-600 text-gray-600 dark:text-gray-400"
-                }`}
+                className={`rounded-lg border-2 p-3 transition-all ${isWishlisted
+                    ? 'border-red-500 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'
+                    : 'border-gray-300 text-gray-600 hover:border-red-300 dark:border-gray-600 dark:text-gray-400 dark:hover:border-red-600'
+                  }`}
               >
                 {isWishlisted ? (
-                  <HeartSolidIcon className="w-6 h-6" />
+                  <HeartSolidIcon className="h-6 w-6" />
                 ) : (
-                  <HeartIcon className="w-6 h-6" />
+                  <HeartIcon className="h-6 w-6" />
                 )}
               </button>
 
@@ -394,94 +337,74 @@ function ProductDetailsPage({ params }) {
                 {/* Share button */}
                 <button
                   onClick={() => setOpen(!open)}
-                  className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-600 dark:text-gray-400 transition-all"
+                  className="rounded-lg border-2 border-gray-300 p-3 text-gray-600 transition-all hover:border-gray-400 dark:border-gray-600 dark:text-gray-400 dark:hover:border-gray-500"
                 >
-                  <ShareIcon className="w-6 h-6" />
+                  <ShareIcon className="h-6 w-6" />
                 </button>
 
                 {/* Tooltip popup */}
                 {open && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-900 border rounded-xl shadow-lg p-3 z-10"
+                  <div
+                    className="absolute right-0 z-10 mt-2 w-72 rounded-xl border bg-white p-3 shadow-lg dark:bg-gray-900"
                   >
-                    <p className="text-sm text-gray-600 dark:text-gray-400 p-2 truncate">
-                      {typeof window !== "undefined" ? window.location.href : ""}
+                    <p className="truncate p-2 text-sm text-gray-600 dark:text-gray-400">
+                      {typeof window !== 'undefined' ? window.location.href : ''}
                     </p>
                     <button
                       onClick={handleShare}
-                      className="mt-2 w-full px-3 py-2 text-sm bg-gray-800 text-white rounded hover:bg-gray-700 transition"
+                      className="mt-2 w-full rounded bg-gray-800 px-3 py-2 text-sm text-white transition hover:bg-gray-700"
                     >
-                      {copied ? "Copied!" : "Copy Link"}
+                      {copied ? 'Copied!' : 'Copy Link'}
                     </button>
-                  </motion.div>
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-1 gap-4 border-t border-gray-200 pt-6 dark:border-gray-700 sm:grid-cols-3">
               <div className="flex items-center space-x-3">
-                <TruckIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                <TruckIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                 <div>
-                  <div className="font-medium text-gray-900 dark:text-white">
-                    Free Shipping
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    On orders over $50
-                  </div>
+                  <div className="font-medium text-gray-900 dark:text-white">Free Shipping</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">On orders over $50</div>
                 </div>
               </div>
 
               <div className="flex items-center space-x-3">
-                <ArrowsRightLeftIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                <ArrowsRightLeftIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                 <div>
-                  <div className="font-medium text-gray-900 dark:text-white">
-                    Easy Returns
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    30-day policy
-                  </div>
+                  <div className="font-medium text-gray-900 dark:text-white">Easy Returns</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">30-day policy</div>
                 </div>
               </div>
 
               <div className="flex items-center space-x-3">
-                <ShieldCheckIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                <ShieldCheckIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                 <div>
-                  <div className="font-medium text-gray-900 dark:text-white">
-                    Warranty
-                  </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    1-year coverage
-                  </div>
+                  <div className="font-medium text-gray-900 dark:text-white">Warranty</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">1-year coverage</div>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Product Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+        <div
           className="card mb-16"
         >
           {/* Tab Headers */}
           <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="flex space-x-8 px-6">
-              {["description", "specifications", "reviews"].map((tab) => (
+              {['description', 'specifications', 'reviews'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-4 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === tab
-                      ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                  }`}
+                  className={`border-b-2 py-4 text-sm font-medium transition-colors ${activeTab === tab
+                      ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                    }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
@@ -491,111 +414,83 @@ function ProductDetailsPage({ params }) {
 
           {/* Tab Content */}
           <div className="p-6">
-            <AnimatePresence mode="wait">
-              {activeTab === "description" && (
-                <motion.div
+              {activeTab === 'description' && (
+                <div
                   key="description"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="prose prose-lg dark:prose-invert max-w-none"
+                  className="prose prose-lg max-w-none dark:prose-invert"
                 >
                   <div className="whitespace-pre-line text-gray-600 dark:text-gray-400">
                     {product.description}
                   </div>
-                </motion.div>
+                </div>
               )}
 
-              {activeTab === "specifications" && (
-                <motion.div
+              {activeTab === 'specifications' && (
+                <div
                   key="specifications"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {product.specifications ? (
-                      Object.entries(product.specifications).map(
-                        ([key, value]) => (
-                          <div
-                            key={key}
-                            className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700"
-                          >
-                            <span className="font-medium text-gray-900 dark:text-white capitalize">
-                              {key.replace(/([A-Z])/g, " $1").trim()}
-                            </span>
-                            <span className="text-gray-600 dark:text-gray-400">
-                              {value}
-                            </span>
-                          </div>
-                        )
-                      )
+                      Object.entries(product.specifications).map(([key, value]) => (
+                        <div
+                          key={key}
+                          className="flex justify-between border-b border-gray-200 py-2 dark:border-gray-700"
+                        >
+                          <span className="font-medium capitalize text-gray-900 dark:text-white">
+                            {key.replace(/([A-Z])/g, ' $1').trim()}
+                          </span>
+                          <span className="text-gray-600 dark:text-gray-400">{value}</span>
+                        </div>
+                      ))
                     ) : (
-                      <div className="col-span-2 text-center py-8 text-gray-500 dark:text-gray-400">
+                      <div className="col-span-2 py-8 text-center text-gray-500 dark:text-gray-400">
                         No specifications available for this product.
                       </div>
                     )}
                   </div>
-                </motion.div>
+                </div>
               )}
 
-              {activeTab === "reviews" && (
-                <motion.div
+              {activeTab === 'reviews' && (
+                <div
                   key="reviews"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
                   className="space-y-6"
                 >
                   {/* Individual Reviews */}
                   {reviews?.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <div className="py-8 text-center text-gray-500 dark:text-gray-400">
                       No reviews yet. Be the first to review this product!
                     </div>
                   ) : (
-                    <ProductReviews
-                      reviews={reviews}
-                      autoPlay={true}
-                      autoPlayInterval={7000}
-                    />
+                    <ProductReviews reviews={reviews} autoPlay={true} autoPlayInterval={7000} />
                   )}
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
 
         {/* Related Products */}
         {relatedProducts?.products && relatedProducts.products.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+          <section
           >
-            <div className="flex items-center justify-between mb-8">
+            <div className="mb-8 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 You Might Also Like
               </h2>
               <Link
                 href={`/shop?category=${encodeURIComponent(product.category)}`}
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                className="font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
               >
                 View All in {product.category}
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.products
-                .slice(0, 4)
-                .map((relatedProduct, index) => (
-                  <ProductCard
-                    key={relatedProduct._id}
-                    product={relatedProduct}
-                    index={index}
-                  />
-                ))}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {relatedProducts.products.slice(0, 4).map((relatedProduct, index) => (
+                <ProductCard key={relatedProduct._id} product={relatedProduct} index={index} />
+              ))}
             </div>
-          </motion.section>
+          </section>
         )}
       </div>
     </div>
