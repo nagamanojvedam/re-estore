@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   try {
     await db();
 
-    const { productId } = params;
+    const { productId } = await params;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return NextResponse.json({ status: 'error', message: 'Invalid productId' }, { status: 400 });

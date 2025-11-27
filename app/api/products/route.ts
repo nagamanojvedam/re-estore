@@ -29,6 +29,8 @@ export async function GET(req: NextRequest) {
     /* -------------------------------------------
        PARSE NUMBERS & NORMALIZE VALUES
     -------------------------------------------- */
+
+    const decodedCategory = category ? decodeURIComponent(category) : undefined;
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
     const minPriceNumber = minPrice ? Number(minPrice) : null;
@@ -55,8 +57,8 @@ export async function GET(req: NextRequest) {
       filter._id = { $ne: exclude };
     }
 
-    if (category) {
-      filter.category = category;
+    if (decodedCategory) {
+      filter.category = decodedCategory;
     }
 
     if (minPriceNumber !== null || maxPriceNumber !== null) {
@@ -84,6 +86,11 @@ export async function GET(req: NextRequest) {
        QUERY
     -------------------------------------------- */
     const skip = (pageNumber - 1) * limitNumber;
+
+    console.log('filter', filter);
+    console.log('sort', sort);
+    console.log('skip', skip);
+    console.log('limit', limitNumber);
 
     const products = await Product.find(filter)
       .populate('owner', 'name email')

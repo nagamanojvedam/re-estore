@@ -11,8 +11,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   try {
     await connectDB();
 
+    const { id } = await params;
+
     const product = await Product.findOne({
-      _id: params.id,
+      _id: id,
       isActive: true,
     }).populate('owner', 'name email');
 

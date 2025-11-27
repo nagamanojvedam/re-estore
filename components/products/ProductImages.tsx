@@ -1,13 +1,12 @@
-"use client";
+'use client';
 
+import { useState } from 'react';
 
-
-function ProductImages({ product, selectedImageIndex, setSelectedImageIndex }) {
+function ProductImages({ product }) {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   return (
-    <div
-      className="space-y-4"
-    >
+    <div className="space-y-4">
       {/* Main Image */}
       <div className="aspect-square overflow-hidden rounded-2xl bg-white shadow-lg dark:bg-gray-800">
         <img
@@ -24,10 +23,11 @@ function ProductImages({ product, selectedImageIndex, setSelectedImageIndex }) {
             <button
               key={index}
               onClick={() => setSelectedImageIndex(index)}
-              className={`h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${selectedImageIndex === index
-                ? 'border-primary-500'
-                : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
-                }`}
+              className={`h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
+                selectedImageIndex === index
+                  ? 'border-primary-500'
+                  : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
+              }`}
             >
               <img
                 src={image}
@@ -39,7 +39,7 @@ function ProductImages({ product, selectedImageIndex, setSelectedImageIndex }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default ProductImages
+export default ProductImages;

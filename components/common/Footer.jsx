@@ -1,4 +1,4 @@
-import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 import Link from 'next/link';
 import Logo from './Logo';
 
@@ -47,25 +47,25 @@ function Footer() {
   const socials = [
     {
       href: 'https://facebook.com',
-      Icon: FacebookIcon,
+      Icon: Facebook,
       label: 'Facebook',
       hoverColor: 'hover:text-blue-600 dark:hover:text-blue-500',
     },
     {
       href: 'https://twitter.com',
-      Icon: TwitterIcon,
+      Icon: Twitter,
       label: 'Twitter',
       hoverColor: 'hover:text-sky-400 dark:hover:text-sky-500',
     },
     {
       href: 'https://instagram.com',
-      Icon: InstagramIcon,
+      Icon: Instagram,
       label: 'Instagram',
       hoverColor: 'hover:text-pink-500 dark:hover:text-pink-400',
     },
     {
       href: 'https://youtube.com',
-      Icon: YoutubeIcon,
+      Icon: Youtube,
       label: 'YouTube',
       hoverColor: 'hover:text-red-600 dark:hover:text-red-500',
     },
