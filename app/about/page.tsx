@@ -1,6 +1,4 @@
-'use client';
-
-
+import Link from 'next/link';
 
 export default function AboutPage() {
   return (
@@ -8,9 +6,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="section-padding">
         <div className="container-custom">
-          <div
-            className="mx-auto max-w-3xl text-center"
-          >
+          <div className="mx-auto max-w-3xl text-center">
             <h1 className="heading-1 mb-6 text-gray-900 dark:text-white">About Us</h1>
             <p className="mb-8 text-lg text-gray-600 dark:text-gray-400">
               We’re on a mission to redefine online shopping by making it more{' '}
@@ -57,10 +53,7 @@ export default function AboutPage() {
             { value: '500+', label: 'Products Available' },
             { value: '50+', label: 'Team Members' },
           ].map((stat, i) => (
-            <div
-              key={i}
-              className="rounded-2xl bg-white p-6 shadow-lg dark:bg-gray-800"
-            >
+            <div key={i} className="rounded-2xl bg-white p-6 shadow-lg dark:bg-gray-800">
               <h3 className="text-3xl font-bold text-primary-600 dark:text-primary-400">
                 {stat.value}
               </h3>
@@ -73,11 +66,7 @@ export default function AboutPage() {
       {/* Our Team */}
       <section className="section-padding bg-gray-50 dark:bg-gray-800">
         <div className="container-custom text-center">
-          <h2
-            className="heading-2 mb-12 text-gray-900 dark:text-white"
-          >
-            Meet Our Team
-          </h2>
+          <h2 className="heading-2 mb-12 text-gray-900 dark:text-white">Meet Our Team</h2>
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
             {[
               {
@@ -96,10 +85,7 @@ export default function AboutPage() {
                 img: '/avatars/team3.jpg',
               },
             ].map((member, i) => (
-              <div
-                key={i}
-                className="rounded-2xl bg-white p-6 shadow-lg dark:bg-gray-900"
-              >
+              <div key={i} className="rounded-2xl bg-white p-6 shadow-lg dark:bg-gray-900">
                 <img
                   src={member.img}
                   alt={member.name}
@@ -118,21 +104,19 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="section-padding text-center">
         <div className="container-custom">
-          <div
-            className="rounded-2xl bg-primary-600 p-10 text-white shadow-lg dark:bg-primary-500"
-          >
+          <div className="rounded-2xl bg-primary-600 p-10 text-white shadow-lg dark:bg-primary-500">
             <h2 className="mb-4 text-2xl font-bold md:text-3xl">
               Ready to start shopping with us?
             </h2>
             <p className="mb-6 text-gray-100">
               Explore our collections today and discover exclusive deals you won’t want to miss.
             </p>
-            <a
+            <Link
               href="/shop"
               className="rounded-lg bg-white px-6 py-3 font-semibold text-primary-600 shadow transition hover:bg-gray-100"
             >
               Shop Now
-            </a>
+            </Link>
           </div>
         </div>
       </section>
