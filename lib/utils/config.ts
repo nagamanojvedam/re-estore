@@ -26,8 +26,9 @@ interface Config {
   next: {
     api: {
       baseUrl: string;
-    }
+    };
   };
+  items_per_page: string;
 }
 
 /* -------------------------------------------------------
@@ -61,9 +62,10 @@ const config: Config = {
 
   next: {
     api: {
-      baseUrl: process.env.NEXT_API_BASE_URL || "http://localhost:3000/api",
-    }
-  }
+      baseUrl: process.env.NEXT_API_BASE_URL || 'http://localhost:3000/api',
+    },
+  },
+  items_per_page: process.env.NEXT_ITEMS_PER_PAGE as string,
 };
 
 export default config;

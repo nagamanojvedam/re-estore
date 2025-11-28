@@ -92,13 +92,12 @@ function Header() {
                 <Link
                   key={item.name}
                   href={item.path}
-                  className={`font-medium transition-colors duration-200 ${
-                    user?.role === 'admin' && item.name === 'Dashboard'
-                      ? 'rounded-xl bg-red-700 px-4 py-1 text-red-100 hover:bg-white hover:text-red-700'
-                      : pathname === item.path
-                        ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400'
-                  } `.trim()}
+                  className={`font-medium transition-colors duration-200 ${user?.role === 'admin' && item.name === 'Dashboard'
+                    ? 'rounded-xl bg-red-700 px-4 py-1 text-red-100 hover:bg-white hover:text-red-700'
+                    : pathname === item.path
+                      ? 'text-primary-600 dark:text-primary-400'
+                      : 'text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400'
+                    } `.trim()}
                 >
                   {item.name}
                 </Link>
@@ -111,7 +110,7 @@ function Header() {
             {/* Search */}
             <button
               onClick={() => setShowSearch(true)}
-              className="dark:bg-primary-950/50 flex items-center gap-2 rounded-full bg-primary-100/50 p-2 px-4 text-gray-700 transition-colors hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400"
+              className="dark:bg-primary-900/50 flex items-center gap-2 rounded-full bg-primary-100/50 p-2 px-4 text-gray-700 transition-colors hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400"
               aria-label="Search products"
             >
               <MagnifyingGlassIcon className="h-4 w-4" />

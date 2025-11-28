@@ -1,19 +1,18 @@
 'use client';
 
-import { EyeIcon, HeartIcon, ShoppingCartIcon, StarIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useCart } from '@/lib/hooks/useCart';
 import { useWishlist } from '@/lib/hooks/useWishlist';
+import { EyeIcon, HeartIcon, ShoppingCartIcon, StarIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 
+import { formatPrice } from '@/lib/utils/helpers';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
-import { formatPrice } from '@/lib/utils/helpers';
 
 function ProductCard({ product, index = 0 }) {
-  const [imageLoaded, setImageLoaded] = useState(false);
   const { addItem } = useCart();
   const { isAuthenticated } = useAuth();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
@@ -67,11 +66,10 @@ function ProductCard({ product, index = 0 }) {
     return [...Array(5)].map((_, i) => (
       <StarIcon
         key={i}
-        className={`h-4 w-4 ${
-          i < Math.floor(rating)
-            ? 'fill-current text-yellow-400'
-            : 'text-gray-300 dark:text-gray-600'
-        }`}
+        className={`h-4 w-4 ${i < Math.floor(rating)
+          ? 'fill-current text-yellow-400'
+          : 'text-gray-300 dark:text-gray-600'
+          }`}
       />
     ));
   };
@@ -88,22 +86,15 @@ function ProductCard({ product, index = 0 }) {
         <div className="card-interactive overflow-hidden">
           {/* Image Container */}
           <div className="relative aspect-square overflow-hidden">
-            {/* Skeleton Loader */}
-            {!imageLoaded && (
-              <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-gray-700" />
-            )}
+
 
             {/* Product Image */}
             <img
               src={product.images?.[0] || '/placeholder-product.jpg'}
               alt={product.name}
-              className={clsx(
-                'lazy-image h-full w-full object-cover transition-opacity duration-500 group-hover:scale-105',
-                imageLoaded ? 'loaded' : 'loading'
-              )}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(true)}
-              loading="lazy"
+              className={
+                'lazy-image h-full w-full object-cover transition-opacity duration-500 group-hover:scale-105'
+              }
             />
 
             {/* Stock Badge */}
@@ -196,13 +187,12 @@ function ProductCard({ product, index = 0 }) {
 
               {/* Stock Count */}
               <span
-                className={`text-xs ${
-                  product.stock <= 5
-                    ? 'text-red-500'
-                    : product.stock <= 10
-                      ? 'text-yellow-500'
-                      : 'text-green-500'
-                }`}
+                className={`text-xs ${product.stock <= 5
+                  ? 'text-red-500'
+                  : product.stock <= 10
+                    ? 'text-yellow-500'
+                    : 'text-green-500'
+                  }`}
               >
                 {product.stock > 0 ? `${product.stock} left` : 'Out of stock'}
               </span>

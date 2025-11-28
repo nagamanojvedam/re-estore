@@ -1,10 +1,10 @@
 import ProductList from '@/components/products/ProductList';
-import { ENV } from '@/lib/utils/constants';
 import config from '@/lib/utils/config';
 import axios from 'axios';
 
 import SidebarFilters from '@components/shop/SidebarFilters';
 import ClientPagination from '@/components/shop/ShopPagination';
+import ActiveFilters from '@/components/shop/ActiveFilters';
 
 async function Shop({
   searchParams,
@@ -12,12 +12,12 @@ async function Shop({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const queries = await searchParams;
+  queries.limit = config.items_per_page;
+  queries.isActive = 'true';
 
   console.log('queries', queries);
 
   const queryString = new URLSearchParams(queries as any).toString();
-
-  console.log('query string', queryString);
 
   const {
     data: {
@@ -41,6 +41,8 @@ async function Shop({
 
           {/* PRODUCT LIST (server-rendered data) */}
           <div className="flex-1">
+            <ActiveFilters total={pagination?.total || 0} filters={queries} />
+
             <ProductList products={products} />
 
             {/* Pagination - Client Component */}

@@ -18,6 +18,7 @@ export default function ClientPagination({ currentPage, totalPages, searchParams
       totalPages={totalPages}
       onPageChange={onPageChange}
       showInfo
+      className="mt-12"
     />
   );
 }
