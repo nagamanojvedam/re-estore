@@ -1,32 +1,32 @@
-'use client';
-
-
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { userService } from '@/lib/services/userService';
-
 import Pagination from '@/components/common/Pagination';
-import { LoadingScreen } from '@/components/common/Spinner';
 import ProductReviewCard from '@/components/products/ProductReviewCard';
+import config from '@/lib/utils/config';
+import { cookies } from 'next/headers';
 
-export default function MyProducts() {
-  const [page, setPage] = useState(1);
+export default async function MyProducts({ searchParams }: { searchParams: { page?: string } }) {
+  const params = await searchParams;
 
-  const { data, isPending: isLoading } = useQuery({
-    queryKey: ['myProducts', page],
-    queryFn: () => userService.getMyProducts({ page, limit: 5 }),
+  const pageNumber = Number(params.page) || 1;
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+
+  const res = await fetch(`${config.next.api.baseUrl}/users/me/products?page=${pageNumber}`, {
+    method: 'GET',
+    cache: 'no-store',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
-  if (isLoading) return <LoadingScreen message="Loading your products" />;
-
-  const { products, pagination } = data;
+  const {
+    data: { products, pagination },
+  } = await res.json();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container-custom py-8">
-        <div
-          className="mx-auto max-w-6xl"
-        >
+        <div className="mx-auto max-w-6xl">
           {/* Header */}
           <div className="mb-8">
             <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">My Products</h1>
@@ -44,28 +44,21 @@ export default function MyProducts() {
               className="divide-y divide-gray-200 dark:divide-gray-700"
             >
               {products.map((item: any) => (
-                <ProductReviewCard
-                  key={item._id}
-                  item={item}
-                  page={page}
-
-                />
+                <ProductReviewCard key={item._id} item={item} page={pageNumber} />
               ))}
             </ul>
           </div>
 
           {/* Pagination */}
           {pagination.pages > 1 && (
-            <div
-              className="mt-8"
-            >
-              <Pagination
-                currentPage={page}
-                totalPages={pagination.pages}
-                onPageChange={setPage}
-                showInfo={true}
-              />
-            </div>
+            <Pagination
+              currentPage={pageNumber}
+              totalPages={pagination.pages}
+              searchParams={params}
+              allowedParams={['page']}
+              href="/my-products"
+              showInfo={true}
+            />
           )}
         </div>
       </div>

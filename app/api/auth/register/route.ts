@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
     /* ----------------------------------------------------------
        7. Respond with created user + tokens
     ----------------------------------------------------------- */
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         status: 'success',
         message: 'User registered successfully',
@@ -96,6 +96,25 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
+
+    // Set cookies
+    response.cookies.set('token', tokens.access.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: tokens.access.expires,
+      path: '/',
+    });
+
+    response.cookies.set('refreshToken', tokens.refresh.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: tokens.refresh.expires,
+      path: '/',
+    });
+
+    return response;
   } catch (err: any) {
     console.error('POST /api/auth/register error:', err.message);
 

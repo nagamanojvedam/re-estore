@@ -87,11 +87,6 @@ export async function GET(req: NextRequest) {
     -------------------------------------------- */
     const skip = (pageNumber - 1) * limitNumber;
 
-    console.log('filter', filter);
-    console.log('sort', sort);
-    console.log('skip', skip);
-    console.log('limit', limitNumber);
-
     const products = await Product.find(filter)
       .populate('owner', 'name email')
       .sort(sort)

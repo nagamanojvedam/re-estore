@@ -15,7 +15,6 @@ import { authService } from '@/lib/services/authService';
 import { useAuth } from '@/lib/hooks/useAuth';
 import Pagination from '@/components/common/Pagination';
 
-
 import { LoadingScreen } from '@/components/common/Spinner';
 import MessageCard from '@/components/dashboard/MessageCard';
 import { messageService } from '@/lib/services/messageService';
@@ -146,7 +145,6 @@ function OrdersTab() {
   if (isLoading) return <LoadingScreen message="Loading orders..." />;
 
   const { orders, pagination } = data;
-  console.log('Pagination:', pagination);
   return (
     <div className="space-y-4">
       {orders?.map((order: any) => (
@@ -155,9 +153,7 @@ function OrdersTab() {
 
       {/* Pagination */}
       {pagination.pages > 1 && (
-        <div
-          className="mt-12"
-        >
+        <div className="mt-12">
           <Pagination
             currentPage={page}
             totalPages={pagination.pages}
@@ -198,9 +194,7 @@ function ProductsTab() {
       ))}
       {/* Pagination */}
       {pagination.pages > 1 && (
-        <div
-          className="mt-12"
-        >
+        <div className="mt-12">
           <Pagination
             currentPage={page}
             totalPages={pagination.pages}
@@ -246,9 +240,7 @@ function UsersTab() {
 
       {/* Pagination */}
       {pagination.pages > 1 && (
-        <div
-          className="mt-12"
-        >
+        <div className="mt-12">
           <Pagination
             currentPage={page}
             totalPages={pagination.pages}
@@ -279,9 +271,7 @@ function MessagesTab() {
 
       {/* Pagination */}
       {pagination.pages > 1 && (
-        <div
-          className="mt-12"
-        >
+        <div className="mt-12">
           <Pagination
             currentPage={page}
             totalPages={pagination.pages}

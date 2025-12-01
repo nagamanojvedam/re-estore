@@ -58,11 +58,30 @@ export async function POST(req: NextRequest) {
     ---------------------------------------------- */
     (user as any).password = undefined;
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       status: 'success',
       message: 'Login successful',
       data: { user, tokens },
     });
+
+    // Set cookies
+    response.cookies.set('token', tokens.access.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: tokens.access.expires,
+      path: '/',
+    });
+
+    response.cookies.set('refreshToken', tokens.refresh.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: tokens.refresh.expires,
+      path: '/',
+    });
+
+    return response;
   } catch (err: any) {
     console.error('POST /api/auth/login error:', err.message);
 

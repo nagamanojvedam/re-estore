@@ -3,8 +3,8 @@ import config from '@/lib/utils/config';
 import axios from 'axios';
 
 import ActiveFilters from '@/components/shop/ActiveFilters';
-import ClientPagination from '@/components/shop/ShopPagination';
 import SidebarFilters from '@components/shop/SidebarFilters';
+import Pagination from '@/components/common/Pagination';
 
 async function Shop({
   searchParams,
@@ -15,15 +15,13 @@ async function Shop({
   queries.limit = config.items_per_page;
   queries.isActive = 'true';
 
-  console.log('queries', queries);
-
   const queryString = new URLSearchParams(queries as any).toString();
 
   const {
     data: {
       data: { products, pagination },
     },
-  } = await axios.get(`/api/products?${queryString}`);
+  } = await axios.get(`${config.next.api.baseUrl}/products?${queryString}`);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -47,10 +45,22 @@ async function Shop({
 
             {/* Pagination - Client Component */}
             {pagination.pages > 1 && (
-              <ClientPagination
+              <Pagination
                 currentPage={pagination.page}
                 totalPages={pagination.pages}
                 searchParams={queries}
+                href="/shop"
+                allowedParams={[
+                  'page',
+                  'limit',
+                  'sortOrder',
+                  'sortBy',
+                  'category',
+                  'minPrice',
+                  'maxPrice',
+                  'minRating',
+                ]}
+                showInfo={true}
               />
             )}
           </div>

@@ -20,10 +20,16 @@ export async function POST(req: NextRequest) {
     ---------------------------------------------- */
     await RefreshToken.updateOne({ token: refreshToken }, { revoked: true });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       status: 'success',
       message: 'Logout successful',
     });
+
+    // Clear cookies
+    response.cookies.delete('token');
+    response.cookies.delete('refreshToken');
+
+    return response;
   } catch (err: any) {
     console.error('POST /api/auth/logout error:', err.message);
 

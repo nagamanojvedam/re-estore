@@ -56,7 +56,6 @@ function ProfilePage() {
 
   const onProfileSubmit = async (data) => {
     try {
-      console.log('formdata: ', data);
       const updatedUser = await userService.updateMe(data);
       // Update user in AuthContext
       updateUser(updatedUser);
@@ -116,9 +115,7 @@ function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container-custom py-8">
-        <div
-          className="mx-auto max-w-4xl"
-        >
+        <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Profile</h1>
@@ -179,9 +176,7 @@ function ProfilePage() {
             <div className="md:col-span-3">
               {/* Profile Information Tab */}
               {activeTab === 'profile' && (
-                <div
-                  className="card p-6"
-                >
+                <div className="card p-6">
                   <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
                     Profile Information
                   </h2>
@@ -286,9 +281,7 @@ function ProfilePage() {
 
               {/* Security Tab */}
               {activeTab === 'security' && (
-                <div
-                  className="space-y-6"
-                >
+                <div className="space-y-6">
                   {/* Change Password */}
                   <div className="card p-6">
                     <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
@@ -422,9 +415,7 @@ function ProfilePage() {
 
               {/* Preferences Tab */}
               {activeTab === 'preferences' && (
-                <div
-                  className="card p-6"
-                >
+                <div className="card p-6">
                   <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
                     Preferences
                   </h2>
