@@ -117,6 +117,7 @@ function Header() {
               <span className="text-sm">Ctrl + K</span>
             </button>
 
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}

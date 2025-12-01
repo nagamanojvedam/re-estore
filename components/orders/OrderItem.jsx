@@ -66,7 +66,7 @@ function OrderItem({ order, queryKey }) {
           <div className="flex items-start space-x-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 hover:text-red-500 dark:text-white">
-                <Link to={`/orders/${order._id}`}>Order #{order.orderNumber}</Link>
+                <Link href={`/orders/${order._id}`}>Order #{order.orderNumber}</Link>
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Placed on {formatDate(order.createdAt)}

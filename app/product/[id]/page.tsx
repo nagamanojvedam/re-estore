@@ -6,7 +6,6 @@ import Back from '@/components/common/BackButton';
 import ProductImages from '@/components/products/ProductImages';
 import ProductInfo from '@/components/products/ProductInfo';
 import ProductTab from '@/components/products/ProductTab';
-import config from '@utils/config';
 import axios from 'axios';
 
 async function ProductDetailsPage({ params }) {
@@ -18,7 +17,7 @@ async function ProductDetailsPage({ params }) {
     data: {
       data: { product },
     },
-  } = await axios.get(`${config.next.api.baseUrl}/products/${id}`);
+  } = await axios.get(`/api/products/${id}`);
 
   // Fetch related products
   const {
@@ -26,7 +25,7 @@ async function ProductDetailsPage({ params }) {
       data: { products: relatedProducts },
     },
   } = await axios.get(
-    `${config.next.api.baseUrl}/products?category=${encodeURIComponent(product.category)}&exclude=${id}&limit=8`
+    `/api/products?category=${encodeURIComponent(product.category)}&exclude=${id}&limit=8`
   );
 
   // Fetch reviews
@@ -34,7 +33,7 @@ async function ProductDetailsPage({ params }) {
     data: {
       data: { reviews },
     },
-  } = await axios.get(`${config.next.api.baseUrl}/reviews/all/${id}`);
+  } = await axios.get(`/api/reviews/all/${id}`);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

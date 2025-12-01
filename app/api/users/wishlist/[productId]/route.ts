@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/utils/db';
-import User from '@/models/User';
 import Product from '@/models/Product';
+import User from '@/models/User';
 import { authMiddleware } from '@/lib/middleware/auth';
 
 /* -------------------------------------------

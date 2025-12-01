@@ -2,9 +2,9 @@ import ProductList from '@/components/products/ProductList';
 import config from '@/lib/utils/config';
 import axios from 'axios';
 
-import SidebarFilters from '@components/shop/SidebarFilters';
-import ClientPagination from '@/components/shop/ShopPagination';
 import ActiveFilters from '@/components/shop/ActiveFilters';
+import ClientPagination from '@/components/shop/ShopPagination';
+import SidebarFilters from '@components/shop/SidebarFilters';
 
 async function Shop({
   searchParams,
@@ -23,7 +23,7 @@ async function Shop({
     data: {
       data: { products, pagination },
     },
-  } = await axios.get(`${config.next.api.baseUrl}/products?${queryString}`);
+  } = await axios.get(`/api/products?${queryString}`);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
