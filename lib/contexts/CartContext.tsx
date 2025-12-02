@@ -127,7 +127,6 @@ export function CartProvider({ children }) {
   }, [state.items]);
 
   const addItem = (product) => {
-    console.log(product);
     dispatch({ type: 'ADD_ITEM', payload: product });
     toast.success(`${product.name} added to cart`);
   };

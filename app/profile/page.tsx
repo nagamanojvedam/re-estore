@@ -67,7 +67,6 @@ function ProfilePage() {
 
   const onPasswordSubmit = async (data) => {
     try {
-      console.log(data);
       // Password change logic would go here
       await authService.updatePassword(data);
       toast.success('Password changed successfully!');

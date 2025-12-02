@@ -12,6 +12,7 @@ export const formatDate = (dateString) =>
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Asia/Kolkata',
   });
 
 export const formatExpiryDate = (value) => {

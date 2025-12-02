@@ -1,16 +1,13 @@
-
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { useWishlist } from '@hooks/useWishlist';
+import { useWishlist } from '@/lib/hooks/useWishlist';
 import { formatPrice } from '@/lib/utils/helpers';
 
 function WishlistItem({ item }) {
   const { removeFromWishlist } = useWishlist();
 
   return (
-    <div
-      className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm dark:bg-gray-800"
-    >
+    <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm dark:bg-gray-800">
       {/* Left Section: Product Image + Info */}
       <div className="flex items-center space-x-4">
         <Link to={`/product/${item._id}`}>

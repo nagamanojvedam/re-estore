@@ -1,16 +1,16 @@
+'use client';
+
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { ORDER_STATUSES, PAYMENT_STATUSES } from '@utils/constants';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { cancelOrderAction } from '@/lib/actions/cancelOrderAction';
 import { formatDate, formatPrice } from '@/lib/utils/helpers';
-import { orderService } from '@services/orderService';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import Link from 'next/link';
+import { useState, useTransition } from 'react';
 
 function OrderItem({ order, queryKey }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const queryClient = useQueryClient();
+  const [_, startTransition] = useTransition();
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -44,19 +44,11 @@ function OrderItem({ order, queryKey }) {
     }
   };
 
-  const { mutate: cancelOrder, isPending: isCancelling } = useMutation({
-    mutationFn: () => orderService.cancelMyOrder(order._id),
-    onSuccess: () => {
-      toast.success('Order cancelled!');
-      queryClient.invalidateQueries([queryKey]);
-    },
-    onError: (error) => {
-      toast.error('Failed to cancel order!');
-      console.error(error);
-    },
-  });
-
-  if (isCancelling) return <p>Loading...</p>;
+  const cancelOrder = () => {
+    startTransition(() => {
+      cancelOrderAction(order._id);
+    });
+  };
 
   return (
     <div className="card">
@@ -141,16 +133,14 @@ function OrderItem({ order, queryKey }) {
         {/* Expanded Details */}
         {/* Expanded Details */}
         {isExpanded && (
-          <div
-            className="overflow-hidden"
-          >
+          <div className="overflow-hidden">
             <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-700">
               {/* All Items */}
               <div className="mb-6">
                 <h4 className="mb-3 font-medium text-gray-900 dark:text-white">
                   Items ({order.items.length})
                 </h4>
-                <div className="space-y-3">
+                <div className="max-h-[400px] space-y-3 overflow-y-auto">
                   {order.items.map((item) => (
                     <div
                       key={item._id}
@@ -228,9 +218,7 @@ function OrderItem({ order, queryKey }) {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Tax</span>
-                    <span className="text-gray-900 dark:text-white">
-                      {formatPrice(order.tax)}
-                    </span>
+                    <span className="text-gray-900 dark:text-white">{formatPrice(order.tax)}</span>
                   </div>
                   <div className="border-t border-gray-200 pt-2 dark:border-gray-600">
                     <div className="flex justify-between font-medium">

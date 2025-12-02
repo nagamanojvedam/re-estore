@@ -4,10 +4,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { useState } from 'react';
-import { AuthProvider } from '@contexts/AuthContext';
-import { CartProvider } from '@contexts/CartContext';
-import { ThemeProvider } from '@contexts/ThemeContext';
-import { WishlistProvider } from '@contexts/WishlistContext';
+import { AuthProvider } from '@/lib/contexts/AuthContext';
+import { CartProvider } from '@/lib/contexts/CartContext';
+import { ThemeProvider } from '@/lib/contexts/ThemeContext';
+import { WishlistProvider } from '@/lib/contexts/WishlistContext';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
