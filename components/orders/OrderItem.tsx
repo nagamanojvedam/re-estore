@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
-import { ORDER_STATUSES, PAYMENT_STATUSES } from '@utils/constants';
+import { ORDER_STATUSES, PAYMENT_STATUSES } from '@/lib/utils/constants';
 
 import { cancelOrderAction } from '@/lib/actions/cancelOrderAction';
 import { formatDate, formatPrice } from '@/lib/utils/helpers';
