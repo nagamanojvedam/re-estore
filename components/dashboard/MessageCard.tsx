@@ -2,7 +2,6 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { messageService } from '@/lib/services/messageService';
 import { formatDate } from '@/lib/utils/helpers';
 
 const MessageCard = ({ message, page }) => {

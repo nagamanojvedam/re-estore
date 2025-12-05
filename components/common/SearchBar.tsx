@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '@/lib/hooks/useDebounce';
-import { productService } from '@/lib/services/productService';
 import Spinner from './Spinner';
 import { formatPrice } from '@/lib/utils/helpers';
 

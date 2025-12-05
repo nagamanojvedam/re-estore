@@ -4,7 +4,6 @@ import { useState, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { EyeSlashIcon, EyeIcon } from '@heroicons/react/24/outline';
-import { authService } from '@/lib/services/authService';
 import toast from 'react-hot-toast';
 import { LoadingScreen } from '@/components/common/Spinner';
 

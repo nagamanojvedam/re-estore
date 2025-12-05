@@ -1,7 +1,6 @@
 'use client';
 
 import { LoadingScreen } from '@/components/common/Spinner';
-import { orderService } from '@/lib/services/orderService';
 import { ORDER_STATUSES } from '@/lib/utils/constants';
 
 import { useQuery } from '@tanstack/react-query';
@@ -40,9 +39,7 @@ function OrderDetailPage({ params }) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container-custom py-8">
-        <div
-          className="mx-auto max-w-5xl"
-        >
+        <div className="mx-auto max-w-5xl">
           {/* Header */}
           <div className="mb-6">
             <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">

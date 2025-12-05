@@ -7,7 +7,6 @@ import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { reviewService } from '@/lib/services/reviewService';
 import { formatDate } from '@/lib/utils/helpers';
 
 function ProductReviewCard({ item, page }) {

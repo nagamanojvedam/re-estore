@@ -13,8 +13,6 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { authService } from '@/lib/services/authService';
-import { userService } from '@/lib/services/userService';
 
 function ProfilePage() {
   const { user, updateUser, loading } = useAuth();

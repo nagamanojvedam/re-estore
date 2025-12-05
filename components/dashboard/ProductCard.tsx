@@ -10,7 +10,6 @@ import {
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { productService } from '@/lib/services/productService';
 import { formatDate, formatPrice } from '@/lib/utils/helpers';
 
 const ProductCard = ({ product, toggleMutation }) => {

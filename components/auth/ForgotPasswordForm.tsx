@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@/components/common/Spinner';
-import { authService } from '@/lib/services/authService';
 import toast from 'react-hot-toast';
 
 function ForgotPasswordForm({ onSuccess }) {

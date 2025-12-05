@@ -21,7 +21,6 @@
       "@/*": ["./*"],
       "@components/*": ["./components/*"],
       "@hooks/*": ["./lib/hooks/*"],
-      "@services/*": ["./lib/services/*"],
       "@utils/*": ["./lib/utils/*"],
       "@contexts/*": ["./lib/contexts/*"]
     },

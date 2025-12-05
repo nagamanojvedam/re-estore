@@ -7,7 +7,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { userService } from '@/lib/services/userService';
 import toast from 'react-hot-toast';
 
 const UserCard = ({ user, page }) => {

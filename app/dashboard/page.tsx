@@ -3,21 +3,17 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
-import { orderService } from '@/lib/services/orderService';
-import { productService } from '@/lib/services/productService';
 import OrderCard from '@/components/dashboard/OrderCard';
 import ProductCard from '@/components/dashboard/ProductCard';
 import UserCard from '@/components/dashboard/UserCard';
 import { ArrowLeftIcon, ShieldExclamationIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
-import { authService } from '@/lib/services/authService';
 
 import { useAuth } from '@/lib/hooks/useAuth';
 import Pagination from '@/components/common/Pagination';
 
 import { LoadingScreen } from '@/components/common/Spinner';
 import MessageCard from '@/components/dashboard/MessageCard';
-import { messageService } from '@/lib/services/messageService';
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState('orders');
