@@ -3,22 +3,23 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDate } from '@/lib/utils/helpers';
+import { replyMessage } from '@/lib/data/messages';
 
-const MessageCard = ({ message, page }) => {
+const MessageCard = ({ message, page }: { message: any; page: number }) => {
   const [showFull, setShowFull] = useState(false);
   const [replyOpen, setReplyOpen] = useState(message.isReplied);
   const [replyText, setReplyText] = useState(message.reply || '');
   const queryClient = useQueryClient();
   const isLong = (message?.message || '').length > 240;
 
-  const { mutate: replyMessage, isPending: isReplying } = useMutation({
+  const { mutate: handleReplyMessage, isPending: isReplying } = useMutation({
     mutationFn: () =>
-      messageService.replyMessage({
+      replyMessage({
         messageId: message._id,
         reply: replyText.trim(),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries(['adminMessages', page]);
+      queryClient.invalidateQueries({ queryKey: ['adminMessages', page] });
       toast.success('Message sent successfully!');
     },
     onError: () => {
@@ -99,7 +100,7 @@ const MessageCard = ({ message, page }) => {
               <div className="mt-3 flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={replyMessage}
+                  onClick={() => handleReplyMessage()}
                   disabled={!replyText.trim() || isReplying}
                   className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-800"
                 >

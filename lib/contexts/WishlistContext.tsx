@@ -2,17 +2,15 @@
 
 import { createContext, useEffect, useState, useContext, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
-import api from '@/lib/services/api'; // <-- Ensure this import path is correct
+import { addToWishlist, clearWishlist, getWishlist, removeFromWishlist } from '@/lib/data/wishlist';
 
 export interface WishlistItem {
-  productId: string;
-  name?: string;
-  price?: number;
-  image?: string;
+  productId: any; // Ideally types would be shared
+  addedAt?: Date;
 }
 
-export type AddToWishlistAction = (productId: WishlistItem['productId']) => Promise<void>;
-export type RemoveFromWishlistAction = (productId: WishlistItem['productId']) => Promise<void>;
+export type AddToWishlistAction = (productId: string) => Promise<void>;
+export type RemoveFromWishlistAction = (productId: string) => Promise<void>;
 export type ClearWishlistAction = () => Promise<void>;
 
 export interface WishlistContextState {
@@ -44,8 +42,8 @@ export function WishlistProvider({ children }: WishlistProviderProps) {
     const fetchWishlist = async () => {
       try {
         setLoadingWishlist(true);
-        const res = await api.get('/users/wishlist');
-        setWishlist(res.data.data.wishlist);
+        const data = await getWishlist();
+        setWishlist(data);
       } catch (err) {
         console.error('Failed to fetch wishlist:', err);
         setWishlist([]);
@@ -57,31 +55,38 @@ export function WishlistProvider({ children }: WishlistProviderProps) {
     fetchWishlist();
   }, [isAuthenticated]);
 
-  const addToWishlist: AddToWishlistAction = async (productId) => {
+  const handleAddToWishlist: AddToWishlistAction = async (productId) => {
     try {
+        // Optimistic update could be done here, but for now wait for server
       setLoadingWishlist(true);
-      const res = await api.post(`/users/wishlist/${productId}`);
-      setWishlist(res.data.data.wishlist);
+      const updatedWishlist = await addToWishlist(productId);
+      setWishlist(updatedWishlist);
+    } catch(err) {
+        console.error(err);
     } finally {
       setLoadingWishlist(false);
     }
   };
 
-  const removeFromWishlist: RemoveFromWishlistAction = async (productId) => {
+  const handleRemoveFromWishlist: RemoveFromWishlistAction = async (productId) => {
     try {
       setLoadingWishlist(true);
-      const res = await api.delete(`/users/wishlist/${productId}`);
-      setWishlist(res.data.data.wishlist);
+      const updatedWishlist = await removeFromWishlist(productId);
+      setWishlist(updatedWishlist);
+    } catch(err) {
+        console.error(err);
     } finally {
       setLoadingWishlist(false);
     }
   };
 
-  const clearWishlist: ClearWishlistAction = async () => {
+  const handleClearWishlist: ClearWishlistAction = async () => {
     try {
       setLoadingWishlist(true);
-      await api.delete('/users/wishlist');
+      await clearWishlist();
       setWishlist([]);
+    } catch(err) {
+        console.error(err);
     } finally {
       setLoadingWishlist(false);
     }
@@ -90,9 +95,9 @@ export function WishlistProvider({ children }: WishlistProviderProps) {
   const value: WishlistContextState = {
     wishlist,
     loadingWishlist,
-    addToWishlist,
-    removeFromWishlist,
-    clearWishlist,
+    addToWishlist: handleAddToWishlist,
+    removeFromWishlist: handleRemoveFromWishlist,
+    clearWishlist: handleClearWishlist,
   };
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;

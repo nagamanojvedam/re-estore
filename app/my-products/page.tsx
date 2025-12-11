@@ -1,9 +1,12 @@
 import Pagination from '@/components/common/Pagination';
 import ProductReviewCard from '@/components/products/ProductReviewCard';
-import config from '@/lib/utils/config';
 import { cookies } from 'next/headers';
+import { getUserProducts } from '@/lib/data/userProducts';
+import jwt from 'jsonwebtoken';
+import config from '@/lib/utils/config';
+import { redirect } from 'next/navigation';
 
-export default async function MyProducts({ searchParams }: { searchParams: { page?: string } }) {
+export default async function MyProducts({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const params = await searchParams;
 
   const pageNumber = Number(params.page) || 1;
@@ -11,17 +14,24 @@ export default async function MyProducts({ searchParams }: { searchParams: { pag
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
 
-  const res = await fetch(`${config.next.api.baseUrl}/users/me/products?page=${pageNumber}`, {
-    method: 'GET',
-    cache: 'no-store',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  if (!token) {
+    redirect('/login'); // Or handle as per app logic
+  }
 
-  const {
-    data: { products, pagination },
-  } = await res.json();
+  // Decode token to get user ID
+  // Ideally this logic should be in a shared helper like `getSession` or `getCurrentUser`
+  let userId: string;
+  try {
+     const decoded: any = jwt.verify(token, config.jwt.secret);
+     userId = decoded.id || decoded._id || decoded.user?._id; // Adjust based on how token is signed
+  } catch (err) {
+      redirect('/login');
+  }
+
+  const { products, pagination } = await getUserProducts({ 
+      userId, 
+      page: pageNumber 
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

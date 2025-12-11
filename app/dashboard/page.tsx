@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import OrderCard from '@/components/dashboard/OrderCard';
@@ -14,6 +14,13 @@ import Pagination from '@/components/common/Pagination';
 
 import { LoadingScreen } from '@/components/common/Spinner';
 import MessageCard from '@/components/dashboard/MessageCard';
+
+// Server Actions
+import { getOrders, updateOrderStatus } from '@/lib/data/orders';
+import { getProducts, deleteProduct } from '@/lib/data/products';
+import { getUsers } from '@/lib/data/users';
+import { getMessages } from '@/lib/data/messages';
+import toast from 'react-hot-toast';
 
 export default function AdminDashboard() {
   const [tab, setTab] = useState('orders');
@@ -129,18 +136,26 @@ export default function AdminDashboard() {
 /* ---------------- Orders Tab ---------------- */
 function OrdersTab() {
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
 
   const { data, isPending: isLoading } = useQuery({
-    queryKey: ['adminOrders'],
-    queryFn: () => orderService.getAllOrders({ page, limit: 5 }),
+    queryKey: ['adminOrders', page],
+    queryFn: () => getOrders({ page, limit: 5 }),
   });
   const { mutate: updateStatusMutation } = useMutation({
-    mutationFn: orderService.updateOrderStatus,
+    mutationFn: (vars: {id: string, status: string}) => updateOrderStatus(vars),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
+      toast.success('Order status updated');
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    }
   });
 
   if (isLoading) return <LoadingScreen message="Loading orders..." />;
 
-  const { orders, pagination } = data;
+  const { orders, pagination } = data || { orders: [], pagination: { pages: 0 } };
   return (
     <div className="space-y-4">
       {orders?.map((order: any) => (
@@ -165,21 +180,29 @@ function OrdersTab() {
 /* ---------------- Products Tab ---------------- */
 function ProductsTab() {
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
+
   const { data, isPending: isLoading } = useQuery({
     queryKey: ['adminProducts', page],
-    queryFn: () => productService.getProducts({ page }),
+    queryFn: () => getProducts({ page, limit: 5 }),
   });
 
   const { mutate: toggleMutation } = useMutation({
-    mutationFn: productService.deleteProduct,
+    mutationFn: (id: string) => deleteProduct(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminProducts'] });
+      toast.success('Product updated');
+    },
+    onError: (err) => {
+        toast.error(err.message);
+    }
   });
 
   if (isLoading) return <LoadingScreen message="Loading products..." />;
 
-  const { products, pagination } = data;
+  const { products, pagination } = data || { products: [], pagination: { pages: 0 }};
 
   const handlePageChange = (newPage: number) => {
-    // Handle page change logic here
     setPage(newPage);
   };
 
@@ -209,12 +232,12 @@ function UsersTab() {
 
   const { data, isPending: isLoading } = useQuery({
     queryKey: ['adminUsers', page],
-    queryFn: () => authService.getAllUsers({ page, limit: 5 }),
+    queryFn: () => getUsers({ page, limit: 5 }),
   });
 
   if (isLoading) return <LoadingScreen message="Loading users..." />;
 
-  const { users, pagination } = data;
+  const { users, pagination } = data || { users: [], pagination: { pages: 0  }};
 
   // Filter out admin users
   const regularUsers = users?.filter((u: any) => u.role === 'user') || [];
@@ -253,12 +276,12 @@ function MessagesTab() {
   const [page, setPage] = useState(1);
   const { data, isPending: isLoading } = useQuery({
     queryKey: ['adminMessages', page],
-    queryFn: () => messageService.getAllMessages({ page, limit: 5 }),
+    queryFn: () => getMessages({ page, limit: 5 }),
   });
 
   if (isLoading) return <LoadingScreen message="Loading orders..." />;
 
-  const { messages, pagination } = data;
+  const { messages, pagination } = data || { messages: [], pagination: { pages: 0 }};
   return (
     <div className="space-y-4">
       {messages?.map((message: any) => (

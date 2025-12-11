@@ -11,21 +11,21 @@ import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatDate, formatPrice } from '@/lib/utils/helpers';
+import { updateProductStock } from '@/lib/data/products';
 
-const ProductCard = ({ product, toggleMutation }) => {
+const ProductCard = ({ product, toggleMutation }: { product: any; toggleMutation: (id: string) => void }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isActive, setIsActive] = useState(product.isActive);
   const [stock, setStock] = useState(product.stock);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleStockChange = async (delta) => {
+  const handleStockChange = async (delta: number) => {
     try {
       setIsLoading(true);
-      const res = await productService.updateProduct(product._id, {
-        stock: Math.max(0, stock + delta),
-      });
-      setStock(res.product.stock);
+      const newStock = Math.max(0, stock + delta);
+      const updatedProduct = await updateProductStock(product._id, newStock);
+      setStock(updatedProduct.stock);
       toast.success('Stock updated successfully');
     } catch (err) {
       toast.error('Failed to update stock');
@@ -35,7 +35,7 @@ const ProductCard = ({ product, toggleMutation }) => {
     }
   };
 
-  const getStockStatus = (stock) => {
+  const getStockStatus = (stock: number) => {
     if (stock === 0)
       return {
         text: 'Out of Stock',
@@ -52,9 +52,10 @@ const ProductCard = ({ product, toggleMutation }) => {
     };
   };
 
-  const renderStars = (average, count) => {
+  const renderStars = (average: number, count: number) => {
     const stars = [];
     const wholeStars = Math.floor(average);
+
     const hasHalfStar = average % 1 >= 0.5;
 
     for (let i = 0; i < 5; i++) {
@@ -182,7 +183,7 @@ const ProductCard = ({ product, toggleMutation }) => {
                 Images ({product.images.length})
               </h4>
               <div className="flex space-x-2 overflow-x-auto p-2">
-                {product.images.map((image, index) => (
+                {product.images.map((image: string, index: number) => (
                   <img
                     key={index}
                     src={image}
@@ -269,7 +270,7 @@ const ProductCard = ({ product, toggleMutation }) => {
                     <span className="capitalize text-gray-600 dark:text-gray-400">
                       {key.replace(/([A-Z])/g, ' $1')}:
                     </span>
-                    <span>{value}</span>
+                    <span>{String(value)}</span>
                   </div>
                 ))}
               </div>

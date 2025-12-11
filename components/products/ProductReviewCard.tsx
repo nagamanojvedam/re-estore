@@ -8,8 +8,9 @@ import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/lib/utils/helpers';
+import { deleteReview, getUserReview, upsertReview } from '@/lib/data/reviews';
 
-function ProductReviewCard({ item, page }) {
+function ProductReviewCard({ item, page }: { item: any, page: number }) {
   const [openReview, setOpenReview] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     rating: 0,
@@ -22,31 +23,34 @@ function ProductReviewCard({ item, page }) {
   const { product } = item;
 
   const { mutate: addOrUpdateMutation } = useMutation({
-    mutationFn: (reviewData) => reviewService.addOrUpdate(reviewData),
+    mutationFn: (reviewData: any) => upsertReview(reviewData),
     onSuccess: () => {
-      queryClient.invalidateQueries(['myProducts', page]);
-
+      queryClient.invalidateQueries({ queryKey: ['myProducts', page] }); // Ensure key matches MyProducts refetch? MyProducts is server component now, it doesn't use RQ. 
+      // Server Component doesn't auto-update without router.refresh().
+      router.refresh();
+      
       toast.success('Review added!');
       setOpenReview(false);
     },
 
-    onError: () => {
-      toast.error('Failed to add review!');
+    onError: (err) => {
+      toast.error(err.message || 'Failed to add review!');
     },
   });
 
   const { mutate: deleteMutation } = useMutation({
-    mutationFn: (productId) => reviewService.deleteReview(productId),
+    mutationFn: (productId: string) => deleteReview(productId),
     onSuccess: () => {
-      queryClient.invalidateQueries(['myProducts', page]);
+      // queryClient.invalidateQueries(['myProducts', page]); // No longer relevant for Server Component List
+      router.refresh();
       toast.success('Review deleted!');
     },
-    onError: () => {
-      toast.error('Failed to delete review!');
+    onError: (err) => {
+      toast.error(err.message || 'Failed to delete review!');
     },
   });
 
-  const handleReviewChange = useCallback((data) => {
+  const handleReviewChange = useCallback((data: any) => {
     setReviewForm((prev) => ({
       ...prev,
       ...data,
@@ -56,7 +60,7 @@ function ProductReviewCard({ item, page }) {
   useEffect(() => {
     const fetchReview = async () => {
       try {
-        const { review } = await reviewService.getReview(item.product._id);
+        const review = await getUserReview(item.product._id);
 
         setReviewForm({
           rating: review?.rating || 0,
@@ -71,7 +75,7 @@ function ProductReviewCard({ item, page }) {
 
     if (!item.isReviewed) setReviewForm({ rating: 0, title: '', comment: '' });
     else fetchReview();
-  }, [item.product._id, item.user._id, item.isReviewed]);
+  }, [item.product._id, item.isReviewed]);
 
   const handleSubmitReview = useCallback(async () => {
     if (!reviewForm.rating || !reviewForm.title || !reviewForm.comment) {

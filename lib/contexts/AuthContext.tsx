@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import toast from 'react-hot-toast';
-import authService from '@/lib/services/authService';
+import { getMe } from '@/lib/data/users';
 
 // Types
 export interface AuthUser {
@@ -135,6 +135,8 @@ function authReducer(state: AuthState, action: Action): AuthState {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+
+
   // Auto-login if token exists
   useEffect(() => {
     const initAuth = async () => {
@@ -145,26 +147,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!token) {
         dispatch({ type: 'SET_LOADING', payload: false });
+        // Ensure cookies are cleared if local storage is empty
         return;
       }
 
       try {
         dispatch({ type: 'AUTH_START' });
-        const user = await authService.getCurrentUser();
-
+        
+        const user = await getMe();
+        
+        if (!user) throw new Error('Unauthenticated');
+        
         dispatch({
           type: 'AUTH_SUCCESS',
           payload: {
-            user,
-            tokens: {
-              access: { token },
-              refresh: { token: refreshToken || '' },
-            },
+             user,
+             tokens: {
+                access: { token },
+                refresh: { token: refreshToken || '' },
+             },
           },
         });
       } catch (err: unknown) {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
+        document.cookie = 'token=; Max-Age=0; path=/;'; // also clear cookie
         dispatch({
           type: 'AUTH_ERROR',
           payload: err instanceof Error ? err.message : 'Auth failed',
@@ -178,11 +185,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     try {
       dispatch({ type: 'AUTH_START' });
-      const response = await authService.login(credentials);
+      
+      const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credentials)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || 'Login failed');
+
+      const response = data.data; // Assuming api structure { status: 'success', data: { user, tokens } }
 
       localStorage.setItem('token', response.tokens.access.token);
       localStorage.setItem('refreshToken', response.tokens.refresh.token);
-
+      // Also set cookie if needed for Server Actions compatibility - Login API usually sets it.
+      // If /api/auth/login sets cookie, we are good.
+      // But we just fetched it. Client fetch + Set-Cookie header works.
+      
       dispatch({ type: 'AUTH_SUCCESS', payload: response });
 
       toast.success(`Welcome back, ${response.user.name}!`);
@@ -198,7 +219,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (data: RegisterData): Promise<AuthResponse> => {
     try {
       dispatch({ type: 'AUTH_START' });
-      const response = await authService.register(data);
+      const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+      });
+
+      const resData = await res.json();
+      if (!res.ok) throw new Error(resData.message || 'Register failed');
+
+      const response = resData.data;
 
       localStorage.setItem('token', response.tokens.access.token);
       localStorage.setItem('refreshToken', response.tokens.refresh.token);
@@ -218,12 +248,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) await authService.logout({ refreshToken });
+      if (refreshToken) {
+          await fetch('/api/auth/logout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refreshToken })
+          });
+      }
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
+      // Clear cookies for server actions
+      document.cookie = 'token=; Max-Age=0; path=/;';
+      
       dispatch({ type: 'LOGOUT' });
       toast.success('Logged out successfully');
     }
@@ -236,12 +275,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const response = await authService.refreshToken({ refreshToken });
+      const res = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken })
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Refresh failed');
+      
+      const response = data.data; // tokens
 
-      localStorage.setItem('token', response.tokens.access.token);
-      localStorage.setItem('refreshToken', response.tokens.refresh.token);
+      localStorage.setItem('token', response.access.token);
+      localStorage.setItem('refreshToken', response.refresh.token);
 
-      return response.tokens.access.token;
+      return response.access.token;
     } catch (err) {
       logout();
       throw err;

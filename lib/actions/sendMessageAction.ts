@@ -1,20 +1,19 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import config from '../utils/config';
-import axios from 'axios';
+import { createMessage } from '../data/messages';
 
 export async function sendMessageAction(prevState: any, formData: FormData) {
-  const name = formData.get('name');
-  const email = formData.get('email');
-  const message = formData.get('message');
+  const name = formData.get('name') as string;
+  const email = formData.get('email') as string;
+  const message = formData.get('message') as string;
 
   try {
-    await axios.post(`/api/messages`, { name, email, message });
+    await createMessage({ name, email, message });
 
     revalidatePath('/contact');
     return { success: true, message: 'Message sent successfully' };
   } catch (err: any) {
-    return { success: false, message: err.response?.data?.message || 'Failed to send mesage' };
+    return { success: false, message: err.message || 'Failed to send message' };
   }
 }

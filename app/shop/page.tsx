@@ -1,27 +1,43 @@
 import ProductList from '@/components/products/ProductList';
 import config from '@/lib/utils/config';
-import axios from 'axios';
 
 import ActiveFilters from '@/components/shop/ActiveFilters';
 import SidebarFilters from '@components/shop/SidebarFilters';
 import Pagination from '@/components/common/Pagination';
+import { getProducts } from '@/lib/data/products';
 
 async function Shop({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const queries = await searchParams;
-  queries.limit = config.items_per_page;
+  const resolvedSearchParams = await searchParams;
+  
+  // Prepare params for fetching
+  // We clone and modify a version for the UI components if needed, or just pass resolvedSearchParams
+  // The original code mutated 'queries', so we'll create a workable object
+  const queries: any = { ...resolvedSearchParams };
+  queries.limit = config.items_per_page; 
   queries.isActive = 'true';
 
-  const queryString = new URLSearchParams(queries as any).toString();
+  // Extract strongly typed params for our data function
+  const page = Number(resolvedSearchParams.page) || 1;
+  const limit = Number(config.items_per_page) || 10;
+  
+  const productsData = await getProducts({
+    page,
+    limit,
+    search: typeof resolvedSearchParams.search === 'string' ? resolvedSearchParams.search : undefined,
+    category: typeof resolvedSearchParams.category === 'string' ? resolvedSearchParams.category : undefined,
+    minPrice: resolvedSearchParams.minPrice ? Number(resolvedSearchParams.minPrice) : undefined,
+    maxPrice: resolvedSearchParams.maxPrice ? Number(resolvedSearchParams.maxPrice) : undefined,
+    minRating: resolvedSearchParams.minRating ? Number(resolvedSearchParams.minRating) : undefined,
+    sortBy: typeof resolvedSearchParams.sortBy === 'string' ? resolvedSearchParams.sortBy : 'createdAt',
+    sortOrder: resolvedSearchParams.sortOrder === 'asc' ? 'asc' : 'desc',
+    isActive: true
+  });
 
-  const {
-    data: {
-      data: { products, pagination },
-    },
-  } = await axios.get(`${config.next.api.baseUrl}/products?${queryString}`);
+  const { products, pagination } = productsData;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

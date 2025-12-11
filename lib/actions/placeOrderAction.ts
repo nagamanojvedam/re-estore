@@ -1,6 +1,6 @@
 'use server';
 
-import axios from 'axios';
+import { createOrder } from '../data/orders';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -22,7 +22,7 @@ export async function placeOrder(formData: FormData) {
     paymentStatus,
   };
   try {
-    const { order } = await axios.post('/orders', newOrder);
+    const order = await createOrder(newOrder);
 
     revalidatePath('/orders');
     redirect(`/orders/${order._id}`);

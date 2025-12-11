@@ -1,12 +1,8 @@
-'use client';
-
-import { LoadingScreen } from '@/components/common/Spinner';
 import { ORDER_STATUSES } from '@/lib/utils/constants';
-
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/utils/helpers';
-import { use } from 'react';
+import { getOrderById } from '@/lib/data/orders';
+import { notFound, redirect } from 'next/navigation';
 
 const STATUS_ORDER = [
   ORDER_STATUSES.PENDING,
@@ -15,27 +11,21 @@ const STATUS_ORDER = [
   ORDER_STATUSES.DELIVERED,
 ];
 
-function OrderDetailPage({ params }) {
-  const { id } = use(params);
+async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
+  const order = await getOrderById(id);
 
-  const {
-    data,
-    isPending: isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['order', id],
-    queryFn: () => orderService.getOrder(id),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  if (isLoading) return <LoadingScreen message="Loading order details..." />;
-  if (error) return <div className="text-red-500">Error loading order.</div>;
-  if (!data?.order) return <div className="text-gray-700">Order not found.</div>;
-
-  const { order } = data;
+  if (!order) {
+      // If null, it means not found or unauthorized. 
+      // getOrderById handles auth (returns null on auth error or not found).
+      // Ideally redirect to login if auth failed? But null doesn't distinguish.
+      // Assuming not found for now.
+      notFound();
+  }
 
   const currentStatusIndex = STATUS_ORDER.indexOf(order.status);
-
+  
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container-custom py-8">
@@ -87,7 +77,7 @@ function OrderDetailPage({ params }) {
           <div className="card mb-6 p-6">
             <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Products</h2>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {order.items.map((item) => {
+              {order.items.map((item: any) => {
                 return (
                   <div key={item._id} className="flex items-center justify-between py-4">
                     <div className="flex items-center">

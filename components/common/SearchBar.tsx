@@ -4,15 +4,16 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import Spinner from './Spinner';
 import { formatPrice } from '@/lib/utils/helpers';
+import { getProducts } from '@/lib/data/products';
 
-function SearchBar({ onClose }) {
+function SearchBar({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const debouncedQuery = useDebounce(query, 300);
 
@@ -26,7 +27,8 @@ function SearchBar({ onClose }) {
 
       setLoading(true);
       try {
-        const { products } = await productService.searchProducts(debouncedQuery, {
+        const { products } = await getProducts({
+          search: debouncedQuery,
           limit: 8,
         });
         setResults(products);
@@ -42,18 +44,18 @@ function SearchBar({ onClose }) {
     searchProducts();
   }, [debouncedQuery]);
 
-  const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
+  const handleProductClick = (productId: string) => {
+    router.push(`/product/${productId}`);
     onClose();
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
       params.set('search', query.trim());
-      params.set('page', 1);
-      navigate(`/shop?${params.toString()}`);
+      params.set('page', '1');
+      router.push(`/shop?${params.toString()}`);
       onClose();
     }
   };

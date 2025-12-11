@@ -8,15 +8,16 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { toggleUserActive } from '@/lib/data/users';
 
-const UserCard = ({ user, page }) => {
+const UserCard = ({ user, page }: { user: any; page: number }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const queryClient = useQueryClient();
 
   const { mutate: toggleUserMutation } = useMutation({
-    mutationFn: userService.toggleUserActive,
+    mutationFn: toggleUserActive,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['adminUsers', page]);
+      queryClient.invalidateQueries({ queryKey: ['adminUsers', page] });
       toast.success(`User ${data.user.isActive ? 'Activated 🙂' : 'Deactivated 🙁'}`);
     },
   });

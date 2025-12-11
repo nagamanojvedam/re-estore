@@ -1,33 +1,29 @@
 import Pagination from '@/components/common/Pagination';
 import OrderList from '@/components/orders/OrderList';
-
 import Link from 'next/link';
-import config from '@/lib/utils/config';
-import { cookies } from 'next/headers';
 import OrdersFilter from '@/components/orders/OrdersFilter';
+import { getMyOrders } from '@/lib/data/orders';
+import { redirect } from 'next/navigation';
 
-async function OrdersPage({ searchParams }) {
+async function OrdersPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const queries = await searchParams;
 
-  const { status = '', page = 1 } = queries;
+  const status = typeof queries.status === 'string' ? queries.status : '';
+  const page = Number(queries.page) || 1;
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+  let ordersData;
+  try {
+     ordersData = await getMyOrders({ page, limit: 5, status });
+  } catch (err: any) {
+     if (err.message === 'Unauthorized') {
+         redirect('/login');
+     }
+     // Other errors?
+     console.error(err);
+     ordersData = { orders: [], pagination: { totalPages: 0, page: 1 } };
+  }
 
-  const res = await fetch(
-    `${config.next.api.baseUrl}/orders/me?limit=5&status=${status}&page=${page}`,
-    {
-      method: 'GET',
-      cache: 'no-store',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  const { data: ordersData } = await res.json();
-  const orders = ordersData?.orders || [];
-  const pagination = ordersData?.pagination || {};
+  const { orders, pagination } = ordersData;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -56,6 +52,7 @@ async function OrdersPage({ searchParams }) {
                 allowedParams={['status', 'page']}
                 href="/orders"
                 showInfo={true}
+                searchParams={queries}
               />
             </div>
           )}
