@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const addOrUpdate = {
   body: {
@@ -10,6 +10,6 @@ const addOrUpdate = {
   },
 };
 
-module.exports = {
+export {
   addOrUpdate,
 };

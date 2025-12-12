@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const createProduct = {
   body: Joi.object({
@@ -67,7 +67,7 @@ const deleteProduct = {
   }),
 };
 
-module.exports = {
+export {
   createProduct,
   getProducts,
   updateProduct,

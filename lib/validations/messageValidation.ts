@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const createMessage = {
   body: Joi.object({
@@ -14,7 +14,7 @@ const replyMessage = {
   }),
 };
 
-module.exports = {
+export {
   createMessage,
   replyMessage,
 };

@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const updateMeValidation = {
   body: Joi.object({
@@ -24,7 +24,7 @@ const toggleUserActiveValidation = {
   }),
 };
 
-module.exports = {
+export {
   updateMeValidation,
   toggleUserActiveValidation,
 };

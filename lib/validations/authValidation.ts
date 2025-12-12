@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const register = {
   body: Joi.object({
@@ -52,7 +52,7 @@ const resetPassword = {
   }),
 };
 
-module.exports = {
+export {
   register,
   login,
   refresh,
