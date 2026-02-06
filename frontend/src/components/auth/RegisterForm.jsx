@@ -63,7 +63,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
   const onSubmit = async data => {
     try {
       clearError();
-      const { confirmPassword, agreeToTerms, ...userData } = data;
+      const { agreeToTerms, ...userData } = data;
 
       if (!agreeToTerms) {
         setError('agreeToTerms', {

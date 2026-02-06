@@ -55,7 +55,7 @@ const replyMessage = catchAsync(async (req, res) => {
   );
 
   if (!updated) {
-    throw new ApiError(404, "Message already replied");
+    throw new Error("Message already replied");
   }
   res.json({
     status: "success",

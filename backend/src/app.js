@@ -15,6 +15,8 @@ const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const stripeService = require("./services/stripeService");
+const Order = require("./models/Order");
 
 const app = express();
 
@@ -46,6 +48,43 @@ if (config.env !== "production") {
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// Stripe Webhook (MUST be before express.json body parser)
+app.post(
+  "/api/webhooks/stripe",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    let event;
+
+    try {
+      event = stripeService.constructEvent(req.body, sig);
+    } catch (err) {
+      console.error(`Webhook Error: ${err.message}`);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+      const orderId = session.metadata.orderId;
+
+      try {
+        const order = await Order.findById(orderId);
+        if (order) {
+          order.paymentStatus = "paid";
+          order.status = "confirmed";
+          await order.save();
+          console.log(`Order ${orderId} marked as paid.`);
+        }
+      } catch (err) {
+        console.error(`Error updating order ${orderId}: ${err.message}`);
+      }
+    }
+
+    res.json({ received: true });
+  }
+);
+
 // Rate limiting
 app.use("/api", rateLimiter);
 
@@ -65,6 +104,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/messages", messageRoutes);
+
+// Routes replaced by orderRoutes or removed as redundant
 
 // Serve static files in production
 if (config.env === "production") {

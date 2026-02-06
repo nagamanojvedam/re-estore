@@ -7,6 +7,8 @@ const {
   getOrder,
   getOrderByNumber,
   cancelMyOrder,
+  verifyOrder,
+  createStripeSession,
 } = require("../controllers/orderController");
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
@@ -25,7 +27,13 @@ router.get(
   validate(getOrdersValidation),
   getAllOrders
 );
-router.post("/", auth, validate(createOrderValidation), createOrder);
+router.post(
+  "/",
+  auth,
+  validate(createOrderValidation),
+  verifyOrder,
+  createOrder
+);
 router.get("/me", auth, validate(getOrdersValidation), getMyOrders);
 
 router.get("/:id", auth, getOrder);
@@ -33,5 +41,6 @@ router.patch("/:id/status", auth, authorize("admin"), updateOrderStatus);
 
 router.get("/orderNumber/:orderNumber", getOrderByNumber);
 router.post("/cancelMyOrder/:id", auth, cancelMyOrder);
+router.post("/:id/checkout-session", auth, createStripeSession);
 
 module.exports = router;

@@ -38,7 +38,7 @@ function Shop() {
     queryFn: () => {
       const cleanFilters = Object.fromEntries(
         Object.entries(debouncedFilters).filter(
-          ([_, value]) => value !== undefined && value !== '' && value !== null,
+          ([, value]) => value !== undefined && value !== '' && value !== null,
         ),
       );
       return productService.getProducts({ ...cleanFilters, isActive: true });

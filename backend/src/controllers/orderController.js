@@ -3,13 +3,12 @@ const Product = require("../models/Product");
 const UserProduct = require("../models/UserProduct");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
+const stripeService = require("../services/stripeService");
 
-const createOrder = catchAsync(async (req, res) => {
-  const { items, shippingAddress, paymentStatus, paymentMethod } = req.body;
+const verifyOrder = catchAsync(async (req, res, next) => {
+  const { items } = req.body;
 
-  // Validate products and calculate total
-  let subTotal = 0;
-  const orderItems = [];
+  const products = {};
 
   for (const item of items) {
     const product = await Product.findOne({
@@ -24,6 +23,25 @@ const createOrder = catchAsync(async (req, res) => {
     if (product.stock < item.quantity) {
       throw new ApiError(400, `Insufficient stock for product ${product.name}`);
     }
+    products[item.product] = product;
+  }
+
+  req.products = products;
+  next();
+});
+
+const createOrder = catchAsync(async (req, res) => {
+  const { items, shippingAddress, paymentMethod } = req.body;
+
+  // Calculate total
+  let subTotal = 0;
+  const orderItems = [];
+
+  for (const item of items) {
+    const product = await Product.findOne({
+      _id: item.product,
+      isActive: true,
+    });
 
     const itemTotal = product.price * item.quantity;
     subTotal += itemTotal;
@@ -44,6 +62,8 @@ const createOrder = catchAsync(async (req, res) => {
   const totalAmount = subTotal + shipping + tax;
 
   // Create order
+  const isCash = paymentMethod === "cash";
+
   const order = await Order.create({
     user: req.user._id,
     items: orderItems,
@@ -52,9 +72,9 @@ const createOrder = catchAsync(async (req, res) => {
     tax,
     totalAmount,
     shippingAddress,
-    paymentStatus,
+    paymentStatus: "pending",
     paymentMethod,
-    status: paymentStatus === "failed" ? "cancelled" : "pending",
+    status: isCash ? "confirmed" : "pending",
   });
 
   await order.populate([
@@ -263,7 +283,38 @@ const cancelMyOrder = catchAsync(async (req, res) => {
   });
 });
 
+const createStripeSession = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const order = await Order.findById(id);
+
+  if (!order) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  if (order.user.toString() !== req.user.id.toString()) {
+    throw new ApiError(403, "Not authorized to pay for this order");
+  }
+
+  // Get products for Stripe line items
+  const productIds = order.items.map((item) => item.product.toString());
+  const productdocs = await Product.find({ _id: { $in: productIds } });
+  const productsMap = {};
+  productdocs.forEach((p) => {
+    productsMap[p._id.toString()] = p;
+  });
+
+  const session = await stripeService.createCheckoutSession(order, productsMap);
+
+  res.json({
+    status: "success",
+    data: {
+      url: session.url,
+    },
+  });
+});
+
 module.exports = {
+  verifyOrder,
   createOrder,
   getOrder,
   getOrderByNumber,
@@ -271,4 +322,5 @@ module.exports = {
   getAllOrders,
   updateOrderStatus,
   cancelMyOrder,
+  createStripeSession,
 };
