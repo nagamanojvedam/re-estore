@@ -43,7 +43,7 @@ const sendWelcomeEmail = async (user) => {
   await sendEmail(user.email, subject, text, html);
 };
 
-const sendPasswordResetEmail = async (user, token) => {
+const sendPasswordResetEmail = async (user, _token) => {
   const subject = "Password Reset Request";
   const text = `Hello ${user.name},\n\nYou requested a password reset.`;
   const html = fs

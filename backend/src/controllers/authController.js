@@ -149,7 +149,7 @@ const refresh = catchAsync(async (req, res) => {
         tokens,
       },
     });
-  } catch (error) {
+  } catch (_error) {
     throw new ApiError(401, "Invalid refresh token");
   }
 });

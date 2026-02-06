@@ -129,7 +129,7 @@ export const VALIDATION = {
   NAME_MIN_LENGTH: 2,
   NAME_MAX_LENGTH: 50,
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  PHONE_REGEX: /^\+?[\d\s\-\(\)]+$/,
+  PHONE_REGEX: /^\+?[\d\s\-()]+$/,
 };
 
 // Feature flags

@@ -1,6 +1,5 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import ProductCard from './ProductCard'
+import { motion } from 'framer-motion';
+import ProductCard from './ProductCard';
 // import ProductCardSkeleton from './ProductCardSkeleton'
 
 function ProductList({ products, loading, error, className = '' }) {
@@ -13,7 +12,7 @@ function ProductList({ products, loading, error, className = '' }) {
           <ProductCardSkeleton key={i} />
         ))}
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -47,7 +46,7 @@ function ProductList({ products, loading, error, className = '' }) {
           Try Again
         </button>
       </div>
-    )
+    );
   }
 
   if (!products || products.length === 0) {
@@ -76,10 +75,10 @@ function ProductList({ products, loading, error, className = '' }) {
           No Products Found
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          We couldn't find any products matching your criteria.
+          We couldn&apos;t find any products matching your criteria.
         </p>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -92,7 +91,7 @@ function ProductList({ products, loading, error, className = '' }) {
         <ProductCard key={product._id} product={product} index={index} />
       ))}
     </motion.div>
-  )
+  );
 }
 
 // Skeleton component for loading state
@@ -111,7 +110,7 @@ function ProductCardSkeleton() {
         <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded" />
       </div>
     </div>
-  )
+  );
 }
 
-export default ProductList
+export default ProductList;

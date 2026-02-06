@@ -7,6 +7,12 @@ export const orderService = {
     return response.data.data;
   },
 
+  // Stripe payment
+  checkoutOrder: async orderId => {
+    const response = await api.post(`/orders/${orderId}/checkout-session`);
+    return response.data.data;
+  },
+
   // Get user's orders
   getMyOrders: async (params = {}) => {
     const response = await api.get('/orders/me', { params });

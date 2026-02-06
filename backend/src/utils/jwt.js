@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
-const { verify } = require("crypto");
 
 const generateToken = (
   payload,

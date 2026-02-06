@@ -20,7 +20,7 @@ export function usePagination(data, itemsPerPage = 10) {
     };
   }, [data, currentPage, itemsPerPage]);
 
-  const goToPage = (page) => {
+  const goToPage = page => {
     const totalPages = Math.ceil(data.length / itemsPerPage);
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);

@@ -5,7 +5,7 @@ import LoginForm from './LoginForm';
 
 function ProtectedRoute({ children, requireRole = null }) {
   const { user, isAuthenticated, loading } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [, setShowLoginModal] = useState(false);
 
   // Show loading while checking authentication
   if (loading) {
