@@ -44,10 +44,6 @@ if (config.env !== "production") {
   app.use(morgan("dev"));
 }
 
-// Body parsing
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true }));
-
 // Stripe Webhook (MUST be before express.json body parser)
 app.post(
   "/api/webhooks/stripe",
@@ -84,6 +80,10 @@ app.post(
     res.json({ received: true });
   }
 );
+
+// Body parsing
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 // Rate limiting
 app.use("/api", rateLimiter);
