@@ -1,25 +1,13 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ShoppingBagIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useCart } from '@hooks/useCart';
-import { useAuth } from '@hooks/useAuth';
 import CartItem from '@components/cart/CartItem';
-import toast from 'react-hot-toast';
+import { ArrowLeftIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import { useCart } from '@hooks/useCart';
+import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatPrice } from '../utils/helpers';
 
 function CartPage() {
   const { items, total, itemCount, clearCart } = useCart();
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
-  const handleCheckout = () => {
-    if (!isAuthenticated) {
-      // Handle authentication required
-      toast.error('Please login to proceed to checkout');
-      return;
-    }
-    navigate('/checkout');
-  };
 
   if (items.length === 0) {
     return (
@@ -177,12 +165,10 @@ function CartPage() {
 
                 <div className="space-y-3">
                   <button
-                    onClick={handleCheckout}
+                    onClick={() => navigate('/checkout')}
                     className="w-full btn-primary"
                   >
-                    {isAuthenticated
-                      ? 'Proceed to Checkout'
-                      : 'Login to Checkout'}
+                    Checkout
                   </button>
 
                   {items.length > 1 && (

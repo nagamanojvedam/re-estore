@@ -571,12 +571,12 @@ function ProductDetailsPage() {
             transition={{ delay: 0.4 }}
           >
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h2 className="md:text-2xl text-md font-bold text-gray-900 dark:text-white">
                 You Might Also Like
               </h2>
               <Link
                 to={`/shop?category=${encodeURIComponent(product.category)}`}
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium truncate"
               >
                 View All in {product.category}
               </Link>

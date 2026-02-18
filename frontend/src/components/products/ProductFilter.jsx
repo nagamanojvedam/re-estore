@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FunnelIcon,
@@ -13,12 +14,27 @@ function ProductFilter({
   onClearFilters,
   productCount = 0,
 }) {
+  console.log(filters);
+
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     category: true,
     price: false,
     rating: false,
   });
+
+  // Prevent background scrolling when mobile filter is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const toggleSection = section => {
     setExpandedSections(prev => ({
@@ -43,12 +59,36 @@ function ProductFilter({
     });
   };
 
-  const hasActiveFilters = Object.keys(filters).some(
-    key =>
-      filters[key] !== undefined &&
-      filters[key] !== '' &&
-      filters[key] !== null,
-  );
+  const excludedFilters = ['limit', 'page', 'sortBy', 'sortOrder'];
+
+  const countActiveFilters = filters => {
+    let count = 0;
+    let priceCounted = false;
+
+    for (const [key, value] of Object.entries(filters)) {
+      // Skip excluded keys
+      if (excludedFilters.includes(key)) continue;
+
+      // Skip empty values
+      if (value === '' || value == null) continue;
+
+      // Handle price range as single filter
+      if (key === 'minPrice' || key === 'maxPrice') {
+        if (!priceCounted) {
+          count++;
+          priceCounted = true;
+        }
+        continue;
+      }
+
+      // Count normal filters
+      count++;
+    }
+
+    return count;
+  };
+
+  const hasActiveFilters = countActiveFilters(filters);
 
   return (
     <>
@@ -60,10 +100,8 @@ function ProductFilter({
         >
           <FunnelIcon className="w-5 h-5" />
           <span>Filters</span>
-          {hasActiveFilters && (
-            <span className="badge-primary text-xs">
-              {Object.keys(filters).filter(key => filters[key]).length}
-            </span>
+          {hasActiveFilters > 0 && (
+            <span className="badge-primary text-xs">{hasActiveFilters}</span>
           )}
         </button>
       </div>
@@ -84,62 +122,66 @@ function ProductFilter({
       </div>
 
       {/* Mobile Filter Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 lg:hidden"
-          >
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-black bg-opacity-50"
-              onClick={() => setIsOpen(false)}
-            />
-
-            {/* Modal Content */}
-            <motion.div
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute left-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-xl overflow-y-auto"
-            >
-              <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Filters
-                  </h2>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                  >
-                    <XMarkIcon className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-4">
-                <FilterContent
-                  filters={filters}
-                  expandedSections={expandedSections}
-                  onFilterChange={handleFilterChange}
-                  onPriceChange={handlePriceChange}
-                  onSortByChange={handleSortByChange}
-                  onClearFilters={() => {
-                    onClearFilters();
-                    setIsOpen(false);
-                  }}
-                  toggleSection={toggleSection}
-                  hasActiveFilters={hasActiveFilters}
-                  productCount={productCount}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 lg:hidden"
+              >
+                {/* Backdrop */}
+                <div
+                  className="absolute inset-0 bg-black bg-opacity-50"
+                  onClick={() => setIsOpen(false)}
                 />
-              </div>
-            </motion.div>
-          </motion.div>
+
+                {/* Modal Content */}
+                <motion.div
+                  initial={{ x: '-100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '-100%' }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                  className="absolute left-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-xl overflow-y-auto"
+                >
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        Filters
+                      </h2>
+                      <button
+                        onClick={() => setIsOpen(false)}
+                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                      >
+                        <XMarkIcon className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    <FilterContent
+                      filters={filters}
+                      expandedSections={expandedSections}
+                      onFilterChange={handleFilterChange}
+                      onPriceChange={handlePriceChange}
+                      onSortByChange={handleSortByChange}
+                      onClearFilters={() => {
+                        onClearFilters();
+                        setIsOpen(false);
+                      }}
+                      toggleSection={toggleSection}
+                      hasActiveFilters={hasActiveFilters}
+                      productCount={productCount}
+                    />
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </>
   );
 }
@@ -163,7 +205,7 @@ function FilterContent({
       </div>
 
       {/* Clear Filters */}
-      {hasActiveFilters && (
+      {hasActiveFilters > 0 && (
         <button
           onClick={onClearFilters}
           className="w-full btn btn-ghost text-left flex items-center space-x-2 bg-gray-200 dark:bg-gray-700"
@@ -206,9 +248,8 @@ function FilterContent({
             Category
           </span>
           <ChevronDownIcon
-            className={`w-4 h-4 transition-transform ${
-              expandedSections.category ? 'rotate-180' : ''
-            }`}
+            className={`w-4 h-4 transition-transform ${expandedSections.category ? 'rotate-180' : ''
+              }`}
           />
         </button>
 
@@ -264,9 +305,8 @@ function FilterContent({
             Price Range
           </span>
           <ChevronDownIcon
-            className={`w-4 h-4 transition-transform ${
-              expandedSections.price ? 'rotate-180' : ''
-            }`}
+            className={`w-4 h-4 transition-transform ${expandedSections.price ? 'rotate-180' : ''
+              }`}
           />
         </button>
 
@@ -328,11 +368,10 @@ function FilterContent({
                     onClick={() => {
                       onPriceChange({ minPrice: min, maxPrice: max });
                     }}
-                    className={`block w-full text-left text-xs py-1 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
-                      filters.minPrice === min && filters.maxPrice === max
+                    className={`block w-full text-left text-xs py-1 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${filters.minPrice === min && filters.maxPrice === max
                         ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
                         : 'text-gray-600 dark:text-gray-400'
-                    }`}
+                      }`}
                   >
                     {label}
                   </button>
@@ -353,9 +392,8 @@ function FilterContent({
             Customer Rating
           </span>
           <ChevronDownIcon
-            className={`w-4 h-4 transition-transform ${
-              expandedSections.rating ? 'rotate-180' : ''
-            }`}
+            className={`w-4 h-4 transition-transform ${expandedSections.rating ? 'rotate-180' : ''
+              }`}
           />
         </button>
 
@@ -382,11 +420,10 @@ function FilterContent({
                       {[...Array(5)].map((_, i) => (
                         <svg
                           key={i}
-                          className={`w-4 h-4 ${
-                            i < rating
+                          className={`w-4 h-4 ${i < rating
                               ? 'text-yellow-400 fill-current'
                               : 'text-gray-300 dark:text-gray-600'
-                          }`}
+                            }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
