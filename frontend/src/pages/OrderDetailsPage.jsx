@@ -51,9 +51,6 @@ function OrderDetailPage() {
             <p className="text-gray-600 dark:text-gray-400">
               Placed on {new Date(order.createdAt).toLocaleString()}
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Payment Status: {order.paymentStatus}
-            </p>
           </div>
 
           {/* Status Tracker */}
@@ -111,7 +108,7 @@ function OrderDetailPage() {
                       />
                       <div className="flex flex-col">
                         <span className="font-medium text-gray-900 dark:text-white">
-                          Product ID: {item.product._id}
+                          {item.product.name}
                         </span>
                         <span className="text-gray-500 dark:text-gray-400">
                           Quantity: {item.quantity}

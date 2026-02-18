@@ -78,7 +78,7 @@ function Header() {
           <Logo />
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {navigation.map(item => {
               if (item.name === 'Dashboard') {
                 if (!isAuthenticated || user?.role !== 'admin') {
@@ -90,13 +90,12 @@ function Header() {
                   key={item.name}
                   to={item.path}
                   className={`font-medium transition-colors duration-200
-                      ${
-                        user?.role === 'admin' && item.name === 'Dashboard'
-                          ? 'bg-red-700 text-red-100 px-4 py-1 rounded-xl hover:bg-white hover:text-red-700'
-                          : location.pathname === item.path
-                            ? 'text-primary-600 dark:text-primary-400'
-                            : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
-                      }
+                      ${user?.role === 'admin' && item.name === 'Dashboard'
+                      ? 'bg-red-700 text-red-100 px-4 py-1 rounded-xl hover:bg-white hover:text-red-700'
+                      : location.pathname === item.path
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
+                    }
                       `.trim()}
                 >
                   {item.name}
@@ -106,7 +105,7 @@ function Header() {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             {/* Search */}
             <button
               onClick={() => setShowSearch(true)}
@@ -197,7 +196,7 @@ function Header() {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 truncate">
                   <button
                     onClick={() => setShowLogin(true)}
                     className="btn btn-secondary"
@@ -216,7 +215,7 @@ function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center space-x-2">
+          <div className="lg:hidden flex items-center space-x-2">
             <button
               onClick={toggleCart}
               className="relative p-2 text-gray-700 dark:text-gray-300"
@@ -244,7 +243,7 @@ function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="lg:hidden py-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex flex-col space-y-4">
               {navigation.map(item => (
                 <Link
@@ -258,16 +257,26 @@ function Header() {
               ))}
 
               <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 text-gray-700 dark:text-gray-300"
-                >
-                  {isDark ? (
-                    <SunIcon className="w-6 h-6" />
-                  ) : (
-                    <MoonIcon className="w-6 h-6" />
-                  )}
-                </button>
+                <div className="flex">
+                  <button
+                    onClick={toggleTheme}
+                    className="p-2 text-gray-700 dark:text-gray-300"
+                  >
+                    {isDark ? (
+                      <SunIcon className="w-6 h-6" />
+                    ) : (
+                      <MoonIcon className="w-6 h-6" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setShowSearch(true)}
+                    className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex gap-2 items-center bg-primary-100/50 dark:bg-primary-950/50 rounded-full px-4"
+                    aria-label="Search products"
+                  >
+                    <MagnifyingGlassIcon className="w-4 h-4" />
+                    <span className="text-sm">Ctrl + K</span>
+                  </button>
+                </div>
 
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-4">

@@ -142,16 +142,16 @@ function Home() {
               <motion.div
                 animate={{ y: [-10, 10, -10] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-4 -right-4 bg-white text-primary-600 p-4 rounded-2xl shadow-lg z-10"
+                className="absolute -top-4 -right-4 bg-white text-primary-600 p-2 md:p-4 rounded-2xl shadow-lg z-10"
               >
-                <div className="text-2xl font-bold">50%</div>
+                <div className="text-xl font-bold">50%</div>
                 <div className="text-sm">OFF</div>
               </motion.div>
 
               <motion.div
                 animate={{ y: [10, -10, 10] }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 bg-yellow-400 text-primary-900 p-4 rounded-2xl shadow-lg z-10"
+                className="absolute -bottom-4 -left-4 bg-yellow-400 text-primary-900 p-2 md:p-4 rounded-2xl shadow-lg z-10"
               >
                 <div className="flex items-center  space-x-1">
                   <StarIcon className="w-5 h-5 fill-current" />
@@ -258,7 +258,7 @@ function Home() {
               <h2 className="heading-2 text-gray-900 dark:text-white mb-4">
                 Featured Products
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-sm md:text-lg text-gray-600 dark:text-gray-400">
                 Our most popular and trending items
               </p>
             </div>
@@ -266,7 +266,7 @@ function Home() {
               to="/shop"
               className="btn-primary flex items-center space-x-2"
             >
-              <span>View All</span>
+              <span className="text-sm md:text-md">View All</span>
               <ChevronRightIcon className="w-5 h-5" />
             </Link>
           </motion.div>

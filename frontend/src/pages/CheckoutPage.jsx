@@ -21,23 +21,23 @@ function CheckoutPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
-
+  const [paymentMethod, setPaymentMethod] = useState('cash');
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: user?.email || 'test@email.com',
-      firstName: user?.name?.split(' ')[0] || 'Test',
-      lastName: user?.name?.split(' ').slice(1).join(' ') || 'Dev',
-      phone: '555-123-4567',
-      address: '123 Main Street',
-      city: 'New York',
-      state: 'Ny',
-      zipCode: '10001',
-      country: 'United States',
-      paymentMethod: 'card',
+      email: user?.email || '',
+      firstName: user?.name?.split(' ')[0] || '',
+      lastName: user?.name?.split(' ').slice(1).join(' ') || '',
+      phone: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: '',
+      paymentMethod: '',
     },
   });
 
@@ -46,8 +46,8 @@ function CheckoutPage() {
   const tax = subtotal * 0.08;
   const totalAmount = subtotal + shipping + tax;
 
-  const onSubmit = async (data, envt) => {
-    const paymentMethod = envt.nativeEvent.submitter.value;
+  const onSubmit = async data => {
+    // const paymentMethod = envt.nativeEvent.submitter.value;
 
     const orderData = {
       items: items.map(item => ({
@@ -378,10 +378,11 @@ function CheckoutPage() {
                     <div className="w-full mt-6 flex flex-col gap-4 justify-between">
                       <LoadingButton
                         type="submit"
-                        loading={isProcessing}
+                        loading={isProcessing && paymentMethod === 'cash'}
                         className="btn-secondary flex items-center justify-center space-x-1"
                         name="paymentMethod"
                         value="cash"
+                        onClick={() => setPaymentMethod('cash')}
                       >
                         <BanknotesIcon className="w-5 h-5" />
                         <span>Pay on Delivery</span>
@@ -389,10 +390,11 @@ function CheckoutPage() {
 
                       <LoadingButton
                         type="submit"
-                        loading={isProcessing}
+                        loading={isProcessing && paymentMethod === 'card'}
                         className="btn-primary flex items-center justify-center space-x-1"
                         name="paymentMethod"
                         value="card"
+                        onClick={() => setPaymentMethod('card')}
                       >
                         <CreditCardIcon className="w-5 h-5" />
                         <span>Pay with Card</span>

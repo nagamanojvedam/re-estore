@@ -5,6 +5,7 @@ import {
   YoutubeIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ENV } from '../../utils/constants';
 import Logo from './Logo';
 
 function Footer() {
@@ -119,7 +120,7 @@ function Footer() {
         <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 border-t border-gray-200 dark:border-gray-700 pt-8">
           {/* Left: Logo + Info */}
           <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
-            <Logo className="h-8 w-auto" />
+            <Logo />
             <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md text-center md:text-left">
               Your one-stop destination for quality products at unbeatable
               prices. Committed to exceptional service.
@@ -149,7 +150,7 @@ function Footer() {
       <div className="bg-black text-white">
         <div className="container-custom py-4 text-center">
           <p className="text-sm">
-            © {currentYear} EStore. All rights reserved.
+            © {currentYear} {ENV.APP_NAME}. All rights reserved.
           </p>
         </div>
       </div>

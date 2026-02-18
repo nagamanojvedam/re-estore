@@ -70,11 +70,10 @@ function ProductCard({ product, index = 0 }) {
     return [...Array(5)].map((_, i) => (
       <StarIcon
         key={i}
-        className={`w-4 h-4 ${
-          i < Math.floor(rating)
-            ? 'text-yellow-400 fill-current'
-            : 'text-gray-300 dark:text-gray-600'
-        }`}
+        className={`w-4 h-4 ${i < Math.floor(rating)
+          ? 'text-yellow-400 fill-current'
+          : 'text-gray-300 dark:text-gray-600'
+          }`}
       />
     ));
   };
@@ -126,7 +125,7 @@ function ProductCard({ product, index = 0 }) {
                   {Math.round(
                     ((product.originalPrice - product.price) /
                       product.originalPrice) *
-                      100,
+                    100,
                   )}
                   % OFF
                 </span>
@@ -206,24 +205,23 @@ function ProductCard({ product, index = 0 }) {
               </div>
 
               {/* Stock Count */}
-              <span
-                className={`text-xs ${
-                  product.stock <= 5
-                    ? 'text-red-500'
-                    : product.stock <= 10
-                      ? 'text-yellow-500'
-                      : 'text-green-500'
-                }`}
+              {product.stock > 0 && <span
+                className={`text-xs ${product.stock <= 5
+                  ? 'text-red-500'
+                  : product.stock <= 10
+                    ? 'text-yellow-500'
+                    : 'text-green-500'
+                  }`}
               >
-                {product.stock > 0 ? `${product.stock} left` : 'Out of stock'}
-              </span>
+                {`${product.stock} left`}
+              </span>}
             </div>
 
             {/* Quick Add to Cart Button */}
             <button
               onClick={handleAddToCart}
               disabled={product.stock <= 0}
-              className="w-full mt-3 btn btn-primary btn-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full mt-3 btn btn-primary btn-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-600 disabled:hover:bg-gray-400 disabled:hover:text-gray-600"
             >
               {product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
             </button>
