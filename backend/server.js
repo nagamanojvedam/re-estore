@@ -7,7 +7,7 @@ const startServer = async () => {
     // Connect to database first
     await connectDB(); // Replace with your actual DB connection function
 
-    const server = app.listen(config.port, () => {
+    const server = app.listen(config.port, "0.0.0.0", () => {
       console.log(
         `⚡ Server running on port ${config.port} in ${config.env} mode.`
       );

@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./backend
+    container_name: re-store-backend
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - ./backend/mbm.env
+
+    restart: always
+
+  frontend:
+    build: ./frontend
+    container_name: re-store-frontend
+
+    ports:
+      - "5000:80"
+
+    env_file:
+      - ./frontend/.env
+
+    depends_on:
+      - backend
+
+    restart: always
