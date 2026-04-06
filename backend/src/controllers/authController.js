@@ -244,8 +244,6 @@ const resetPassword = catchAsync(async (req, res) => {
     throw new ApiError(400, "Invalid user");
   }
 
-  console.log(!user.resetTokenExpires || user.resetTokenExpires < Date.now());
-
   // Check token expiry
   if (!user.resetTokenExpires || user.resetTokenExpires < Date.now()) {
     throw new ApiError(400, "Reset token expired");

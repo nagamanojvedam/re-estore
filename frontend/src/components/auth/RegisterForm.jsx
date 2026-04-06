@@ -79,7 +79,6 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
 
       if (apiError?.details) {
         // structured errors (if backend ever returns them)
-        console.log('error details', apiError.details);
         Object.entries(apiError.details).forEach(([field, message]) => {
           setError(field, { type: 'server', message });
         });
@@ -202,15 +201,14 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1 flex-1 rounded ${
-                      i < strength
+                    className={`h-1 flex-1 rounded ${i < strength
                         ? strength <= 2
                           ? 'bg-red-500'
                           : strength <= 3
                             ? 'bg-yellow-500'
                             : 'bg-green-500'
                         : 'bg-gray-200 dark:bg-gray-700'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>

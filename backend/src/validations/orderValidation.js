@@ -18,7 +18,7 @@ const createOrder = {
       city: Joi.string().required(),
       state: Joi.string().required(),
       zipCode: Joi.string().required(),
-      country: Joi.string().required(),
+      country: Joi.string().allow("").optional(),
     }),
     paymentStatus: Joi.string().valid("pending", "paid", "failed"),
     paymentMethod: Joi.string().valid("card", "cash").required(),

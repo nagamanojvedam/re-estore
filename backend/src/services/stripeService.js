@@ -10,10 +10,8 @@ const stripe = new Stripe(config.stripe.secretKey);
  * @returns {Promise<Object>} Stripe Session object
  */
 const createCheckoutSession = async (order, products) => {
-  return await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    mode: "payment",
-    line_items: order.items.map((item) => {
+  const lineItems = [
+    ...order.items.map((item) => {
       const product = products[item.product.toString()];
       return {
         price_data: {
@@ -27,6 +25,38 @@ const createCheckoutSession = async (order, products) => {
         quantity: item.quantity,
       };
     }),
+  ];
+
+  if (order.tax > 0) {
+    lineItems.push({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: "Tax",
+        },
+        unit_amount: Math.round(order.tax),
+      },
+      quantity: 1,
+    });
+  }
+
+  if (order.shipping > 0) {
+    lineItems.push({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: "Shipping",
+        },
+        unit_amount: Math.round(order.shipping),
+      },
+      quantity: 1,
+    });
+  }
+
+  return await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    mode: "payment",
+    line_items: lineItems,
     success_url: `${config.frontendUrl}/orders/${order._id}?status=success`,
     cancel_url: `${config.frontendUrl}/checkout?status=cancel`,
     client_reference_id: order._id.toString(),

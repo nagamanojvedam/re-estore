@@ -70,7 +70,6 @@ app.post(
           order.paymentStatus = "paid";
           order.status = "confirmed";
           await order.save();
-          console.log(`Order ${orderId} marked as paid.`);
         }
       } catch (err) {
         console.error(`Error updating order ${orderId}: ${err.message}`);

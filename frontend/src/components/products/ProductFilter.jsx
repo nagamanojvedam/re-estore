@@ -14,7 +14,6 @@ function ProductFilter({
   onClearFilters,
   productCount = 0,
 }) {
-  console.log(filters);
 
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
@@ -369,8 +368,8 @@ function FilterContent({
                       onPriceChange({ minPrice: min, maxPrice: max });
                     }}
                     className={`block w-full text-left text-xs py-1 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${filters.minPrice === min && filters.maxPrice === max
-                        ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                        : 'text-gray-600 dark:text-gray-400'
+                      ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+                      : 'text-gray-600 dark:text-gray-400'
                       }`}
                   >
                     {label}
@@ -421,8 +420,8 @@ function FilterContent({
                         <svg
                           key={i}
                           className={`w-4 h-4 ${i < rating
-                              ? 'text-yellow-400 fill-current'
-                              : 'text-gray-300 dark:text-gray-600'
+                            ? 'text-yellow-400 fill-current'
+                            : 'text-gray-300 dark:text-gray-600'
                             }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"

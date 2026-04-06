@@ -155,11 +155,10 @@ export default function AdminDashboard() {
           <button
             key={item}
             onClick={() => setTab(item)}
-            className={`pb-2 px-4 ${
-              tab === item
+            className={`pb-2 px-4 ${tab === item
                 ? 'border-b-2 border-blue-500 text-blue-600 font-semibold'
                 : 'text-gray-600 hover:text-blue-600'
-            }`}
+              }`}
           >
             <span className="capitalize"> {item} </span>
           </button>
@@ -190,7 +189,6 @@ function OrdersTab() {
   if (isLoading) return <LoadingScreen message="Loading orders..." />;
 
   const { orders, pagination } = data;
-  console.log('Pagination:', pagination);
   return (
     <div className="space-y-4">
       {orders?.map(order => (

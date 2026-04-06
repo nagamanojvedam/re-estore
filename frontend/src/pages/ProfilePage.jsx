@@ -54,7 +54,6 @@ function ProfilePage() {
 
   const onProfileSubmit = async data => {
     try {
-      console.log('formdata: ', data);
       const updatedUser = await userService.updateMe(data);
       // Update user in AuthContext
       updateUser(updatedUser);
@@ -66,7 +65,6 @@ function ProfilePage() {
 
   const onPasswordSubmit = async data => {
     try {
-      console.log(data);
       // Password change logic would go here
       await authService.updatePassword(data);
       toast.success('Password changed successfully!');
@@ -98,11 +96,11 @@ function ProfilePage() {
 
     isSMSActive
       ? toast.success(
-          'SMS Authentication disabled, you will no longer receive messages...😑',
-        )
+        'SMS Authentication disabled, you will no longer receive messages...😑',
+      )
       : toast.success(
-          `SMS Authentication enabled, you still not receive any messages...😜`,
-        );
+        `SMS Authentication enabled, you still not receive any messages...😜`,
+      );
   };
 
   const handleSavePreferences = () => {
@@ -173,11 +171,10 @@ function ProfilePage() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                        activeTab === tab.id
+                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id
                           ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                           : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      }`}
+                        }`}
                     >
                       <tab.icon className="w-6 h-6" />
                       <span className="font-medium w-[50%]">{tab.name}</span>
