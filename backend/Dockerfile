@@ -1,13 +1,12 @@
 FROM node:22-alpine
 
-RUN corepack enable
+RUN npm install -g pnpm@10
 
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm config set node-linker hoisted
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --prod
 
 COPY . .
 
