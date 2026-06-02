@@ -1,0 +1,90 @@
+name: Deploy re-estore
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-south-1
+
+  ECS_CLUSTER: re-apps-cluster
+  ECS_SERVICE: re-estore-service-latest
+
+  ECR_FRONTEND_REPOSITORY: re-estore/frontend
+  ECR_BACKEND_REPOSITORY: re-estore/backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Frontend
+        run: |
+          docker build \
+            -t ${{ steps.login-ecr.outputs.registry }}/re-estore/frontend:${{ github.sha }} \
+            ./frontend
+
+      - name: Build Backend
+        run: |
+          docker build \
+            -t ${{ steps.login-ecr.outputs.registry }}/re-estore/backend:${{ github.sha }} \
+            ./backend
+
+      - name: Push Frontend
+        run: |
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/re-estore/frontend:${{ github.sha }}
+
+      - name: Push Backend
+        run: |
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/re-estore/backend:${{ github.sha }}
+
+      - name: Download Current Task Definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition re-estore-td \
+            --query taskDefinition \
+            > task-definition.json
+
+      - name: Update Frontend Image
+        id: frontend-task
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: frontend
+          image: ${{ steps.login-ecr.outputs.registry }}/re-estore/frontend:${{ github.sha }}
+
+      - name: Update Backend Image
+        id: backend-task
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.frontend-task.outputs.task-definition }}
+          container-name: backend
+          image: ${{ steps.login-ecr.outputs.registry }}/re-estore/backend:${{ github.sha }}
+
+      - name: Deploy ECS Service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.backend-task.outputs.task-definition }}
+          service: re-estore-service-latest
+          cluster: re-apps-cluster
+          wait-for-service-stability: true
