@@ -13,7 +13,7 @@ env:
   AWS_REGION: ap-south-1
 
   ECS_CLUSTER: re-apps-cluster
-  ECS_SERVICE: re-estore-service-latest
+  ECS_SERVICE: re-estore-td-service-latest
 
   ECR_FRONTEND_REPOSITORY: re-estore/frontend
   ECR_BACKEND_REPOSITORY: re-estore/backend
@@ -85,6 +85,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.backend-task.outputs.task-definition }}
-          service: re-estore-service-latest
+          service: re-estore-td-service-latest
           cluster: re-apps-cluster
           wait-for-service-stability: true
