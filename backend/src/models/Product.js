@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const IMAGE_BASE_URL = process.env.AWS_S3_PRODUCT_IMAGES_BUCKET_URL;
+
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -86,5 +88,26 @@ productSchema.index({ category: 1 });
 productSchema.index({ price: 1 });
 productSchema.index({ owner: 1 });
 productSchema.index({ isActive: 1 });
+
+// Product data transformation
+productSchema.set("toJSON", {
+  transform: function (_, ret) {
+    if (ret.images?.length) {
+      ret.images = ret.images.map((image) => `${IMAGE_BASE_URL}/${image}`);
+    }
+
+    return ret;
+  },
+});
+
+productSchema.set("toObject", {
+  transform: function (_, ret) {
+    if (ret.images?.length) {
+      ret.images = ret.images.map((image) => `${IMAGE_BASE_URL}/${image}`);
+    }
+
+    return ret;
+  },
+});
 
 module.exports = mongoose.model("Product", productSchema);
