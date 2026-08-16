@@ -1,10 +1,5 @@
 node_modules
-npm-debug.log
-pnpm-debug.log
-.git
-.gitignore
-Dockerfile
-.dockerignore
-.env
 dist
-build
+.git
+.env
+.env.*
