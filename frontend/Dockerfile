@@ -11,7 +11,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN pnpm build
+RUN --mount=type=secret,id=env,target=/app/.env  pnpm build
 
 # Stage 2: Serve with Nginx
 
