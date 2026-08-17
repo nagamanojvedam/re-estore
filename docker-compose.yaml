@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./backend
-    container_name: re-store-backend
+    container_name: re-estore-backend
 
     ports:
       - "3000:3000"
@@ -13,7 +13,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: re-store-frontend
+    container_name: re-estore-frontend
 
     ports:
       - "5173:80"
