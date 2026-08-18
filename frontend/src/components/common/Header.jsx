@@ -30,6 +30,8 @@ function Header() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
+
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -50,29 +52,43 @@ function Header() {
 
   const handleLogout = async () => {
     await logout();
+
     setIsProfileOpen(false);
+    setIsMobileProfileOpen(false);
+    setIsMenuOpen(false);
+
     navigate('/');
+  };
+
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+    setIsMobileProfileOpen(false);
   };
 
   useEffect(() => {
     const handlekeyDown = evnt => {
       if ((evnt.ctrlKey || evnt.metaKey) && evnt.key.toLowerCase() === 'k') {
         evnt.preventDefault();
-
         setShowSearch(prev => !prev);
       }
 
       if (evnt.key === 'Escape') {
         setShowSearch(false);
+        setIsMenuOpen(false);
+        setIsProfileOpen(false);
+        setIsMobileProfileOpen(false);
       }
     };
+
     window.addEventListener('keydown', handlekeyDown);
+
     return () => window.removeEventListener('keydown', handlekeyDown);
   }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700">
       <nav className="container-custom">
+        {/* Header */}
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Logo />
@@ -85,18 +101,20 @@ function Header() {
                   return null;
                 }
               }
+
               return (
                 <Link
                   key={item.name}
                   to={item.path}
                   className={`font-medium transition-colors duration-200
-                      ${user?.role === 'admin' && item.name === 'Dashboard'
-                      ? 'bg-red-700 text-red-100 px-4 py-1 rounded-xl hover:bg-white hover:text-red-700'
-                      : location.pathname === item.path
-                        ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
+                    ${
+                      user?.role === 'admin' && item.name === 'Dashboard'
+                        ? 'bg-red-700 text-red-100 px-4 py-1 rounded-xl hover:bg-white hover:text-red-700'
+                        : location.pathname === item.path
+                          ? 'text-primary-600 dark:text-primary-400'
+                          : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
                     }
-                      `.trim()}
+                  `.trim()}
                 >
                   {item.name}
                 </Link>
@@ -144,6 +162,7 @@ function Header() {
               aria-label="Open cart"
             >
               <ShoppingCartIcon className="w-6 h-6" />
+
               {itemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {itemCount > 99 ? '99+' : itemCount}
@@ -172,6 +191,7 @@ function Header() {
                       >
                         Profile
                       </Link>
+
                       <Link
                         to="/orders"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -179,6 +199,7 @@ function Header() {
                       >
                         My Orders
                       </Link>
+
                       <Link
                         to="/myProducts"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -186,6 +207,7 @@ function Header() {
                       >
                         My Products
                       </Link>
+
                       <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -203,6 +225,7 @@ function Header() {
                   >
                     Login
                   </button>
+
                   <button
                     onClick={() => setShowRegister(true)}
                     className="btn btn-primary"
@@ -214,23 +237,50 @@ function Header() {
             </div>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="lg:hidden flex items-center space-x-2">
+          {/* Mobile Actions */}
+          <div className="lg:hidden flex items-center gap-1">
+            {/* Theme */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <SunIcon className="w-5 h-5" />
+              ) : (
+                <MoonIcon className="w-5 h-5" />
+              )}
+            </button>
+
+            {/* Wishlist */}
+            <button
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              onClick={() => navigate('/wishlist')}
+            >
+              <HeartIcon className="w-5 h-5" />
+            </button>
+
+            {/* Cart */}
             <button
               onClick={toggleCart}
-              className="relative p-2 text-gray-700 dark:text-gray-300"
+              className="relative p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
-              <ShoppingCartIcon className="w-6 h-6" />
+              <ShoppingCartIcon className="w-5 h-5" />
+
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {itemCount}
+                <span className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-4 h-4 px-1 flex items-center justify-center">
+                  {itemCount > 99 ? '99+' : itemCount}
                 </span>
               )}
             </button>
 
+            {/* Hamburger */}
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 text-gray-700 dark:text-gray-300"
+              onClick={() => {
+                setIsMenuOpen(prev => !prev);
+                setIsMobileProfileOpen(false);
+              }}
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               {isMenuOpen ? (
                 <XMarkIcon className="w-6 h-6" />
@@ -243,80 +293,167 @@ function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col space-y-4">
-              {navigation.map(item => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+          <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 py-4">
+            {/* Navigation */}
+            <div className="space-y-1">
+              {navigation.map(item => {
+                if (item.name === 'Dashboard') {
+                  if (!isAuthenticated || user?.role !== 'admin') {
+                    return null;
+                  }
+                }
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex">
-                  <button
-                    onClick={toggleTheme}
-                    className="p-2 text-gray-700 dark:text-gray-300"
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    onClick={closeMobileMenu}
+                    className={`
+                      block rounded-lg px-4 py-3
+                      font-medium transition-colors
+                      ${
+                        location.pathname === item.path
+                          ? 'bg-primary-50 text-primary-600 dark:bg-primary-950/50 dark:text-primary-400'
+                          : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                      }
+                      ${
+                        item.name === 'Dashboard'
+                          ? 'text-red-600 dark:text-red-400'
+                          : ''
+                      }
+                    `}
                   >
-                    {isDark ? (
-                      <SunIcon className="w-6 h-6" />
-                    ) : (
-                      <MoonIcon className="w-6 h-6" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => setShowSearch(true)}
-                    className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex gap-2 items-center bg-primary-100/50 dark:bg-primary-950/50 rounded-full px-4"
-                    aria-label="Search products"
-                  >
-                    <MagnifyingGlassIcon className="w-4 h-4" />
-                    <span className="text-sm">Ctrl + K</span>
-                  </button>
-                </div>
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
 
-                {isAuthenticated ? (
-                  <div className="flex items-center space-x-4">
-                    <Link
-                      to="/profile"
-                      className="text-gray-700 dark:text-gray-300"
-                      onClick={() => setIsMenuOpen(false)}
+            {/* Search */}
+            <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <button
+                onClick={() => {
+                  setShowSearch(true);
+                  setIsMenuOpen(false);
+                  setIsMobileProfileOpen(false);
+                }}
+                className="w-full flex items-center justify-between rounded-lg bg-primary-100/50 dark:bg-primary-950/50 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-950 transition-colors"
+              >
+                <span className="flex items-center gap-3">
+                  <MagnifyingGlassIcon className="w-5 h-5" />
+
+                  <span className="text-sm font-medium">Search products</span>
+                </span>
+
+                <span className="hidden sm:inline text-xs text-gray-500 dark:text-gray-400">
+                  Ctrl + K
+                </span>
+              </button>
+            </div>
+
+            {/* Account */}
+            <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+              {isAuthenticated ? (
+                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+                  {/* Account Header */}
+                  <button
+                    onClick={() => setIsMobileProfileOpen(prev => !prev)}
+                    className="flex w-full items-center gap-3 px-4 py-4 text-left"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-950 dark:text-primary-400">
+                      <UserIcon className="h-5 w-5" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                        {user?.name}
+                      </p>
+
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Account
+                      </p>
+                    </div>
+
+                    <span
+                      className={`text-lg text-gray-400 transition-transform duration-200 dark:text-gray-500 ${
+                        isMobileProfileOpen ? 'rotate-90' : ''
+                      }`}
                     >
-                      Profile
-                    </Link>
+                      ›
+                    </span>
+                  </button>
+
+                  {/* Profile Menu */}
+                  {isMobileProfileOpen && (
+                    <div className="border-t border-gray-200 dark:border-gray-700">
+                      <Link
+                        to="/profile"
+                        onClick={closeMobileMenu}
+                        className="flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-primary-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400"
+                      >
+                        <span>Profile</span>
+                        <span className="text-gray-400 dark:text-gray-500">
+                          ›
+                        </span>
+                      </Link>
+
+                      <Link
+                        to="/orders"
+                        onClick={closeMobileMenu}
+                        className="flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-primary-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400"
+                      >
+                        <span>My Orders</span>
+                        <span className="text-gray-400 dark:text-gray-500">
+                          ›
+                        </span>
+                      </Link>
+
+                      <Link
+                        to="/myProducts"
+                        onClick={closeMobileMenu}
+                        className="flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-primary-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400"
+                      >
+                        <span>My Products</span>
+                        <span className="text-gray-400 dark:text-gray-500">
+                          ›
+                        </span>
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Logout */}
+                  <div className="border-t border-gray-200 dark:border-gray-700">
                     <button
                       onClick={handleLogout}
-                      className="text-red-600 dark:text-red-400"
+                      className="w-full px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
                     >
                       Logout
                     </button>
                   </div>
-                ) : (
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => {
-                        setShowLogin(true);
-                        setIsMenuOpen(false);
-                      }}
-                      className="btn btn-secondary"
-                    >
-                      Login
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowRegister(true);
-                        setIsMenuOpen(false);
-                      }}
-                      className="btn btn-primary"
-                    >
-                      Sign Up
-                    </button>
-                  </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setShowLogin(true);
+                    }}
+                    className="btn btn-secondary w-full"
+                  >
+                    Login
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setShowRegister(true);
+                    }}
+                    className="btn btn-primary w-full"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -371,7 +508,6 @@ function Header() {
         <ForgotPasswordForm onSuccess={handleAuthSuccess} />
       </Modal>
 
-      {/* Cart Sidebar */}
       <CartSidebar />
     </header>
   );

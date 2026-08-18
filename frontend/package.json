@@ -51,10 +51,5 @@
     "vite": "^7.1.9",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^3.2.4"
-  },
-  "engines": {
-    "node": "22.20.0",
-    "pnpm": "10.34.5"
-  },
-  "packageManager": "pnpm@10.34.5"
+  }
 }

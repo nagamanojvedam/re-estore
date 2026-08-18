@@ -46,10 +46,5 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ]
-  },
-  "engines": {
-    "node": "22.20.0",
-    "pnpm": "10.34.5"
-  },
-  "packageManager": "pnpm@10.34.5"
+  }
 }

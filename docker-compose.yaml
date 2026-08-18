@@ -12,16 +12,20 @@ services:
     restart: always
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      secrets:
+        - env
     container_name: re-estore-frontend
 
     ports:
       - "5173:80"
 
-    env_file:
-      - ./frontend/.env
-
     depends_on:
       - backend
 
     restart: always
+
+secrets:
+  env:
+    file: ./frontend/.env
