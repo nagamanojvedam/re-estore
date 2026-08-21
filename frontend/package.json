@@ -1,8 +1,9 @@
 {
-  "name": "react-ecommerce-frontend",
-  "private": true,
+  "name": "re-estore-frontend",
   "version": "1.0.0",
+  "author": "Naga Manoj Vedam",
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,8 +12,7 @@
     "test:ui": "vitest --ui",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext js,jsx --fix",
-    "format": "prettier --write src/",
-    "type-check": "tsc --noEmit"
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
@@ -51,5 +51,9 @@
     "vite": "^7.1.9",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
   }
 }
