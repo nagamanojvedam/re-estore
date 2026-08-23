@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: ./backend
+    image: re-estore-backend:${IMAGE_TAG:-current}
+    container_name: re-estore-backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - /opt/apps/re-estore/backend/mbm.env
+    networks:
+      - re-estore-network
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      secrets:
+        - env
+    image: re-estore-frontend:${IMAGE_TAG:-current}
+    container_name: re-estore-frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    networks:
+      - re-estore-network
+    restart: always
+
+networks:
+  re-estore-network:
+    external: true
+
+secrets:
+  env:
+    file: /opt/apps/re-estore/frontend/.env

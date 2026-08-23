@@ -1,0 +1,177 @@
+name: re-estore - prod
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Lightsail
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          command_timeout: 15m
+
+          script: |
+            cd /opt/apps/re-estore
+
+            echo "Pulling latest code..."
+            git pull origin main
+
+
+            echo "Creating backup images..."
+
+            docker tag re-estore-backend:current re-estore-backend:backup
+            docker tag re-estore-frontend:current re-estore-frontend:backup
+
+
+            echo "Building new images..."
+
+            if IMAGE_TAG=new docker compose -f docker-compose.prod.yaml build
+            then
+
+              echo "Build successful."
+
+            else
+
+              echo "Build failed."
+              echo "Current application was not touched."
+              exit 1
+
+            fi
+
+
+            echo "Stopping current containers..."
+
+            docker stop \
+              re-estore-backend \
+              re-estore-frontend || true
+
+            docker rm \
+              re-estore-backend \
+              re-estore-frontend || true
+
+
+            echo "Starting new containers..."
+
+            if IMAGE_TAG=new docker compose -f docker-compose.prod.yaml up -d
+            then
+
+              echo "New containers started."
+
+            else
+
+              echo "Failed to start new containers."
+              echo "Rolling back..."
+
+              docker rm \
+                re-estore-backend \
+                re-estore-frontend || true
+
+              IMAGE_TAG=backup docker compose -f docker-compose.prod.yaml up -d
+
+              exit 1
+
+            fi
+
+
+            echo "Waiting for applications..."
+            sleep 5
+
+
+            echo "Checking backend health..."
+
+            if curl --fail http://localhost:3000/health
+            then
+
+              echo "Backend health check passed."
+
+            else
+
+              echo "Backend health check failed."
+              echo "Rolling back..."
+
+              docker compose -f docker-compose.prod.yaml down || true
+
+              IMAGE_TAG=backup docker compose -f docker-compose.prod.yaml up -d
+
+              sleep 5
+
+              if curl --fail http://localhost:3000/health
+              then
+                echo "Backend rollback successful."
+              else
+                echo "Backend rollback failed. Manual intervention required."
+                exit 1
+              fi
+
+              docker rmi re-estore-backend:new || true
+              docker rmi re-estore-frontend:new || true
+
+              exit 1
+
+            fi
+
+
+            echo "Checking frontend health..."
+
+            if curl --fail http://localhost:8081
+            then
+
+              echo "Frontend health check passed."
+
+            else
+
+              echo "Frontend health check failed."
+              echo "Rolling back..."
+
+              docker compose -f docker-compose.prod.yaml down || true
+
+              IMAGE_TAG=backup docker compose -f docker-compose.prod.yaml up -d
+
+              sleep 5
+
+              if curl --fail http://localhost:3000/health && \
+                 curl --fail http://localhost:8081
+              then
+
+                echo "Rollback successful."
+
+              else
+
+                echo "Rollback health check failed."
+                echo "Manual intervention required."
+                exit 1
+
+              fi
+
+              docker rmi re-estore-backend:new || true
+              docker rmi re-estore-frontend:new || true
+
+              exit 1
+
+            fi
+
+
+            echo "Both applications are healthy."
+
+
+            echo "Promoting new images..."
+
+            docker tag re-estore-backend:new re-estore-backend:current
+            docker tag re-estore-frontend:new re-estore-frontend:current
+
+
+            echo "Removing temporary images..."
+
+            docker rmi re-estore-backend:new || true
+            docker rmi re-estore-frontend:new || true
+
+
+            echo "Deployment successful."
