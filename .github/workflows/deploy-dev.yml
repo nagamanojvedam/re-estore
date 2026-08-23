@@ -50,7 +50,7 @@ jobs:
           sleep 5
 
           echo "Checking backend..."
-          curl --fail http://localhost:3000/health
+          curl --fail http://localhost:3000/healthy
 
           echo "Checking frontend..."
           curl --fail http://localhost:8080
