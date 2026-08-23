@@ -12,38 +12,80 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-
-      - name: Build Docker images
+      
+      - name: Backup current images
         run: |
-          docker compose build
+          echo "Creating backup images..."
 
+          docker tag re-estore-backend:current re-estore-backend:backup || true
+          docker tag re-estore-frontend:current re-estore-frontend:backup || true
+      
+      - name: Build new images
+        run : |
+          echo "Building new images..."
 
+          IMAGE_TAG=new docker compose build
+      
       - name: Stop existing containers
         run: |
-          docker stop re-estore-frontend re-estore-backend || true
-          docker rm re-estore-frontend re-estore-backend || true
+          echo "Stopping old containers..."
 
-
+          docker stop \
+            re-estore-backend \
+            re-estore-frontend || true
+          
+          docker rm \
+            re-estore-backend \
+            re-estore-frontend || true
+      
       - name: Start new containers
         run: |
-          docker compose up -d
+          echo "Starting new containers..."
 
-
-      - name: Check running containers
+          IMAGE_TAG=new docker compose up -d
+      
+      - name: Health checks
         run: |
-          docker ps --filter "name=re-estore-frontend"
-          docker ps --filter "name=re-estore-backend"
-
-
-      - name: Backend health check
-        run: |
-          echo "Checking backend..."
+          echo "Waiting for containers..."
           sleep 5
+
+          echo "Checking backend..."
           curl --fail http://localhost:3000/health
 
-
-      - name: Frontend health check
-        run: |
           echo "Checking frontend..."
           curl --fail http://localhost:8080
+
+          echo "Deployment successful ;)"
+      
+      - name: Promote new images
+        if: success()
+        run: |
+          echo "Promoting new images..."
+
+          docker tag re-estore-backend:new re-estore-backend:current
+          docker tag re-estore-frontend:new re-estore-frontend:current
+
+          docker rmi re-estore-backend:new || true
+          docker rmi re-estore-frontend:new || true
+
+      - name: Rollback
+        if: failure()
+        run: |
+          echo "Deployment failed. Rolling back..."
+
+          docker stop \
+            re-estore-backend \
+            re-estore-frontend || true
+
+          docker rm \
+            re-estore-backend \
+            re-estore-frontend || true
+
+          echo "Starting backup version..."
+
+          IMAGE_TAG=backup docker compose up -d
+      
+      - name: Cleanup unused images
+        if: success()
+        run: |
+          docker image prune -f
