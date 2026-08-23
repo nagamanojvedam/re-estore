@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./backend/mbm.env
+      - /home/venom/Projects/re-estore/backend/mbm.env
     networks:
       - re-estore-network
     restart: always
