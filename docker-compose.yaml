@@ -32,4 +32,4 @@ networks:
 
 secrets:
   env:
-    file: ./frontend/.env
+    file: /home/venom/Projects/re-estore/frontend/.env
