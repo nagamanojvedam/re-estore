@@ -1,14 +1,14 @@
 services:
   backend:
     build: ./backend
+    image: re-estore-backend:current
     container_name: re-estore-backend
-
     ports:
       - "3000:3000"
-
     env_file:
       - ./backend/mbm.env
-
+    networks:
+      - re-estore-network
     restart: always
 
   frontend:
@@ -16,15 +16,19 @@ services:
       context: ./frontend
       secrets:
         - env
+    image: re-estore-frontend:current
     container_name: re-estore-frontend
-
     ports:
-      - "5173:80"
-
+      - "8080:80"
     depends_on:
       - backend
-
+    networks:
+      re-estore-network
     restart: always
+
+networks:
+  re-estore-network:
+    external: true
 
 secrets:
   env:
