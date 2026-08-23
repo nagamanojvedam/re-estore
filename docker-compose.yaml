@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./backend
-    image: re-estore-backend:current
+    image: re-estore-backend:${IMAGE_TAG:-current}
     container_name: re-estore-backend
     ports:
       - "3000:3000"
@@ -16,7 +16,7 @@ services:
       context: ./frontend
       secrets:
         - env
-    image: re-estore-frontend:current
+    image: re-estore-frontend:${IMAGE_TAG:-current}
     container_name: re-estore-frontend
     ports:
       - "8080:80"
