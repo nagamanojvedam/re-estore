@@ -50,7 +50,7 @@ jobs:
           sleep 5
 
           echo "Checking backend..."
-          curl --fail http://localhost:3000/healthy
+          curl --fail http://localhost:3000/health
 
           echo "Checking frontend..."
           curl --fail http://localhost:8080
@@ -86,6 +86,10 @@ jobs:
           IMAGE_TAG=backup docker compose up -d
       
       - name: Cleanup unused images
-        if: success()
         run: |
+          echo "Removing temporary images..."
+
+          docker rmi re-estore-backend:new || true
+          docker rmi re-estore-frontend:new || true
+
           docker image prune -f
