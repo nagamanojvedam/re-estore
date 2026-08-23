@@ -1,0 +1,49 @@
+name: re-estore - dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+
+      - name: Build Docker images
+        run: |
+          docker compose build
+
+
+      - name: Stop existing containers
+        run: |
+          docker stop re-estore-frontend re-estore-backend || true
+          docker rm re-estore-frontend re-estore-backend || true
+
+
+      - name: Start new containers
+        run: |
+          docker compose up -d
+
+
+      - name: Check running containers
+        run: |
+          docker ps --filter "name=re-estore-frontend"
+          docker ps --filter "name=re-estore-backend"
+
+
+      - name: Backend health check
+        run: |
+          echo "Checking backend..."
+          sleep 5
+          curl --fail http://localhost:3000/health
+
+
+      - name: Frontend health check
+        run: |
+          echo "Checking frontend..."
+          curl --fail http://localhost:8080
