@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - /home/venom/Projects/re-estore/backend/mbm.env
+      - /opt/apps/re-estore/backend/mbm.env
     networks:
       - re-estore-network
     restart: always
@@ -19,7 +19,7 @@ services:
     image: re-estore-frontend:${IMAGE_TAG:-current}
     container_name: re-estore-frontend
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - backend
     networks:
@@ -32,4 +32,4 @@ networks:
 
 secrets:
   env:
-    file: /home/venom/Projects/re-estore/frontend/.env
+    file: /opt/apps/re-estore/frontend/.env

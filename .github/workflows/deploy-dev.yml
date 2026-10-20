@@ -12,20 +12,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Backup current images
         run: |
           echo "Creating backup images..."
 
           docker tag re-estore-backend:current re-estore-backend:backup || true
           docker tag re-estore-frontend:current re-estore-frontend:backup || true
-      
+
       - name: Build new images
-        run : |
+        run: |
           echo "Building new images..."
 
           IMAGE_TAG=new docker compose build
-      
+
       - name: Stop existing containers
         run: |
           echo "Stopping old containers..."
@@ -33,17 +33,17 @@ jobs:
           docker stop \
             re-estore-backend \
             re-estore-frontend || true
-          
+
           docker rm \
             re-estore-backend \
             re-estore-frontend || true
-      
+
       - name: Start new containers
         run: |
           echo "Starting new containers..."
 
           IMAGE_TAG=new docker compose up -d
-      
+
       - name: Health checks
         run: |
           echo "Waiting for containers..."
@@ -53,10 +53,10 @@ jobs:
           curl --fail http://localhost:3000/health
 
           echo "Checking frontend..."
-          curl --fail http://localhost:8080
+          curl --fail http://localhost:8081
 
           echo "Deployment successful ;)"
-      
+
       - name: Promote new images
         if: success()
         run: |
@@ -84,7 +84,7 @@ jobs:
           echo "Starting backup version..."
 
           IMAGE_TAG=backup docker compose up -d
-      
+
       - name: Cleanup unused images
         run: |
           echo "Removing temporary images..."
