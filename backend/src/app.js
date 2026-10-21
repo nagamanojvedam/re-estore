@@ -2,7 +2,6 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const morgan = require("morgan");
-const path = require("path");
 
 const config = require("./config/config");
 const { errorConverter, errorHandler } = require("./middleware/error");
@@ -103,17 +102,6 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/messages", messageRoutes);
-
-// Routes replaced by orderRoutes or removed as redundant
-
-// Serve static files in production
-if (config.env === "production") {
-  app.use(express.static(path.join(__dirname, "../../frontend", "dist")));
-
-  app.get(/.*/, (req, res) =>
-    res.sendFile(path.join(__dirname, "../../frontend", "dist", "index.html"))
-  );
-}
 
 // 404 Hanlder
 app.all(/.*/, (req, res) => {
